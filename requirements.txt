@@ -1,0 +1,5 @@
+docopt==0.6.2
+ckanapi==4.3
+requests==2.20.0
+PyYAML==5.3.1
+click-7.1.1
