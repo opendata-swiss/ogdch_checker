@@ -42,7 +42,8 @@ Options:
     -h, --help                     Show this help message and exit.
     -d, --dry                      a.k.a. Debug. Run Tests, generate Error-Mails without sending them.
     -l, --limit <number-of-pkgs>   Limit the amount of packages this script handles
-    -t, --tomail <recipient-email> Email address of recipient
+    -t, --tomail <recipient-email> Overwrite Email address of recipients
+    -f, --frommail <sender-email>  Overwrite Email address of the sender
 
 Configuration: expected in config.yaml:
 

@@ -18,14 +18,13 @@ log = logging.getLogger(__name__)
 
 
 class PackageCheck():
-    def __init__(self, dry, limit, tomail):
+    def __init__(self, dry, limit, tomail, frommail):
         self.config = self._build_config(dry, limit, tomail)
         self.ogdremote = ckanapi.RemoteCKAN(self.siteurl)
         self.geocat_pkg_ids = self._get_geocat_package_ids()
         self.result_cache = {}
         self.pkgs = self._get_packages()
         self.pkgs_count = len(self.pkgs)
-
 
     def run(self):
         for idx, id in enumerate(self.pkgs):
@@ -176,14 +175,14 @@ class PackageCheck():
         log.info('Emails for those will be sent to {} at {}'.format(self.geocat_recipient.name, self.geocat_recipient.email))
         return geocat_pkg_ids
 
-    def _build_config(self, dry=False, limit=None, tomail=None):
+    def _build_config(self, dry=False, limit=None, tomail=None, frommail=None):
         try:
             with open('config.yaml') as file:
                 defaults = yaml.load(file)
                 self.logdir = defaults['log_dir']
                 _setup_logging(logdir=self.logdir)
                 self.maildir = _setup_mails(tmpdir=defaults['tmp_dir'])
-                self.sender = _get_sender(defaults['default_sender_mail'], tomail)
+                self.sender = _get_sender(defaults['default_sender_mail'], frommail)
                 self.recipient_overwrite = _get_recipient_overwrite(tomail)
                 self.dryrun = dry
                 self.geocat_recipient = EmailRecipient(name=defaults['geocat_mail'], email=defaults['geocat_name'])
@@ -198,23 +197,22 @@ class PackageCheck():
             sys.exit()
 
     def _log_config(self):
-            log.info("============ Configuration ==============")
-            log.info("site url                : {}".format(self.siteurl))
-            log.info("Logs at:                : {}".format(self.logdir))
-            log.info("Mails at:               : {}".format(self.maildir))
-            if self.dryrun:
-                log.info("This is a dryrun! No mails will be send!")
-            elif self.recipient_overwrite:
-                log.info("Sender                  : {}".format(self.sender))
-                log.info("Recipients overwrite    : {}".format(self.recipient_overwrite))
-            else:
-                log.info("Sender                  : {}".format(self.sender))
-                log.info("geocat-recipient        : {} {}".format(self.geocat_recipient.name, self.geocat_recipient.email))
-                log.info("default-recipient       : {} {}".format(self.default_recipient.name, self.default_recipient.email))
-                log.info("cc to                   : {}".format(self.maildir))
-            log.info("Limit nr of packages      : {}".format(self.limit))
-            log.info("smtp server               : {}".format(self.smtp_server))
-            log.info("============ /Configuration =============")
+        log.info("============ Configuration ==============")
+        log.info("site url                : {}".format(self.siteurl))
+        log.info("Logs at:                : {}".format(self.logdir))
+        log.info("Mails at:               : {}".format(self.maildir))
+        log.info("Sender                  : {}".format(self.sender))
+        if self.dryrun:
+            log.info("This is a dryrun! No mails will be send!")
+        elif self.recipient_overwrite:
+            log.info("Recipients overwrite    : {}".format(self.recipient_overwrite))
+        else:
+            log.info("geocat-recipient        : {} {}".format(self.geocat_recipient.name, self.geocat_recipient.email))
+            log.info("default-recipient       : {} {}".format(self.default_recipient.name, self.default_recipient.email))
+            log.info("cc to                   : {}".format(self.maildir))
+        log.info("Limit nr of packages      : {}".format(self.limit))
+        log.info("smtp server               : {}".format(self.smtp_server))
+        log.info("============ /Configuration =============")
 
 def _setup_logging(logdir):
     logfile = os.path.join(logdir, 'resource_test.log')
