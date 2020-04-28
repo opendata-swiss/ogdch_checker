@@ -9,7 +9,7 @@ from ckan_pkg_checker.pkg_checker import PackageCheck
               help='Number of packages to check.')
 @click.option('-d', '--dry', type=bool, default=False,
               help='This is a dry run')
-@click.option('-t', '--tomail', default='sabine.maennel@gmail.com',
+@click.option('-t', '--tomail',
               help='Overwrites the recipients. Mail is only send to this address')
 
 def check_packages(dry=False, limit=None, tomail=None):
