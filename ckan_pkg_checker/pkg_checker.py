@@ -123,6 +123,7 @@ class PackageCheck():
         return 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker'
 
     def _send_mails(self):
+        log.info("============ Sending mails ==============")
         if not self.dryrun:
             subject = self._get_email_subject()
             for filename in os.listdir(self.maildir):
@@ -143,12 +144,16 @@ class PackageCheck():
                     server = smtplib.SMTP(self.smtp_server)
                     server.sendmail(self.sender, send_to, msg.as_string())
                     server.quit()
-                    log.debug("Mail sent to %s" % msg['To'])
+                    log.info("Mails were sent.")
+                    log.info("Sender: {}".format(self.sender))
+                    log.info("Receivers: {}".format(send_to))
 
                 except IOError as e:
                     log.exception("Error occured while sending mails".format(e.message))
                 except smtplib.SMTPResponseException as e:
                     log.exception("Error occured while sending mails {}: {}".format(e.smtp_code, e.smtp_error))
+            else:
+                log.info("No Mails were send.")
 
     def _get_geocat_package_ids(self):
         harvester_search_results = \
