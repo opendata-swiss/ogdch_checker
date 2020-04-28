@@ -1,13 +1,11 @@
 # ogdch-checker configuration file
-
 default_sender_mail: no-reply@opendata.swiss
-default_recipient_mail: sabine.maennel@gmail.com
-default_recipient_name: Sabine
-cc_mail: sabine.maennel@liip.ch
-geocat_mail: sabinemaenneldevelop@gmail.com
-
+default_recipient_mail: ogdch@liip.com
+default_recipient_name: OGDCH
+cc_mail: ogdch@liip.ch
+geocat_mail: geocat@swisstopo.ch
 geocat_name: Swisstopo
 smtp_server: localhost:25
 site_url: 'https://opendata.swiss'
-log_dir: /home/sabine/ogdch/linkchecker/ogdch-linkchecker/logs
-tmp_dir: /home/sabine/ogdch/linkchecker/ogdch-linkchecker/tmp
+log_dir: /home/liipadmin/ogdch-checker/logs
+tmp_dir: /home/liipadmin/ogdch-checker/tmp

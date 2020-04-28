@@ -61,7 +61,7 @@ Configuration: expected in config.yaml:
 ### Example:
 
 ```
-python pkg-checker.py --dry t --limit 20
+python pkg_checker.py --dry t --limit 20
 ``` 
 
 ## Tests
