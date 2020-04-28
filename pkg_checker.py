@@ -11,9 +11,11 @@ from ckan_pkg_checker.pkg_checker import PackageCheck
               help='This is a dry run')
 @click.option('-t', '--tomail',
               help='Overwrites the recipients. Mail is only send to this address')
-def check_packages(dry=False, limit=None, tomail=None):
+@click.option('-f', '--frommail',
+              help='Overwrites the sender.')
+def check_packages(dry=False, limit=None, tomail=None, frommail=None):
     """Script to test the resource links of a ckan installation"""
-    check = PackageCheck(dry, limit, tomail)
+    check = PackageCheck(dry, limit, tomail, frommail)
     check.run()
 
 if __name__ == '__main__':
