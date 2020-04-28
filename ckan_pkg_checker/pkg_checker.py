@@ -2,17 +2,14 @@ import ckanapi
 import tempfile
 import os
 import smtplib
-import copy
 import yaml
-import click
 import sys
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from requests_helpers import _check_url_status
-from mail_helpers import (_build_msg_per_error, _build_msg_per_contact, _get_field_in_one_language,
-                          _get_recipient_overwrite, _get_sender, EmailRecipient)
+from mail_helpers import _build_msg_per_error, _build_msg_per_contact, _get_field_in_one_language
 from link_helpers import _get_ckan_resource_url, _get_ckan_dataset_url
 from mail_helpers import _get_recipient_overwrite, _get_sender, EmailRecipient
 
@@ -182,7 +179,7 @@ class PackageCheck():
     def _build_config(self, dry=False, limit=None, tomail=None):
         try:
             with open('config.yaml') as file:
-                defaults = yaml.load(file, Loader=yaml.FullLoader)
+                defaults = yaml.load(file)
                 self.logdir = defaults['log_dir']
                 _setup_logging(logdir=self.logdir)
                 self.maildir = _setup_mails(tmpdir=defaults['tmp_dir'])

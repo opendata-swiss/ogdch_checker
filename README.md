@@ -36,11 +36,11 @@ pip install -r requirements.txt
 ## Usage:
 
 ```
-python pkg-checker.py [--dry] [--limit number-of-packages] [--tomail overwrite-recipient-email]
+python pkg_checker.py [--dry] [--limit number-of-packages] [--tomail overwrite-recipient-email]
 ``` 
 Options:
     -h, --help                     Show this help message and exit.
-    -d, --dry t                    a.k.a. Debug. Run Tests, generate Error-Mails without sending them.
+    -d, --dry                      a.k.a. Debug. Run Tests, generate Error-Mails without sending them.
     -l, --limit <number-of-pkgs>   Limit the amount of packages this script handles
     -t, --tomail <recipient-email> Email address of recipient
 
