@@ -33,6 +33,10 @@ class PackageCheck():
                 self._check_package(id)
             except Exception, e:
                 log.exception('check_package failed {}'.format(e))
+            log.info("============ Sending mails ==============")
+        if self.dryrun:
+            log.info("This is a dry run, therefore no Mails were send.")
+            return
         self._send_mails()
 
     def _get_packages(self):
@@ -123,37 +127,33 @@ class PackageCheck():
         return 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker'
 
     def _send_mails(self):
-        log.info("============ Sending mails ==============")
-        if not self.dryrun:
-            subject = self._get_email_subject()
-            for filename in os.listdir(self.maildir):
-                try:
-                    fp = open(self.maildir + filename, 'rb')
-                    recipient = filename
-                    text = MIMEText(fp.read(), 'html', 'utf-8')
-                    msg = MIMEMultipart('alternative')
-                    msg['Subject'] = subject
-                    msg['From'] = self.sender
-                    msg['To'] = recipient
-                    if self.recipient_overwrite:
-                        send_to = [self.recipient_overwrite]
-                    else:
-                        msg['Cc'] = self.cc_mail
-                        send_to = [recipient, self.cc_mail]
-                    msg.attach(text)
-                    server = smtplib.SMTP(self.smtp_server)
-                    server.sendmail(self.sender, send_to, msg.as_string())
-                    server.quit()
-                    log.info("Mails were sent.")
-                    log.info("Sender: {}".format(self.sender))
-                    log.info("Receivers: {}".format(send_to))
+        subject = self._get_email_subject()
+        for filename in os.listdir(self.maildir):
+            try:
+                fp = open(self.maildir + filename, 'rb')
+                recipient = filename
+                text = MIMEText(fp.read(), 'html', 'utf-8')
+                msg = MIMEMultipart('alternative')
+                msg['Subject'] = subject
+                msg['From'] = self.sender
+                msg['To'] = recipient
+                if self.recipient_overwrite:
+                    send_to = [self.recipient_overwrite]
+                else:
+                    msg['Cc'] = self.cc_mail
+                    send_to = [recipient, self.cc_mail]
+                msg.attach(text)
+                server = smtplib.SMTP(self.smtp_server)
+                server.sendmail(self.sender, send_to, msg.as_string())
+                server.quit()
+                log.info("Mails were sent.")
+                log.info("Sender: {}".format(self.sender))
+                log.info("Receivers: {}".format(send_to))
 
-                except IOError as e:
-                    log.exception("Error occured while sending mails".format(e.message))
-                except smtplib.SMTPResponseException as e:
-                    log.exception("Error occured while sending mails {}: {}".format(e.smtp_code, e.smtp_error))
-            else:
-                log.info("No Mails were send.")
+            except IOError as e:
+                log.exception("Error occured while sending mails".format(e.message))
+            except smtplib.SMTPResponseException as e:
+                log.exception("Error occured while sending mails {}: {}".format(e.smtp_code, e.smtp_error))
 
     def _get_geocat_package_ids(self):
         harvester_search_results = \
