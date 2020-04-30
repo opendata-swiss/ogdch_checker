@@ -27,10 +27,10 @@ per recipient and then sending them according to the options and configuration.
 
 ```
 git clone <repo>
-virtualenv p2venv 
-source p2venv/bin/activate
+python3 -m venv p3venv
+source p3venv/bin/activate
 cd ogdch-checker
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ``` 
 
 ## Usage:

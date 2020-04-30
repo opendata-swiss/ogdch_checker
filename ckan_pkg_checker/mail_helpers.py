@@ -1,4 +1,3 @@
-from urlparse import urljoin
 from collections import namedtuple
 
 EmailRecipient = namedtuple('EmailRecipient', ['name', 'email'])
@@ -41,7 +40,7 @@ def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=N
     else:
         msg += u'<br>\n'
         msg += u'Relation URL: %s <br>\n' % test_url
-    msg += u'Error Message: %s <br><br>\n\n-----<br><br>\n\n' % unicode(error_msg, 'utf8')
+    msg += u'Error Message: %s <br><br>\n\n-----<br><br>\n\n' % error_msg
     return msg
 
 def _get_field_in_one_language(multi_language_field, backup):
