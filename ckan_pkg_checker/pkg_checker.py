@@ -8,10 +8,10 @@ import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from requests_helpers import _check_url_status
-from mail_helpers import _build_msg_per_error, _build_msg_per_contact, _get_field_in_one_language
-from link_helpers import _get_ckan_resource_url, _get_ckan_dataset_url
-from mail_helpers import _get_recipient_overwrite, _get_sender, EmailRecipient
+from ckan_pkg_checker import requests_helpers as rh
+from ckan_pkg_checker import mail_helpers as mh
+from ckan_pkg_checker import link_helpers as lh
+
 
 import logging.handlers
 log = logging.getLogger(__name__)
@@ -31,9 +31,9 @@ class PackageCheck():
             log.info("#### (%s/%s) ##########################" % (idx + 1, self.pkgs_count))
             try:
                 self._check_package(id)
-            except Exception, e:
+            except Exception as e:
                 log.exception('check_package failed {}'.format(e))
-            log.info("============ Sending mails ==============")
+        log.info("============ Sending mails ==============")
         if self.dryrun:
             log.info("This is a dry run, therefore no Mails were send.")
             return
@@ -42,7 +42,7 @@ class PackageCheck():
     def _get_packages(self):
         try:
             pkgs = self.ogdremote.action.package_list()
-        except Exception, e:
+        except Exception as e:
             log.exception('package_list failed')
             return []
         pkgs = [id for id in pkgs if not id.startswith('__')]
@@ -68,7 +68,7 @@ class PackageCheck():
                 self._check_resource(pkg, resource)
 
     def _check_resource(self, pkg, resource):
-        resource_display_name = _get_field_in_one_language(resource['display_name'], resource['name'])
+        resource_display_name = mh._get_field_in_one_language(resource['display_name'], resource['name'])
         log.info("--- (%s)" % (resource_display_name))
         resource_url = resource['url']
         try:
@@ -80,11 +80,11 @@ class PackageCheck():
         if resource_url:
             self._check_url_status("resoure_url",
                 resource_url, pkg,
-                _get_ckan_resource_url(self.siteurl, pkg['name'], resource['id']))
+                lh._get_ckan_resource_url(self.siteurl, pkg['name'], resource['id']))
         if download_url and download_url != resource_url:
             self._check_url_status("download_url",
                 download_url, pkg,
-                _get_ckan_resource_url(self.siteurl, pkg['name'], resource['id']))
+                lh._get_ckan_resource_url(self.siteurl, pkg['name'], resource['id']))
 
     def _check_url_status(self, test_case, test_url, pkg, resource_url=None):
         if test_url in self.result_cache:
@@ -92,7 +92,7 @@ class PackageCheck():
             if previous_test_result:
                 log.info("\nREPEAT-ERROR at {}:{}, \nERROR-MSG: {}".format(test_case, test_url.encode('utf8'), previous_test_result))
                 self._prepare_mail(test_url, previous_test_result, pkg, resource_url)
-        new_test_result = _check_url_status(test_url)
+        new_test_result = rh._check_url_status(test_url)
         if new_test_result:
             log.info("\nERROR at {}:{}, \nERROR-MSG: {}".format(test_case, test_url.encode('utf8'), new_test_result))
             self._prepare_mail(test_url, new_test_result, pkg, resource_url)
@@ -104,13 +104,13 @@ class PackageCheck():
             fname = os.path.join(self.maildir, receiver.email)
             msg = ''
             if not os.path.isfile(fname):
-                msg = _build_msg_per_contact(receiver.name)
-            title = _get_field_in_one_language(pkg['title'], pkg['name'])
-            dataset_url = _get_ckan_dataset_url(self.siteurl, pkg['name'])
-            msg += _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None)
+                msg = mh._build_msg_per_contact(receiver.name)
+            title = mh._get_field_in_one_language(pkg['title'], pkg['name'])
+            dataset_url = lh._get_ckan_dataset_url(self.siteurl, pkg['name'])
+            msg += mh._build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None)
             mail = open(fname, 'a')
             try:
-                mail.write(msg.encode('utf8'))
+                mail.write(msg)
                 log.info("Message written to %s" % fname)
             except:
                 log.exception('failed to write mail: %s' % msg)
@@ -119,7 +119,7 @@ class PackageCheck():
         if pkg['id'] in self.geocat_pkg_ids:
             return [self.geocat_recipient]
         elif pkg.get('contact_points',''):
-            return [EmailRecipient(name=contact['name'], email=contact['email']) for contact in pkg['contact_points']]
+            return [mh.EmailRecipient(name=contact['name'], email=contact['email']) for contact in pkg['contact_points']]
         else:
             return [self.default_recipient]
 
@@ -183,15 +183,15 @@ class PackageCheck():
     def _build_config(self, dry=False, limit=None, tomail=None, frommail=None):
         try:
             with open('config.yaml') as file:
-                defaults = yaml.load(file)
+                defaults = yaml.load(file, Loader=yaml.FullLoader)
                 self.logdir = defaults['log_dir']
                 _setup_logging(logdir=self.logdir)
                 self.maildir = _setup_mails(tmpdir=defaults['tmp_dir'])
-                self.sender = _get_sender(defaults['default_sender_mail'], frommail)
-                self.recipient_overwrite = _get_recipient_overwrite(tomail)
+                self.sender = mh._get_sender(defaults['default_sender_mail'], frommail)
+                self.recipient_overwrite = mh._get_recipient_overwrite(tomail)
                 self.dryrun = dry
-                self.geocat_recipient = EmailRecipient(name=defaults['geocat_mail'], email=defaults['geocat_name'])
-                self.default_recipient = EmailRecipient(name=defaults['default_recipient_mail'], email=defaults['default_recipient_name'])
+                self.geocat_recipient = mh.EmailRecipient(name=defaults['geocat_mail'], email=defaults['geocat_name'])
+                self.default_recipient = mh.EmailRecipient(name=defaults['default_recipient_mail'], email=defaults['default_recipient_name'])
                 self.smtp_server = defaults['smtp_server']
                 self.siteurl = defaults['site_url']
                 self.cc_mail = defaults['cc_mail']
