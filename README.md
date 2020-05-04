@@ -1,28 +1,22 @@
 # OGDCH Checker
 
-Check for all packages:
+## About 
 
-- url to landing page
-- url of relations
+This a tool for checking datasets and resources of a ckan installation.
 
-Checks for all resources:
-
-- download url
-- resource url
-
-Errors are reported per email to the following recipients:
-
-- contact points of the dataset
-
-Exception 1: Datasets that come in through the geocat harvester are reported to Swisstopo
-Exception 2: Datasets that have no contact are reported to the default recipient 
-
-All outgoing emails can be directed to an email overwrite by the argument --tomail.
-With the Option --dry t no emails will be send.
-
-Emails are written to a temporary folder first. Sending them means reading these files 
-per recipient and then sending them according to the options and configuration.
-
+- Emails can be send to the contacts of these datasets.
+- The two steps: checking datasets and sending out emails can be separated 
+  from each other
+- There is a contactchecker, that can associate different receivers per dataset: 
+  currently emails for datasets that are harvested by the geocat harvester go to 
+  swisstopo
+- the checker can be limited to a number of datasets (`--limit`) to one dataset (`--pkg`) or to and
+  organization (`--org`)
+- the checkers write `csv` files, since can easily used for data analysis (with jupyther notebooks)
+  for example
+- the checkers come with an interface, so it is fairly easy to add custom checkers as needed  
+     
+  
 ## Install 
 
 ```
@@ -31,38 +25,65 @@ python3 -m venv p3venv
 source p3venv/bin/activate
 cd ogdch-checker
 pip3 install -r requirements.txt
-``` 
+```
 
-## Usage:
+## Usage
+
+Just call the command with --help to get detailed instructions on how to use it:
 
 ```
-python pkg_checker.py [--dry] [--limit number-of-packages] [--tomail overwrite-recipient-email]
+python pkg_checker.py --help
 ``` 
-Options:
-    -h, --help                     Show this help message and exit.
-    -d, --dry                      a.k.a. Debug. Run Tests, generate Error-Mails without sending them.
-    -l, --limit <number-of-pkgs>   Limit the amount of packages this script handles
-    -t, --tomail <recipient-email> Overwrite Email address of recipients
-    -f, --frommail <sender-email>  Overwrite Email address of the sender
 
-Configuration: expected in config.yaml:
+### Configuration files
 
-- default_sender_mail: email sender
-- default_recipient_mail: default email recipient (if data packages don't have a contact)
-- default_recipient_name: name of default email recipient
-- cc_mail: cc all outgoing email to this address
-- geocat_mail: contact for datasets harvested by geocat_harvester
-- geocat_name: name of contact for geocat datasets
-- smtp_server: mailserver
-- site_url: site to check
-- log_dir: absolute path to log directory
-- tmp_dir: absolute path to mail directory
-
-
-### Example:
+There are two configuration files: one for development and one for production.
+The package checker must always be called with a configuration file.
 
 ```
-python pkg_checker.py --dry t --limit 20
+python pkg_checker.py --configpath config/development.ini
+``` 
+
+By default the command will perform the checks that are specified in the configuration
+file and write csv files.
+
+### Send and build emails
+
+In order to send and build emails call it with `--send` or `--build`
+You can combine this options to have the check and sending done in one go.
+Or you can check first and send emails later. To send emails from a previous run,
+use the name of that run and start the command withh `--run <runname> --send`.
+
+### Limit the scope of the package checker
+
+You can restrict the checks and emailing on several levels:
+
+- `--org <organization-slug>` restricts it to that organizations datasets
+- `--limit <number>` restricts it to the first `<number>` of packages
+- `--pkg <slug of a package>` restrict it to a single package
+
+### Checkers
+
+Currently there are two checker classes that should both be activated in the configuration file.
+
+- ContactChecker: it produces a list of contacts and where to send emails for these contacts. 
+
+The background on this is that for geocat datasets emails should be send to geocat only.
+
+- LinkChecker: it checks the links for datasets and resources. 
+
+It first tries the HEAD method and if this method fails it tries again with a GET request.
+
+### The Run directory
+
+Each run produces a directory in the tmp directory specified in the configuration file.
+All information on that run is kept in that file including the logs, the csv files, that 
+are written as results of the checks and also the mails that are build before they will be send.
+
+So after the checker has run you can send or resend the emails with:
+
+```
+python pkg_checker.py --run <rundirectory name> --send
 ``` 
 
 ## Tests
