@@ -1,2 +1,0 @@
-import unittest
-from ckan_pkg_checker.pkg_checker import PackageCheck

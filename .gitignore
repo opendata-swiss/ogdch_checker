@@ -1,7 +1,4 @@
-.coveragerc
 .coverage
 .idea
-tmp/*
-logs/*
 htmlcov/*
 *.pyc

@@ -1,2 +1,0 @@
-import unittest
-from ckan_pkg_checker.requests_helpers import _check_url_status
