@@ -24,7 +24,7 @@ git clone <repo>
 python3 -m venv p3venv
 source p3venv/bin/activate
 cd ogdch-checker
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -88,6 +88,16 @@ python pkg_checker.py --run <rundirectory name> --send
 
 ## Tests
 
+To run the tests: 
+
+```
+pip install -r requirements.txt
+```
+
+After the installation you will be able to run the tests and see the current coverage.
+
+```
 coverage run -m unittest discover
 coverage report
 coverage html
+```
