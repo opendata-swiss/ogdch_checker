@@ -78,14 +78,14 @@ class PackageCheck():
         fq_geocat_harvesters = \
             'dataset_type:harvest AND source_type:geocat_harvester'
         geocat_harvester_ids = \
-            self._get_pkg_ids_from_package_search(fq_geocat_harvesters)
+            self._get_pkg_ids_from_package_search(fq=fq_geocat_harvesters, target='id')
         fq_geocat_pkgs = \
             'harvest_source_id:(' + ' OR '.join(geocat_harvester_ids) + ')'
         geocat_pkg_ids = \
             self._get_pkg_ids_from_package_search(fq_geocat_pkgs)
         return geocat_pkg_ids
 
-    def _get_pkg_ids_from_package_search(self, fq):
+    def _get_pkg_ids_from_package_search(self, fq, target='name'):
         rows = 500
         page = 0
         pkg_ids = []
@@ -98,7 +98,7 @@ class PackageCheck():
                     fq=fq, rows=rows, start=start)
                 if not result_count:
                     result_count = result['count']
-                pkg_ids.extend([pkg['name'] for pkg in result['results']])
+                pkg_ids.extend([pkg[target] for pkg in result['results']])
             except Exception as e:
                 log.exception("Error occured while searching for packages "
                               "with fq: {}, error: {}"
