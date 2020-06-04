@@ -23,12 +23,13 @@ class EmailSender():
         self.sender = config.get('emailsender', 'sender')
         self.smtp_server = config.get('emailsender', 'smtp_server')
         self.bcc = config.get('emailsender', 'bcc')
-        self.send_to_overwrite = config.get('emailsender', 'overwrite_send_to')
+        self.send_to_overwrite = config.get('emailsender', 'overwrite_send_to', fallback=None)
         self.admin = self.default_contact = utils.Contact(
             name=config.get('emailsender', 'admin_name'),
             email=config.get('emailsender', 'admin_email'))
 
     def build(self):
+        log.info("building emails")
         fieldnames = utils.FieldNamesMsgFile
         with open(self.msgfile, 'r') as readfile:
             self.reader = csv.DictReader(readfile, fieldnames=fieldnames)
@@ -38,6 +39,7 @@ class EmailSender():
                 self._process_line(row)
 
     def send(self):
+        log.info("sending emails")
         self._build_contactdir()
         for contact in os.listdir(self.maildir):
             path = os.path.join(self.maildir, contact)
@@ -53,6 +55,7 @@ class EmailSender():
 
                 msg['To'] = contact
                 if self.send_to_overwrite:
+                    log.info("Overwriting sender with {}".format(self.send_to_overwrite))
                     send_to = [self.send_to_overwrite]
                 else:
                     send_to = [self.sendtodir[contact].email]

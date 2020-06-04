@@ -88,9 +88,11 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
         run_checkers = True
         runname = utils._get_runname()
         rundir = utils._make_dirs(tmpdir=tmpdir, rundir=runname)
+        build_mails = build or send
     else:
         run_checkers = False
         rundir = tmpdir / run
+        build_mails = build
 
     runparms += "Find output at {}".format(rundir)
 
@@ -111,17 +113,16 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
             rundir=rundir,
         )
         check.run()
-
     if build or send:
         sender = EmailSender(
             rundir=rundir,
             configpath=configpath
         )
-        click.echo("building emails")
-        sender.build()
+        if build_mails:
+            click.echo("building emails")
+            sender.build()
         if send:
             click.echo("sending emails")
-            sender.build()
             sender.send()
 
 
