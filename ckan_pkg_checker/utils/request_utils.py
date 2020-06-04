@@ -11,7 +11,7 @@ requests.packages.urllib3.disable_warnings(InsecurePlatformWarning)
 log = logging.getLogger(__name__)
 
 
-def _check_url_status(test_url, http_method='HEAD'):
+def check_url_status(test_url, http_method='HEAD'):
     log.debug('URL %s (%s)' % (test_url, http_method))
     error_result = None
     try:
