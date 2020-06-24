@@ -101,3 +101,23 @@ coverage run -m unittest discover
 coverage report
 coverage html
 ```
+
+## Setting up different emails for a contact
+
+### Default
+
+By default emails about failed link checks will be send to the contacts provided
+in a dataset.
+
+### Geocat
+
+For datasets harvested by geocat, the emails are sent to the email provided for geocat in
+the configuration file instead of the publisher of the dataset. This is done by the contact
+checker, which receives a list of dataset ids of geocat datasets. It produces a csv file 
+which is a list of contacts: saying for the contact (name, email) sent to (name, email)
+
+### Generalize this for other datasets
+
+Just give the contact checker another list of say special dataset ids, provide a 
+special dataset contact in the configuration file and change the checker to output
+the special contact for datasets with the special dataset ids.
