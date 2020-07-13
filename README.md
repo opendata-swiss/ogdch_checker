@@ -23,7 +23,6 @@ This a tool for checking datasets and resources of a ckan installation.
 git clone <repo>
 python3 -m venv p3venv
 source p3venv/bin/activate
-cd ogdch-checker
 pip install -r requirements.txt
 ```
 

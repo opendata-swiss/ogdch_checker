@@ -2,3 +2,4 @@
 .idea
 htmlcov/*
 *.pyc
+p3venv
