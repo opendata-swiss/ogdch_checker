@@ -26,6 +26,18 @@ source p3venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Deploy
+
+Currently there is no deployment script in place for the ogdch_checker.
+Just go ot the server:
+
+```
+ssh -p 22022 -l liip vps27.rs.bsa.oriented.ch
+cd ogdch_checker
+git fetch
+git checkout master
+``` 
+
 ## Usage
 
 Just call the command with --help to get detailed instructions on how to use it:
@@ -33,6 +45,13 @@ Just call the command with --help to get detailed instructions on how to use it:
 ```
 python pkg_checker.py --help
 ``` 
+
+The ogdch_checker currently runs as linkchecker once a month and
+is entered in the crontab of the server:
+
+```
+5 0 4 * * /home/liip/checker_venv/bin/python3 /home/liip/ogdch_checker/pkg_checker.py --configpath /home/liip/ogdch_checker/config/production.ini --send
+```
 
 ### Configuration files
 
