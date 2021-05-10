@@ -20,13 +20,9 @@ class ContactChecker(CheckerInterface):
         config.read(configpath)
         csvfile = utils._get_csvdir(rundir) / config.get(
             'contactchecker', 'csvfile')
-        self.geocat_contact = utils.Contact(
-            name=config.get('contactchecker', 'geocat_name'),
-            email=config.get('contactchecker', 'geocat_email'))
         self.default_contact = utils.Contact(
-            name=config.get('contactchecker', 'default_name'),
-            email=config.get('contactchecker', 'default_email'))
-        self.contact_cache = {}
+            name=config.get('emailsender', 'default_name'),
+            email=config.get('emailsender', 'default_email'))
         self._prepare_csv_file(csvfile)
 
     def _prepare_csv_file(self, csvfile):
@@ -40,29 +36,22 @@ class ContactChecker(CheckerInterface):
         if pkg.get('contact_points', ''):
             recipients = utils.get_pkg_contacts(pkg.get('contact_points'))
             for recipient in recipients:
-                if recipient not in self.contact_cache.keys():
-                    if pkg['name'] in self.geocat_pkg_ids:
-                        send_to = self.geocat_contact
-                    else:
-                        send_to = recipient
-                    log.info("CONTACTCHECKER: ENTRY: Recipient: {} Send to: {}"
-                             .format(recipient, send_to))
-                    self.write_result(recipient, send_to)
-                    self.contact_cache[recipient] = send_to
+                if pkg['name'] in self.geocat_pkg_ids:
+                    pkg_type = utils.GEOCAT
+                else:
+                    pkg_type = utils.DCAT
+                self.write_result(recipient, pkg['name'], pkg_type)
 
-    def write_result(self, recipient, send_to):
+    def write_result(self, recipient, dataset, pkg_type):
         """Check one data package"""
         self.writer.writerow(
             {
                 'contact_email': recipient.email,
                 'contact_name': recipient.name,
-                'send_to_email': send_to.email,
-                'send_to_name': send_to.name,
+                'dataset': dataset,
+                'pkg_type': pkg_type,
             }
         )
-        click.echo("Contact added for: recipient {} sent_to {}".format(
-            recipient.email, send_to.email
-        ))
 
     def finish(self):
         """close output file"""
