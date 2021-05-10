@@ -7,13 +7,11 @@ This a tool for checking datasets and resources of a ckan installation.
 - Emails can be send to the contacts of these datasets.
 - The two steps: checking datasets and sending out emails can be separated 
   from each other
-- There is a contactchecker, that can associate different receivers per dataset: 
-  currently emails for datasets that are harvested by the geocat harvester go to 
-  swisstopo
+- There is a contactchecker, that writes the contacts of a dataset to a csv file
+- There is a linkchecker which writes a linkchecker_msgs.csv file and a linkchecker.csv file
 - the checker can be limited to a number of datasets (`--limit`) to one dataset (`--pkg`) or to and
   organization (`--org`)
-- the checkers write `csv` files, since can easily used for data analysis (with jupyther notebooks)
-  for example
+- the checkers write `csv` files, since these can be easily used for data analysis (with jupyther notebooks)
 - the checkers come with an interface, so it is fairly easy to add custom checkers as needed  
      
   
@@ -71,6 +69,7 @@ In order to send and build emails call it with `--send` or `--build`
 You can combine this options to have the check and sending done in one go.
 Or you can check first and send emails later. To send emails from a previous run,
 use the name of that run and start the command withh `--run <runname> --send`.
+You can also testrun the emails with `-t -s`: this does just log the emails, that would normally be send.
 
 ### Limit the scope of the package checker
 
@@ -80,13 +79,9 @@ You can restrict the checks and emailing on several levels:
 - `--limit <number>` restricts it to the first `<number>` of packages
 - `--pkg <slug of a package>` restrict it to a single package
 
-### Checkers
+### Linkchecker-Emails
 
-Currently there are two checker classes that should both be activated in the configuration file.
-
-- ContactChecker: it produces a list of contacts and where to send emails for these contacts. 
-
-The background on this is that for geocat datasets emails should be send to geocat only.
+For the linkchecker emails only the linkchecker needs to be activated in the config files:
 
 - LinkChecker: it checks the links for datasets and resources. 
 
@@ -130,12 +125,10 @@ in a dataset.
 ### Geocat
 
 For datasets harvested by geocat, the emails are sent to the email provided for geocat in
-the configuration file instead of the publisher of the dataset. This is done by the contact
-checker, which receives a list of dataset ids of geocat datasets. It produces a csv file 
-which is a list of contacts: saying for the contact (name, email) sent to (name, email)
+the configuration file instead of the publisher of the dataset.
 
 ### Generalize this for other datasets
 
-Just give the contact checker another list of say special dataset ids, provide a 
-special dataset contact in the configuration file and change the checker to output
-the special contact for datasets with the special dataset ids.
+The email sending is decided by dataset type. In case there are other special dataset types this approach
+can be easily generalize by writing also these dataset types to the files and adding special rules
+in the email sender on where to send the emails for those other dataset types.
