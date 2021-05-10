@@ -26,7 +26,7 @@ class PackageCheck():
                 checker_names=checker_classnames):
             checker = checker_class()
             kwargs = {'rundir': rundir, 'configpath': configpath}
-            if checker_class == ContactChecker:
+            if checker_class in [ContactChecker, LinkChecker]:
                 geocat_pkg_ids = self._get_geocat_package_ids()
                 kwargs['geocat_packages'] = geocat_pkg_ids
             checker.initialize(**kwargs)

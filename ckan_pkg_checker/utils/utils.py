@@ -6,9 +6,9 @@ from string import ascii_lowercase
 
 Contact = namedtuple('Contact', ['name', 'email'])
 FieldNamesMsgFile = ['contact_email', 'contact_name', 'msg']
-FieldNamesContactFile = ['contact_email', 'contact_name',
-                         'send_to_email', 'send_to_name']
-
+FieldNamesContactFile = ['contact_email', 'contact_name', 'dataset', 'pkg_type']
+GEOCAT = 'geocat'
+DCAT = 'dcat'
 
 def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id) # noqa
