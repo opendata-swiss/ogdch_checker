@@ -5,10 +5,10 @@ from string import ascii_lowercase
 
 
 Contact = namedtuple('Contact', ['name', 'email'])
-FieldNamesMsgFile = ['contact_email', 'contact_name', 'msg']
-FieldNamesContactFile = ['contact_email', 'contact_name',
-                         'send_to_email', 'send_to_name']
-
+FieldNamesMsgFile = ['contact_email', 'contact_name', 'pkg_type', 'msg']
+FieldNamesContactFile = ['contact_email', 'contact_name', 'dataset', 'pkg_type']
+GEOCAT = 'geocat'
+DCAT = 'dcat'
 
 def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id) # noqa
@@ -101,3 +101,10 @@ def _make_dirs(tmpdir, rundir):
     csvdir = _get_csvdir(rundir)
     csvdir.mkdir()
     return rundir
+
+
+def _process_msg_file_name(filename):
+    components = filename.split('#')
+    contact_type = components[0]
+    contact_email = '#'.join(components[1:])
+    return contact_type, contact_email
