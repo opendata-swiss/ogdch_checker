@@ -101,3 +101,10 @@ def _make_dirs(tmpdir, rundir):
     csvdir = _get_csvdir(rundir)
     csvdir.mkdir()
     return rundir
+
+
+def _process_msg_file_name(filename):
+    components = filename.split('#')
+    contact_type = components[0]
+    contact_email = '#'.join(components[1:])
+    return contact_type, contact_email

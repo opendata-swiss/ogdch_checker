@@ -36,6 +36,9 @@ log = logging.getLogger(__name__)
               help='Send the emails from the mail directory. '
                    'Example: --send.'
                    'By default the mails are not send.')
+@click.option('-t', '--test/--no-test', default=False,
+              help='Tests the sending of emails by logging instead of sending'
+                   'Example: --test.')
 @click.option('-r', '--run',
               help='Run directory name to use for the build '
                    'and send of mails. '
@@ -45,7 +48,7 @@ log = logging.getLogger(__name__)
                    'of that run. With this option mails can be build and '
                    'send out from the results of a previous checker run.')
 def check_packages(limit=None, pkg=None, org=None, configpath=None,
-                   build=False, send=False, run=None):
+                   build=False, send=False, run=None, test=False):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
 
@@ -88,7 +91,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
         run_checkers = True
         runname = utils._get_runname()
         rundir = utils._make_dirs(tmpdir=tmpdir, rundir=runname)
-        build_mails = build or send
+        build_mails = build or send or test
     else:
         run_checkers = False
         rundir = tmpdir / run
@@ -113,15 +116,16 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
             rundir=rundir,
         )
         check.run()
-    if build or send:
+    if build or send or test:
         sender = EmailSender(
             rundir=rundir,
-            configpath=configpath
+            configpath=configpath,
+            test=test,
         )
         if build_mails:
             click.echo("building emails")
             sender.build()
-        if send:
+        if send or test:
             click.echo("sending emails")
             sender.send()
 
