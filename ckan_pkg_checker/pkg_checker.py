@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 # this import in needed because the LinkChecker Class is used here
 from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
+from ckan_pkg_checker.utils import utils
 
 import logging
 log = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ class PackageCheck():
         self.pkgs = self._get_packages(
             limit=limit, pkg=pkg, org=org)
         self.pkgs_count = len(self.pkgs)
+        self.geocat_pkg_ids = self._get_geocat_package_ids()
         self.active_checkers = []
         checker_classnames = config.get(
             'checkers', 'checker_classnames').split(' ')
@@ -24,9 +26,6 @@ class PackageCheck():
                 checker_names=checker_classnames):
             checker = checker_class()
             kwargs = {'rundir': rundir, 'configpath': configpath}
-            if checker_class in [LinkChecker]:
-                geocat_pkg_ids = self._get_geocat_package_ids()
-                kwargs['geocat_packages'] = geocat_pkg_ids
             checker.initialize(**kwargs)
             self.active_checkers.append(checker)
         log.info(
@@ -40,6 +39,10 @@ class PackageCheck():
             log.info("({}/{}) DATASET {}".format(idx + 1, self.pkgs_count, id))
             try:
                 pkg = self.ogdremote.action.package_show(id=id)
+                if pkg['name'] in self.geocat_pkg_ids :
+                    pkg['pkg_type'] = utils.GEOCAT
+                else:
+                    pkg['pkg_type'] = utils.DCAT
                 if pkg['type'] == 'dataset':
                     for checker in self.active_checkers:
                         checker.check_package(pkg)

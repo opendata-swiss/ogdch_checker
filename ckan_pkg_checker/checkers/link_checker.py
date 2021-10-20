@@ -13,13 +13,12 @@ CheckResult = namedtuple('CheckResult', ['pkg', 'resource', 'item', 'msg'])
 
 
 class LinkChecker(CheckerInterface):
-    def initialize(self, geocat_packages, rundir, configpath):
+    def initialize(self, rundir, configpath):
         """Initialize the link checker"""
         self.url_result_cache = {}
         config = ConfigParser()
         config.read(configpath)
         self.siteurl = config.get('site', 'siteurl')
-        self.geocat_pkg_ids = geocat_packages
         csvfile = \
             utils._get_csvdir(rundir) / config.get('linkchecker', 'csvfile')
         msgfile = \
@@ -50,10 +49,7 @@ class LinkChecker(CheckerInterface):
 
     def check_package(self, pkg):
         """Check one data package"""
-        if pkg['name'] in self.geocat_pkg_ids:
-            pkg_type = utils.GEOCAT
-        else:
-            pkg_type = utils.DCAT
+        pkg_type = pkg.get('pkg_type', utils.DCAT)
         check_results = []
         landing_page = pkg['url']
         if landing_page:
