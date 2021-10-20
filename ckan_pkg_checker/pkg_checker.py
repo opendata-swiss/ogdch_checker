@@ -4,7 +4,6 @@ from ckan_pkg_checker.checkers.contact_checker import ContactChecker
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 # this import in needed because the LinkChecker Class is used here
 from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
-from ckan_pkg_checker.checkers.coverage_checker import CoverageChecker
 
 import logging
 log = logging.getLogger(__name__)
