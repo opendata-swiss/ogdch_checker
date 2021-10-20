@@ -1,6 +1,5 @@
 import ckanapi
 from configparser import ConfigParser
-from ckan_pkg_checker.checkers.contact_checker import ContactChecker
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 # this import in needed because the LinkChecker Class is used here
 from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
@@ -25,7 +24,7 @@ class PackageCheck():
                 checker_names=checker_classnames):
             checker = checker_class()
             kwargs = {'rundir': rundir, 'configpath': configpath}
-            if checker_class in [ContactChecker, LinkChecker]:
+            if checker_class in [LinkChecker]:
                 geocat_pkg_ids = self._get_geocat_package_ids()
                 kwargs['geocat_packages'] = geocat_pkg_ids
             checker.initialize(**kwargs)

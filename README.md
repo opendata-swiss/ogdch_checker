@@ -5,9 +5,6 @@
 This a tool for checking datasets and resources of a ckan installation.
 
 - Emails can be send to the contacts of these datasets.
-- The two steps: checking datasets and sending out emails can be separated 
-  from each other
-- There is a contactchecker, that writes the contacts of a dataset to a csv file
 - There is a linkchecker which writes a linkchecker_msgs.csv file and a linkchecker.csv file
 - the checker can be limited to a number of datasets (`--limit`) to one dataset (`--pkg`) or to and
   organization (`--org`)

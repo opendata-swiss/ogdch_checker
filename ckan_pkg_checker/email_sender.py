@@ -16,8 +16,6 @@ class EmailSender():
     def __init__(self, rundir, configpath, test):
         config = ConfigParser()
         config.read(configpath)
-        self.contactfile = utils._get_csvdir(rundir) / config.get(
-                'contactchecker', 'csvfile')
         self.msgfile = utils._get_csvdir(rundir) / config.get(
                 'linkchecker', 'msgfile')
         self.maildir = utils._get_maildir(rundir)
