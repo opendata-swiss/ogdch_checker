@@ -9,6 +9,10 @@ FieldNamesMsgFile = ['contact_email', 'contact_name', 'pkg_type', 'msg']
 FieldNamesContactFile = ['contact_email', 'contact_name', 'dataset', 'pkg_type']
 GEOCAT = 'geocat'
 DCAT = 'dcat'
+MODE_SHACL = 'shacl'
+MODE_LINK = 'link'
+MODE_ALL = 'all'
+
 
 def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id) # noqa

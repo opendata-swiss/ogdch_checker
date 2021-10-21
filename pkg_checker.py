@@ -23,6 +23,9 @@ log = logging.getLogger(__name__)
 @click.option('-o', '--org',
               help='Check only a single organization. '
                    'Example --org bernmobil.')
+@click.option('-m', '--mode',
+              help='Mode: LinkChecker (link) or ShaclChecker (shacl) . '
+                   'Example --m link. Default is ShaclChecker')
 @click.option('-c', '--configpath',
               help='Path to the configuration file. '
                    'Example --config config/development.ini'
@@ -48,7 +51,7 @@ log = logging.getLogger(__name__)
                    'of that run. With this option mails can be build and '
                    'send out from the results of a previous checker run.')
 def check_packages(limit=None, pkg=None, org=None, configpath=None,
-                   build=False, send=False, run=None, test=False):
+                   build=False, send=False, run=None, test=False, mode=utils.MODE_SHACL):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
 
@@ -72,6 +75,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
             limit=limit,
             pkg=pkg,
             run=run,
+            mode=mode,
             configpath=configpath,
             build=build,
             send=send)
@@ -111,6 +115,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
         check = PackageCheck(
             configpath=configpath,
             limit=limit,
+            mode=mode,
             pkg=pkg,
             org=org,
             rundir=rundir,
@@ -121,6 +126,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
             rundir=rundir,
             configpath=configpath,
             test=test,
+            mode=mode,
         )
         if build_mails:
             click.echo("building emails")
@@ -131,7 +137,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
 
 
 def _check_and_format_runparms(
-        org, limit, pkg, run, configpath, build, send):
+        org, limit, pkg, run, configpath, build, send, mode):
     nr_scope_options = \
         len([opt for opt in [limit, pkg, org] if opt])
     if not configpath:
@@ -148,6 +154,8 @@ def _check_and_format_runparms(
                                "already been performed "
                                "and just the emails\n"
                                "should be build and send out")
+    if mode and mode not in [utils.MODE_SHACL, utils.MODE_LINK]:
+        raise click.UsageError(f"--mode can only contain {utils.MODE_SHACL} or {utils.MODE_LINK}")
     runparms = "Run of pkg_checker:\n-------------------\n"
     if org:
         runparms += "organization: {}\n".format(org)
@@ -163,6 +171,8 @@ def _check_and_format_runparms(
         runparms += "build mails : {}\n".format(build)
     if send:
         runparms += "send mails  : {}\n".format(send)
+    if mode:
+        runparms += "mode        : {}\n".format(mode)
     return runparms
 
 

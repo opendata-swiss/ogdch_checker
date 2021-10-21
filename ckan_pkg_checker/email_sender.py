@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class EmailSender():
-    def __init__(self, rundir, configpath, test):
+    def __init__(self, rundir, configpath, test, mode):
         config = ConfigParser()
         config.read(configpath)
         self.msgfile = utils._get_msgdir(rundir) / config.get(

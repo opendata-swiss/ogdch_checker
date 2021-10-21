@@ -1,8 +1,7 @@
 import ckanapi
 from configparser import ConfigParser
-from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
-# this import in needed because the LinkChecker Class is used here
 from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
+from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker # noqa
 from ckan_pkg_checker.utils import utils
 
 import logging
@@ -10,7 +9,7 @@ log = logging.getLogger(__name__)
 
 
 class PackageCheck():
-    def __init__(self, limit, pkg, org, rundir, configpath):
+    def __init__(self, limit, pkg, org, rundir, configpath, mode):
         config = ConfigParser()
         config.read(configpath)
         self.siteurl = config.get('site', 'siteurl')
@@ -20,12 +19,14 @@ class PackageCheck():
         self.pkgs_count = len(self.pkgs)
         self.geocat_pkg_ids = self._get_geocat_package_ids()
         self.active_checkers = []
-        checker_classnames = config.get(
-            'checkers', 'checker_classnames').split(' ')
-        for checker_class in _get_checker_classes(
-                checker_names=checker_classnames):
+        checker_classes = []
+        kwargs = {'rundir': rundir, 'configpath': configpath}
+        if mode == utils.MODE_SHACL:
+            checker_classes.append(ShaclChecker)
+        elif mode == utils.MODE_LINK:
+            checker_classes.append(LinkChecker)
+        for checker_class in checker_classes:
             checker = checker_class()
-            kwargs = {'rundir': rundir, 'configpath': configpath}
             checker.initialize(**kwargs)
             self.active_checkers.append(checker)
         log.info(
@@ -106,16 +107,3 @@ class PackageCheck():
                               "with fq: {}, error: {}"
                               .format(fq, e))
         return pkg_ids
-
-
-def _get_checker_classes(checker_names):
-    checkerclasses = []
-    for checkername in checker_names:
-        try:
-            checker = eval(checkername)
-            assert(issubclass(checker, CheckerInterface))
-        except Exception as e:
-            raise(e)
-        else:
-            checkerclasses.append(checker)
-    return checkerclasses
