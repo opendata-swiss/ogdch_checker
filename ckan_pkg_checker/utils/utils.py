@@ -50,6 +50,18 @@ def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=N
     return msg
 
 
+def _build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl_msg):
+    msg = f"Dataset: <a href='{dataset_url}'>{title}</a>\n"
+    msg += f"A Validation Error occured"
+    if node:
+        msg += f" at: <a href='{node}'>{node}</a>"
+    msg += f"\nProperty '{property}': {shacl_msg}\n"
+    if value:
+        msg += f" Value received: {value}"
+    msg += "<br><br>\n\n-----<br><br>\n\n"
+    return msg
+
+
 def _get_field_in_one_language(multi_language_field, backup):
     if multi_language_field.get('de'):
         return multi_language_field['de']
