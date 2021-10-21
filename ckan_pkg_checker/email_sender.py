@@ -5,7 +5,6 @@ import smtplib
 from configparser import ConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 from ckan_pkg_checker.utils import utils
 
 import logging
@@ -79,7 +78,8 @@ class EmailSender():
     def _process_line(self, row):
         contacts = [utils.Contact(
             email=row['contact_email'], name=row['contact_name'])]
-        contacts.append(self.admin)
+        if not self.admin.email in [contact.email for contact in contacts]:
+            contacts.append(self.admin)
         for contact in contacts:
             mailfile = os.path.join(self.maildir, row['pkg_type'] + '#' + contact.email)
             msg = ''
