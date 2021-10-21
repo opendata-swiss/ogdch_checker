@@ -1,4 +1,6 @@
 import random
+import sys
+import click
 from collections import namedtuple
 from urllib.parse import urljoin
 from string import ascii_lowercase
@@ -113,7 +115,13 @@ def _get_logdir(rundir):
 def _make_dirs(tmpdir, rundir):
     runname = 'tmp' + ''.join(random.choices(ascii_lowercase, k=8))
     rundir = tmpdir / runname
-    rundir.mkdir()
+    try:
+        rundir.mkdir()
+    except Exception as e:
+        click.echo(f"An Error {e} occured:\n"
+                   f"The specified tmp directory {rundir} does not exist.\n"
+                   f"Please set it up and run again.")
+        sys.exit()
     maildir = _get_maildir(rundir)
     maildir.mkdir()
     logdir = _get_logdir(rundir)
