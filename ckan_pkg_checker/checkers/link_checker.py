@@ -156,3 +156,6 @@ class LinkChecker(CheckerInterface):
                 'pkg_type': pkg_type,
                 'msg': msg,
             })
+
+    def __repr__(self):
+        return "Link Checker"
