@@ -22,7 +22,7 @@ class LinkChecker(CheckerInterface):
         csvfile = \
             utils._get_csvdir(rundir) / config.get('linkchecker', 'csvfile')
         msgfile = \
-            utils._get_csvdir(rundir) / config.get('linkchecker', 'msgfile')
+            utils._get_msgdir(rundir) / config.get('messages', 'msgfile')
         self._prepare_csv_file(csvfile)
         self._prepare_msg_file(msgfile)
 

@@ -82,6 +82,10 @@ def _get_csvdir(rundir):
     return rundir / 'csv'
 
 
+def _get_msgdir(rundir):
+    return rundir / 'msgs'
+
+
 def _get_maildir(rundir):
     return rundir / 'mails'
 
@@ -100,6 +104,8 @@ def _make_dirs(tmpdir, rundir):
     logdir.mkdir()
     csvdir = _get_csvdir(rundir)
     csvdir.mkdir()
+    msgdir = _get_msgdir(rundir)
+    msgdir.mkdir()
     return rundir
 
 
