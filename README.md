@@ -129,3 +129,16 @@ the configuration file instead of the publisher of the dataset.
 The email sending is decided by dataset type. In case there are other special dataset types this approach
 can be easily generalize by writing also these dataset types to the files and adding special rules
 in the email sender on where to send the emails for those other dataset types.
+
+## Shacl-Valdation
+
+Shacl Documentation Links
+- https://www.w3.org/TR/shacl-ucr
+- https://www.w3.org/TR/shacl/
+
+#### Testdaten
+
+```
+python pkg_checker.py --configpath development.ini -p bauprojekte-immobilien1
+python pkg_checker.py --configpath development.ini -p statistisches-jahrbuch-der-schweiz-1908
+```
