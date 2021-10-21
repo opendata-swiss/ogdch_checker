@@ -138,35 +138,21 @@ class LinkChecker(CheckerInterface):
                 self.siteurl, check_result.pkg['name'],
                 check_result.resource['id'])
         for contact in contacts:
-            self.write_to_csv(contact, organization, check_result, title,
-                              dataset_url, resource_url=resource_url)
-            self.write_for_email(contact, pkg_type, check_result, title, dataset_url,
-                                 resource_url=resource_url)
-
-    def write_to_csv(self, contact, organization, check_result,
-                     title, dataset_url, resource_url):
-        self.csvwriter.writerow(
-            {
-                'contact_email': contact.email,
-                'contact_name': contact.name,
-                'organization_name': organization,
-                'test_url': check_result.item,
-                'error_message': check_result.msg,
-                'dataset_title': title,
-                'dataset_url': dataset_url,
-                'resource_url': resource_url,
-            }
-        )
-
-    def write_for_email(self, contact, pkg_type, check_result, title,
-                        dataset_url, resource_url):
-        msg = utils._build_msg_per_error(
-            check_result.item, check_result.msg,
-            dataset_url, title, resource_url)
-        self.mailwriter.writerow({
+            self.csvwriter.writerow(
+                {'contact_email': contact.email,
+                 'contact_name': contact.name,
+                 'organization_name': organization,
+                 'test_url': check_result.item,
+                 'error_message': check_result.msg,
+                 'dataset_title': title,
+                 'dataset_url': dataset_url,
+                 'resource_url': resource_url})
+            msg = utils._build_msg_per_error(
+                check_result.item, check_result.msg,
+                dataset_url, title, resource_url)
+            self.mailwriter.writerow({
                 'contact_email': contact.email,
                 'contact_name': contact.name,
                 'pkg_type': pkg_type,
                 'msg': msg,
-            }
-        )
+            })
