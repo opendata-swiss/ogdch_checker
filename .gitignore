@@ -4,3 +4,4 @@ htmlcov/*
 *.pyc
 p3venv
 *.ini
+tmp/*
