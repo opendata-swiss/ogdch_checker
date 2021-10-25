@@ -25,34 +25,34 @@ def _get_ckan_dataset_url(ckan_siteurl, pkg_name):
 
 
 def _build_msg_per_contact(receiver_name):
-    msg = u'Hello %s <br><br>\n\n' % receiver_name
+    msg = f'Hello {receiver_name} <br><br>\n\n'
 
-    msg += u'[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n' # noqa
-    msg += u'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n' # noqa
+    msg += '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n' # noqa
+    msg += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n' # noqa
 
-    msg += u'[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n' # noqa
-    msg += u'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n' # noqa
+    msg += '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n' # noqa
+    msg += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n' # noqa
 
-    msg += u'[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n' # noqa
-    msg += u'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n' # noqa
+    msg += '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n' # noqa
+    msg += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n' # noqa
 
-    msg += u'[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n' # noqa
-    msg += u'Please check if those resources are still available.<br><br>\n\n'
+    msg += '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n' # noqa
+    msg += 'Please check if those resources are still available.<br><br>\n\n'
 
-    msg += u'-----<br><br>\n\n'
+    msg += '-----<br><br>\n\n'
     return msg
 
 
-def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None): # noqa
-    msg = u"Dataset: <a href='%s'>%s</a>" % (dataset_url, title)
+def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None):
+    msg = f"Dataset: <a href='{dataset_url}'>{title}</a>"
     if resource_url:
         resource_url = resource_url
-        msg += u" (<a href='%s'>resource detail page</a>) <br>\n" % resource_url # noqa
-        msg += u'Accessed URL: %s <br>\n' % test_url
+        msg += f" (<a href='{resource_url}'>resource detail page</a>) <br>\n"
+        msg += f'Accessed URL: {test_url} <br>\n'
     else:
-        msg += u'<br>\n'
-        msg += u'Relation URL: %s <br>\n' % test_url
-    msg += u'Error Message: %s <br><br>\n\n-----<br><br>\n\n' % error_msg
+        msg += '<br>\n'
+        msg += f'Relation URL: {test_url} <br>\n'
+    msg += f'Error Message: {error_msg} <br><br>\n\n-----<br><br>\n\n'
     return msg
 
 
