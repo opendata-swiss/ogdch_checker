@@ -25,6 +25,9 @@ class EmailSender():
             name=utils._get_config(config, 'emailsender', 'geocat_name'),
             email=utils._get_config(config, 'emailsender', 'geocat_email'))
         self.test = test
+        if self.test:
+            self.email_overwrites = utils._get_config(config, 'test', 'emails').split(' ')
+            click.echo(self.email_overwrites)
 
     def build(self):
         log.info("building emails")
@@ -62,14 +65,17 @@ class EmailSender():
                     send_to.append(self.bcc)
 
                 msg.attach(text)
+                server = smtplib.SMTP(self.smtp_server)
                 if not self.test:
-                    server = smtplib.SMTP(self.smtp_server)
                     server.sendmail(send_from, send_to, msg.as_string())
                     server.quit()
-                log_msg = "Email {} was sent to: {} from: {}, msg['Bcc']: {}, msg['To']: {}, msg['From']: {}"\
-                          .format(filename, send_to, send_from, msg['Bcc'], msg['To'], msg['From'])
-                log.info(log_msg)
-                click.echo(log_msg)
+                    log.info(f"Email {filename} was sent to: {send_to} "
+                             f"from: {send_from}, msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
+                else:
+                    server.sendmail(send_from, self.email_overwrites, msg.as_string())
+                    server.quit()
+                    log.info(f"Email {filename} was sent to: {self.email_overwrites} "
+                             f"from: {send_from}, msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
 
     def _process_line(self, row):
         contacts = [utils.Contact(

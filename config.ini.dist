@@ -14,6 +14,9 @@ csvfile = shaclchecker.csv
 [messages]
 msgfile = emailmsgs.csv
 
+[test]
+emails = ogdch@liip.ch opendata@bfs.admin.ch
+
 [emailsender]
 admin_name = OpenData@bfs.admin.ch
 admin_email = opendata@bfs.admin.ch
