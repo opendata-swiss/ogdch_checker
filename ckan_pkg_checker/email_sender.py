@@ -12,22 +12,18 @@ log = logging.getLogger(__name__)
 
 
 class EmailSender():
-    def __init__(self, rundir, configpath, test, mode):
-        config = ConfigParser()
-        config.read(configpath)
-        self.msgfile = utils._get_msgdir(rundir) / config.get(
-            'messages', 'msgfile')
+    def __init__(self, rundir, config, test, mode):
+        self.msgfile = utils._get_msgdir(rundir) / utils._get_config(config, 'messages', 'msgfile')
         self.maildir = utils._get_maildir(rundir)
-        self.sender = config.get('emailsender', 'sender')
-        self.smtp_server = config.get('emailsender', 'smtp_server')
-        self.bcc = config.get('emailsender', 'bcc')
-        self.send_to_overwrite = config.get('emailsender', 'overwrite_send_to', fallback=None)
+        self.sender = utils._get_config(config, 'emailsender', 'sender')
+        self.smtp_server = utils._get_config(config, 'emailsender', 'smtp_server')
+        self.bcc = utils._get_config(config, 'emailsender', 'bcc')
         self.admin = self.default_contact = utils.Contact(
-            name=config.get('emailsender', 'admin_name'),
-            email=config.get('emailsender', 'admin_email'))
+            name=utils._get_config(config, 'emailsender', 'admin_name'),
+            email=utils._get_config(config, 'emailsender', 'admin_email'))
         self.geocat_admin = utils.Contact(
-            name=config.get('emailsender', 'geocat_name'),
-            email=config.get('emailsender', 'geocat_email'))
+            name=utils._get_config(config, 'emailsender', 'geocat_name'),
+            email=utils._get_config(config, 'emailsender', 'geocat_email'))
         self.test = test
 
     def build(self):

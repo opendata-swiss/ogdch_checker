@@ -49,18 +49,11 @@ ShaclResult = namedtuple('ShaclResult', ['property', 'value', 'msg', 'node'])
 
 
 class ShaclChecker(CheckerInterface):
-    def initialize(self, rundir, configpath):
+    def initialize(self, rundir, config, siteurl):
         """Initialize the validation checker"""
-        config = ConfigParser()
-        config.read(configpath)
-        self.siteurl = config.get('site', 'siteurl')
-        config = ConfigParser()
-        config.read(configpath)
-        self.siteurl = config.get('site', 'siteurl')
-        csvfile = \
-            utils._get_csvdir(rundir) / config.get('shaclchecker', 'csvfile')
-        msgfile = \
-            utils._get_msgdir(rundir) / config.get('messages', 'msgfile')
+        self.siteurl = siteurl
+        csvfile = utils._get_csvdir(rundir) / utils._get_config(config, 'shaclchecker', 'csvfile')
+        msgfile = utils._get_msgdir(rundir) / utils._get_config(config, 'messages', 'msgfile')
         self._prepare_csv_file(csvfile)
         self._prepare_msg_file(msgfile)
 

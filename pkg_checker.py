@@ -31,6 +31,11 @@ log = logging.getLogger(__name__)
                    'Example --config config/development.ini'
                    'The checker must always be run with a '
                    'configuration file.')
+@click.option('-u', '--siteurl',
+              help='Siteurl: the url of the site where datasets are validated. '
+                   'Example --siteurl https://opendata.swiss'
+                   'the fallback ist the siteurl specified in the '
+                   'configuration file.')
 @click.option('-b', '--build/--no-build', default=False,
               help='Build the mails in the mails directory. '
                    'Example --build.'
@@ -50,7 +55,7 @@ log = logging.getLogger(__name__)
                    'set up a directory with results '
                    'of that run. With this option mails can be build and '
                    'send out from the results of a previous checker run.')
-def check_packages(limit=None, pkg=None, org=None, configpath=None,
+def check_packages(limit=None, pkg=None, org=None, configpath=None, siteurl=None,
                    build=False, send=False, run=None, test=False, mode=utils.MODE_SHACL):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
@@ -69,6 +74,13 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
     You can just send emails when you run the command with --run and --send.
     This assumes a previous check run has been taken place.
     """
+    config = configparser.ConfigParser()
+    config.read(configpath)
+    if not config.sections():
+        raise click.UsageError(f"Configuration could not be read from file '{configpath}'")
+    tmpdir = Path(utils._get_config(config, 'tmpdir', 'tmppath'))
+    if not siteurl:
+        siteurl = utils._get_config(config, 'site', 'siteurl')
     try:
         runparms = _check_and_format_runparms(
             org=org,
@@ -76,20 +88,12 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
             pkg=pkg,
             run=run,
             mode=mode,
+            siteurl=siteurl,
             configpath=configpath,
             build=build,
             send=send)
     except click.UsageError as e:
         raise(e)
-
-    config = configparser.ConfigParser()
-    try:
-        config.read(configpath)
-        tmpdir = Path(config.get('tmpdir', 'tmppath'))
-    except configparser.Error as e:
-        raise click.UsageError(
-            "Configuration Error {} in configuration file '{}'"
-            .format(e, configpath))
 
     if not run:
         run_checkers = True
@@ -110,7 +114,8 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
     if run_checkers:
         click.echo(runparms)
         check = PackageCheck(
-            configpath=configpath,
+            config=config,
+            siteurl=siteurl,
             limit=limit,
             mode=mode,
             pkg=pkg,
@@ -121,7 +126,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
     if build or send or test:
         sender = EmailSender(
             rundir=rundir,
-            configpath=configpath,
+            config=config,
             test=test,
             mode=mode,
         )
@@ -134,7 +139,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
 
 
 def _check_and_format_runparms(
-        org, limit, pkg, run, configpath, build, send, mode):
+        org, limit, pkg, run, configpath, siteurl, build, send, mode):
     nr_scope_options = \
         len([opt for opt in [limit, pkg, org] if opt])
     if not configpath:
@@ -153,6 +158,9 @@ def _check_and_format_runparms(
                                "should be build and send out")
     if mode and mode not in [utils.MODE_SHACL, utils.MODE_LINK]:
         raise click.UsageError(f"--mode can only contain {utils.MODE_SHACL} or {utils.MODE_LINK}")
+    if siteurl and siteurl not in [utils.SITE_ABNAHME, utils.SITE_TEST, utils.SITE_PROD]:
+        raise click.UsageError("--siteurl can only contain the following urls:\n"
+                               f"{utils.SITE_PROD}\n{utils.SITE_ABNAHME}\n{utils.SITE_TEST}")
     runparms = "Run of pkg_checker:\n-------------------\n"
     if org:
         runparms += "organization: {}\n".format(org)
@@ -170,6 +178,8 @@ def _check_and_format_runparms(
         runparms += "send mails  : {}\n".format(send)
     if mode:
         runparms += "mode        : {}\n".format(mode)
+    if siteurl:
+        runparms += "siteurl     : {}\n".format(siteurl)
     return runparms
 
 

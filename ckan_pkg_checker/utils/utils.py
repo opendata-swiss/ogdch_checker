@@ -16,6 +16,10 @@ DCAT = 'dcat'
 MODE_SHACL = 'shacl'
 MODE_LINK = 'link'
 MODE_ALL = 'all'
+SITE_ABNAHME = 'https://ckan.ogdch-abnahme.clients.liip.ch'
+SITE_TEST = 'https://ckan.ogdch-test.clients.liip.ch'
+SITE_PROD = 'https://ckan.opendata.swiss'
+
 
 
 def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):

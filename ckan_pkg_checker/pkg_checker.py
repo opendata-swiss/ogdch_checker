@@ -9,10 +9,8 @@ log = logging.getLogger(__name__)
 
 
 class PackageCheck():
-    def __init__(self, limit, pkg, org, rundir, configpath, mode):
-        config = ConfigParser()
-        config.read(configpath)
-        self.siteurl = config.get('site', 'siteurl')
+    def __init__(self, limit, pkg, org, rundir, config, siteurl, mode):
+        self.siteurl = siteurl
         self.ogdremote = ckanapi.RemoteCKAN(self.siteurl)
         self.pkgs = self._get_packages(
             limit=limit, pkg=pkg, org=org)
@@ -20,7 +18,7 @@ class PackageCheck():
         self.geocat_pkg_ids = self._get_geocat_package_ids()
         self.active_checkers = []
         checker_classes = []
-        kwargs = {'rundir': rundir, 'configpath': configpath}
+        kwargs = {'rundir': rundir, 'config': config, 'siteurl': siteurl}
         if mode == utils.MODE_SHACL:
             checker_classes.append(ShaclChecker)
         elif mode == utils.MODE_LINK:
