@@ -1,7 +1,8 @@
 import ckanapi
 from configparser import ConfigParser
-from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
-from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker # noqa
+from ckanapi.errors import NotFound as DatasetNotFoundException
+from ckan_pkg_checker.checkers.link_checker import LinkChecker
+from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
 from ckan_pkg_checker.utils import utils
 
 import logging
@@ -44,8 +45,8 @@ class PackageCheck():
                 if pkg['type'] == 'dataset':
                     for checker in self.active_checkers:
                         checker.check_package(pkg)
-            except Exception as e:
-                log.exception('check_package failed {}'.format(e))
+            except DatasetNotFoundException as e:
+                log.error(f"No dataset found for id: {id}")
         for checker in self.active_checkers:
             checker.finish()
 
@@ -99,8 +100,6 @@ class PackageCheck():
                 if not result_count:
                     result_count = result['count']
                 pkg_ids.extend([pkg[target] for pkg in result['results']])
-            except Exception as e:
-                log.exception("Error occured while searching for packages "
-                              "with fq: {}, error: {}"
-                              .format(fq, e))
+            except DatasetNotFoundException as e:
+                log.error(f"No datasets found for search with fw: {fq}")
         return pkg_ids
