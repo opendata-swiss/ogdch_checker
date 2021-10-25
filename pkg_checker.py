@@ -103,12 +103,9 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
 
     runparms += "Find output at {}".format(rundir)
 
-    logging.basicConfig(
-        filename=utils._get_logdir(rundir) / 'package-checker.log',
-        format='%(asctime)s %(levelname)s %(name)s %(message)s %(funcName)s %(lineno)d', # noqa
-        level=config.get('logging', 'level'),
-        filemode='a+'
-    )
+    logdir = utils._get_logdir(rundir)
+    loglevel = utils._get_config(config, 'logging', 'level')
+    utils._setup_loggers(logdir, loglevel)
 
     if run_checkers:
         click.echo(runparms)

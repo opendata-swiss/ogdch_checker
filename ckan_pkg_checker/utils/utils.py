@@ -1,9 +1,11 @@
 import random
 import sys
 import click
+import logging
 from collections import namedtuple
 from urllib.parse import urljoin
 from string import ascii_lowercase
+from configparser import NoSectionError, NoOptionError
 
 
 Contact = namedtuple('Contact', ['name', 'email'])
@@ -138,3 +140,27 @@ def _process_msg_file_name(filename):
     contact_type = components[0]
     contact_email = '#'.join(components[1:])
     return contact_type, contact_email
+
+
+def _get_config(config, section, option):
+    try:
+       value = config.get(section, option)
+    except NoSectionError:
+        raise click.UsageError(f"Configuration: Section '{section}' is missing.")
+    except NoOptionError:
+        raise click.UsageError(f"Configuration:  Section '{section}' is missing the option '{option}'.")
+    return value
+
+
+def _setup_loggers(logdir, loglevel):
+    logging.basicConfig(
+        filename=logdir / 'package-checker.log',
+        format='%(asctime)s %(levelname)s %(message)s',
+        level=loglevel,
+        filemode='a+'
+    )
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d\n%(message)s')
+    errlog = logging.FileHandler(logdir / 'package-checker.errors.log')
+    errlog.setFormatter(formatter)
+    errlog.setLevel(logging.ERROR)
+    logging.getLogger('').addHandler(errlog)
