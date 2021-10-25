@@ -61,6 +61,12 @@
       sh:severity sh:Violation ;
       sh:message "For the frequency of your dataset needs to be a URI."@en ;
     ] ;
+  sh:property [
+      sh:path dct:accrualPeriodicity ;
+      sh:hasValue <http://purl.org/cld/freq/> ;
+      sh:severity sh:Violation ;
+      sh:message "For the frequency of your dataset a URI is expected with a value of the following vocabulary: http://purl.org/cld/freq/."@en ;
+    ] ;
 .
 
 :DistributionShape
