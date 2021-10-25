@@ -97,8 +97,13 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None, siteurl=None
 
     if not run:
         run_checkers = True
-        runname = utils._get_runname()
-        rundir = utils._make_dirs(tmpdir=tmpdir, rundir=runname)
+        runname = utils._get_runname(
+            org=org,
+            limit=limit,
+            pkg=pkg,
+            mode=mode,
+            siteurl=siteurl)
+        rundir = utils._make_dirs(tmpdir=tmpdir, runname=runname)
         build_mails = build or send or test
     else:
         run_checkers = False

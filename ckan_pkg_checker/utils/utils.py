@@ -2,6 +2,7 @@ import random
 import sys
 import click
 import logging
+from datetime import datetime
 from collections import namedtuple
 from urllib.parse import urljoin
 from string import ascii_lowercase
@@ -19,7 +20,11 @@ MODE_ALL = 'all'
 SITE_ABNAHME = 'https://ckan.ogdch-abnahme.clients.liip.ch'
 SITE_TEST = 'https://ckan.ogdch-test.clients.liip.ch'
 SITE_PROD = 'https://ckan.opendata.swiss'
-
+map_siteurl_to_instance = {
+    SITE_PROD: 'prod',
+    SITE_ABNAHME: 'abnahme',
+    SITE_TEST: 'test,'
+}
 
 
 def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
@@ -98,8 +103,22 @@ def _get_pkg_contacts(pkg_contact_points):
     return recipients
 
 
-def _get_runname():
-    return 'tmp' + ''.join(random.choices(ascii_lowercase, k=8))
+def _get_runname(org, pkg, mode, limit, siteurl):
+    name_parts = []
+    name_parts.append(datetime.now().strftime("%Y%m%d-%H%M"))
+    if siteurl:
+        name_parts.append(map_siteurl_to_instance.get(siteurl))
+    if mode:
+        name_parts.append(f"{mode}")
+    if org:
+        name_parts.append(f"org-{org[:10]}")
+    if pkg:
+        name_parts.append(f"pkg-{pkg[:10]}")
+    if limit:
+        name_parts.append(f"limit-{limit}")
+    runname = '-'.join(name_parts)
+    click.echo(runname)
+    return runname
 
 
 def _get_csvdir(rundir):
@@ -118,8 +137,7 @@ def _get_logdir(rundir):
     return rundir / 'logs'
 
 
-def _make_dirs(tmpdir, rundir):
-    runname = 'tmp' + ''.join(random.choices(ascii_lowercase, k=8))
+def _make_dirs(tmpdir, runname):
     rundir = tmpdir / runname
     try:
         rundir.mkdir()
