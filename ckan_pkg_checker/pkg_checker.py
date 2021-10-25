@@ -29,11 +29,10 @@ class PackageCheck():
             checker = checker_class()
             checker.initialize(**kwargs)
             self.active_checkers.append(checker)
+        run_info = utils._get_run_info(org, pkg, limit)
         log.info(
-            "CHECKER-CONFIG:\nsiteurl: {}\nlimit: {}\npackages: {}"
-            "\norganizations: {}\ncheckers: {}"
-            .format(self.siteurl, limit, self.pkgs_count, org,
-                    self.active_checkers))
+            f"Run of ogdch_checker:\nsiteurl: {self.siteurl}\nrun info: {run_info}"
+            f"\nmode: {mode}\n--> {self.pkgs_count} datasets to process")
 
     def run(self):
         for idx, id in enumerate(self.pkgs):

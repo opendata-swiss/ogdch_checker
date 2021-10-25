@@ -164,3 +164,13 @@ def _setup_loggers(logdir, loglevel):
     errlog.setFormatter(formatter)
     errlog.setLevel(logging.ERROR)
     logging.getLogger('').addHandler(errlog)
+
+
+def _get_run_info(org, pkg, limit):
+    if org:
+        return f"Organization: {org}"
+    elif pkg:
+        return f"Dataset: {pkg}"
+    elif limit:
+        return f"Limit: {limit}"
+    return "Full run"
