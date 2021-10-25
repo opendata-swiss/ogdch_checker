@@ -115,8 +115,8 @@ class ShaclChecker(CheckerInterface):
                 property_ref = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultPath)
                 if property_ref:
                     property = property_ref.n3(results_graph.namespace_manager)
-                    value = rdf_utils.get_object_from_graph(graph=dataset_graph, subject=validation_item, predicate=property_ref)
                     node = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.focusNode)
+                    value = rdf_utils.get_object_from_graph(graph=dataset_graph, subject=node, predicate=property_ref)
                     msg = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultMessage)
                     if msg:
                         msg = msg.toPython()
