@@ -125,7 +125,7 @@ class LinkChecker(CheckerInterface):
             return check_result
 
     def write_result(self, pkg_type, check_result):
-        contacts = utils.get_pkg_contacts(
+        contacts = utils._get_pkg_contacts(
             check_result.pkg.get('contact_points'))
         title = utils._get_field_in_one_language(
             check_result.pkg['title'], check_result.pkg['name'])

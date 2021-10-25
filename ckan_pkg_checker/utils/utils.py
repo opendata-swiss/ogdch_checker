@@ -85,7 +85,7 @@ def _get_email_subject():
     return 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker' # noqa
 
 
-def get_pkg_contacts(pkg_contact_points):
+def _get_pkg_contacts(pkg_contact_points):
     recipients = []
     for contact in pkg_contact_points:
         recipients.append(Contact(email=contact['email'], name=contact['name'])) # noqa

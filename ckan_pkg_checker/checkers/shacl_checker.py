@@ -138,7 +138,7 @@ class ShaclChecker(CheckerInterface):
                 self.write_result(pkg, pkg_type, shacl_result)
 
     def write_result(self, pkg, pkg_type, shacl_result):
-        contacts = utils.get_pkg_contacts(pkg.get('contact_points'))
+        contacts = utils._get_pkg_contacts(pkg.get('contact_points'))
         title = utils._get_field_in_one_language(pkg['title'], pkg['name'])
         dataset_url = utils._get_ckan_dataset_url(self.siteurl, pkg['name'])
         organization = pkg.get('organization').get('name')
