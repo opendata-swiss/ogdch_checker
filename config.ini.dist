@@ -3,7 +3,7 @@ siteurl = https://ckan.opendata.swiss
 
 [tmpdir]
 # put a custom path here where you want to receive your output
-tmppath = /tmp
+tmppath = /home/liip/tmp
 
 [linkchecker]
 csvfile = linkchecker.csv
