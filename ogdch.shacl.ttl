@@ -14,6 +14,17 @@
 
 <> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
 
+:FrequencyRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Frequency Restriction" ;
+    rdfs:label "Frequency Restriction" ;
+    sh:property [
+        sh:hasValue <http://purl.org/cld/terms/Frequency> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
 :DatasetShape
   rdf:type sh:NodeShape ;
   sh:targetClass dcat:Dataset ;
@@ -56,10 +67,11 @@
       sh:message "Please provide a publisher for the dataset."@en ;
     ] ;
   sh:property [
-      sh:path dct:accrualPeriodicity ;
-      sh:nodeKind sh:IRI ;
-      sh:severity sh:Violation ;
-      sh:message "For the frequency of your dataset needs to be a URI."@en ;
+        sh:path dct:accrualPeriodicity ;
+        sh:node :FrequencyRestriction ;
+        sh:nodeKind sh:IRI ;
+	    sh:message "The frequency is expected from a controlled vocabulary http://purl.org/cld/freq" ;
+        sh:severity sh:Violation
     ] ;
 .
 

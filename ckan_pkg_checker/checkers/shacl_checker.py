@@ -54,11 +54,14 @@ class ShaclChecker(CheckerInterface):
         self.siteurl = siteurl
         csvfile = utils._get_csvdir(rundir) / utils._get_config(config, 'shaclchecker', 'csvfile')
         msgfile = utils._get_msgdir(rundir) / utils._get_config(config, 'messages', 'msgfile')
+        frequency_vocabulary_url = utils._get_config(config, 'shaclchecker', 'frequency_url')
         self._prepare_csv_file(csvfile)
         self._prepare_msg_file(msgfile)
 
         self.shacl_graph = Graph()
         self.shacl_graph.parse('ogdch.shacl.ttl')
+        self.ont_graph = Graph()
+        self.ont_graph.parse(frequency_vocabulary_url)
         for k, v in namespaces.items():
             self.shacl_graph.bind(k, v)
         self.shacl_graph.namespace_manager = NamespaceManager(self.shacl_graph)
@@ -104,8 +107,10 @@ class ShaclChecker(CheckerInterface):
         for k, v in namespaces.items():
             dataset_graph.bind(k, v)
         dataset_graph.namespace_manager = NamespaceManager(dataset_graph)
-        validation_results = validate(dataset_graph, shacl_graph=self.shacl_graph)
+        validation_results = validate(dataset_graph, shacl_graph=self.shacl_graph, ont_graph=self.ont_graph)
         conforms, results_graph, results_text = validation_results
+        if conforms:
+            click.echo(f"--> Dataset {pkg.get('name')} conforms")
         if not conforms:
             for k, v in namespaces.items():
                 results_graph.bind(k, v)
@@ -126,6 +131,7 @@ class ShaclChecker(CheckerInterface):
                     value=value,
                     msg=msg,
                 )
+                click.echo(f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}")
                 checker_results.append(shacl_result)
             for shacl_result in checker_results:
                 self.write_result(pkg, pkg_type, shacl_result)

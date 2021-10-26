@@ -10,6 +10,7 @@ csvfile = linkchecker.csv
 
 [shaclchecker]
 csvfile = shaclchecker.csv
+frequency_url = http://purl.org/cld/freq
 
 [messages]
 msgfile = emailmsgs.csv
