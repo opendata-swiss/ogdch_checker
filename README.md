@@ -10,6 +10,11 @@ This a tool for checking datasets and resources of a ckan installation.
   organization (`--org`)
 - the checkers write `csv` files, since these can be easily used for data analysis (with jupyther notebooks)
 - the checkers come with an interface, so it is fairly easy to add custom checkers as needed  
+
+Currently there are two checkers in place:
+
+- Linkchecker: checks the links in the Dataset, whether they are accessible
+- Shaclchecker: checks the datasets against a shacl graph, that is specified in the config file.
      
   
 ## Install 
@@ -142,3 +147,11 @@ Shacl Documentation Links
 python pkg_checker.py --configpath development.ini -p bauprojekte-immobilien1
 python pkg_checker.py --configpath development.ini -p statistisches-jahrbuch-der-schweiz-1908
 ```
+
+### 
+
+```
+pyshacl -s /path/to/shapesGraph.ttl -m -i rdfs -a -j -f human /path/to/dataGraph.ttl
+pyshacl -s ogdch.shacl.ttl -m -i rdfs -a -j -f human dataset.ttl -e frequency.ttl
+pyshacl -s ogdch-eu.shacl.ttl -m -i rdfs -a -j -f human dataset-eu.ttl -e frequency.eu.ttl
+``` 
