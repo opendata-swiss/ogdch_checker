@@ -111,8 +111,17 @@ python pkg_checker.py --help
 Here you will find some common use cases as examples:
 
 ```
-python pkg_checker.py --configpath development.ini -p bauprojekte-immobilien1
-python pkg_checker.py --configpath development.ini -p statistisches-jahrbuch-der-schweiz-1908
+# checking a dataset on prod with the shaclchecker and building emails but not 
+sending them
+python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m shacl -b 
+-u https://ckan.opendata.swiss -b
+
+# checking a dataset on prod with the linkchecker and sending them
+python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m link -b
+
+# checking all datasets on prod with the shaclchecker and sending the emails 
+to a test address
+python pkg_checker.py --c config.ini -m shacl -s -t
 ```
 
 ## Tests
@@ -120,7 +129,7 @@ python pkg_checker.py --configpath development.ini -p statistisches-jahrbuch-der
 To run the tests: 
 
 ```
-pip install -r requirements.txt
+pip install -r dev_requirements.txt
 ```
 
 After the installation you will be able to run the tests and see the current coverage.
