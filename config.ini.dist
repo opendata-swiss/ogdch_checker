@@ -1,4 +1,5 @@
 [site]
+# the default site url
 siteurl = https://ckan.opendata.swiss
 
 [tmpdir]
@@ -6,30 +7,45 @@ siteurl = https://ckan.opendata.swiss
 tmppath = /home/liip/tmp
 
 [linkchecker]
+# chose name of the csv file to store the raw linkchecker results
 csvfile = linkchecker.csv
 
 [shaclchecker]
+# chose name of the csv file to store the raw shaclchecker results
 csvfile = shaclchecker.csv
 frequency_url = http://purl.org/cld/freq
 
 [messages]
+# choose name for the msgfile
 msgfile = emailmsgs.csv
 
 [test]
-emails = ogdch@liip.ch opendata@bfs.admin.ch
+# email address where the emails get send with the --test option
+# Example: emails = email1 email2
+emails =
 
 [emailsender]
-admin_name = OpenData@bfs.admin.ch
-admin_email = opendata@bfs.admin.ch
-default_name = OpenData@bfs.admin.ch
-default_email = opendata@bfs.admin.ch
-geocat_name = Swisstopo
-geocat_email = geocat@swisstopo.ch
+# admin email and title: all emails go also to the admin
+admin_name =
+admin_email =
+
+# default email receiver, if no dataset contact can be found
+default_name =
+default_email =
+
+# Title and email for sending emails for datasets harvested by geocat
+geocat_name =
+geocat_email =
+
+#bcc  for sending emails
+bcc =
+
+# email server
 smtp_server = localhost
-# this sender does not work locally: replace it with your local
-# dev sender if you want to try the send locally
+
+# sender
 sender = no-reply@opendata.swiss
-bcc = ogdch@liip.ch
 
 [logging]
+# set the logging level
 level = INFO
