@@ -1,15 +1,11 @@
 import csv
-from configparser import ConfigParser
+import logging
 from collections import namedtuple
 from ckan_pkg_checker.utils import utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
-import ckan_pkg_checker.utils.rdf_utils as rdf_utils
 import click
 from pyshacl import validate
 from rdflib.namespace import RDF, NamespaceManager, Namespace, SKOS
-from rdflib import Graph
-from pprint import pprint
-from urllib.error import HTTPError, URLError
 
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -41,27 +37,23 @@ namespaces = {
     'sh': SHACL,
 }
 
-import logging
-import pprint
 log = logging.getLogger(__name__)
 
 ShaclResult = namedtuple('ShaclResult', ['property', 'value', 'msg', 'node'])
 
 
 class ShaclChecker(CheckerInterface):
-    def initialize(self, rundir, config, siteurl):
+    def __init__(self, rundir, config, siteurl):
         """Initialize the validation checker"""
         self.siteurl = siteurl
-        csvfile = utils._get_csvdir(rundir) / utils._get_config(config, 'shaclchecker', 'csvfile')
-        msgfile = utils._get_msgdir(rundir) / utils._get_config(config, 'messages', 'msgfile')
-        frequency_vocabulary_url = utils._get_config(config, 'shaclchecker', 'frequency_url')
+        shaclfile = utils.get_config(config, 'shaclchecker', 'shacl_file', required=True)
+        msgfile = utils.get_msgdir(rundir) / utils.get_config(config, 'messages', 'msgfile', required=True)
+        csvfile = utils.get_csvdir(rundir) / utils.get_config(config, 'shaclchecker', 'csvfile', required=True)
+        frequency_file = utils.get_config(config, 'shaclchecker', 'frequency_file', required=True)
         self._prepare_csv_file(csvfile)
         self._prepare_msg_file(msgfile)
-
-        self.shacl_graph = Graph()
-        self.shacl_graph.parse('ogdch.shacl.ttl')
-        self.ont_graph = Graph()
-        self.ont_graph.parse(frequency_vocabulary_url)
+        self.shacl_graph = utils.parse_rdf_graph_from_url(file=shaclfile)
+        self.ont_graph = utils.parse_rdf_graph_from_url(file=frequency_file)
         for k, v in namespaces.items():
             self.shacl_graph.bind(k, v)
         self.shacl_graph.namespace_manager = NamespaceManager(self.shacl_graph)
@@ -96,13 +88,8 @@ class ShaclChecker(CheckerInterface):
         pkg['rdf'] = self.siteurl + '/dataset/' + pkg['name'] + '.rdf'
         pkg['ttl'] = self.siteurl + '/dataset/' + pkg['name'] + '.ttl'
         pkg_type = pkg.get('pkg_type', utils.DCAT)
-        try:
-            dataset_graph = Graph().parse(pkg['rdf'])
-        except (HTTPError, URLError) as e:
-            log.error(f"Request Error {e} occured for {pkg['rdf']}")
-            return
-        except Exception as e:
-            log.error(f"Exception {e} of type {type(e).__name__} occured at {pkg['rdf']}")
+        dataset_graph = utils.parse_rdf_graph_from_url(pkg['rdf'])
+        if not dataset_graph:
             return
         for k, v in namespaces.items():
             dataset_graph.bind(k, v)
@@ -117,29 +104,31 @@ class ShaclChecker(CheckerInterface):
             results_graph.namespace_manager = NamespaceManager(results_graph)
             checker_results = []
             for validation_item in results_graph.subjects(predicate=RDF.type, object=SHACL.ValidationResult):
-                property_ref = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultPath)
+                property_ref = utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultPath)
                 if property_ref:
                     property = property_ref.n3(results_graph.namespace_manager)
-                    node = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.focusNode)
-                    value = rdf_utils.get_object_from_graph(graph=dataset_graph, subject=node, predicate=property_ref)
-                    msg = rdf_utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultMessage)
+                    node = utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.focusNode)
+                    value = utils.get_object_from_graph(graph=dataset_graph, subject=node, predicate=property_ref)
+                    msg = utils.get_object_from_graph(graph=results_graph, subject=validation_item, predicate=SHACL.resultMessage)
                     if msg:
                         msg = msg.toPython()
-                shacl_result = ShaclResult(
-                    node=node,
-                    property=property,
-                    value=value,
-                    msg=msg,
-                )
-                click.echo(f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}")
-                checker_results.append(shacl_result)
+                    shacl_result = ShaclResult(
+                        node=node,
+                        property=property,
+                        value=value,
+                        msg=msg,
+                    )
+                    click.echo(f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}")
+                    checker_results.append(shacl_result)
+                else:
+                    log.info(f"shacl result without property ref detected at {pkg.get('name')}: {results_text}")
             for shacl_result in checker_results:
                 self.write_result(pkg, pkg_type, shacl_result)
 
     def write_result(self, pkg, pkg_type, shacl_result):
-        contacts = utils._get_pkg_contacts(pkg.get('contact_points'))
-        title = utils._get_field_in_one_language(pkg['title'], pkg['name'])
-        dataset_url = utils._get_ckan_dataset_url(self.siteurl, pkg['name'])
+        contacts = utils.get_pkg_contacts(pkg.get('contact_points'))
+        title = utils.get_field_in_one_language(pkg['title'], pkg['name'])
+        dataset_url = utils.get_ckan_dataset_url(self.siteurl, pkg['name'])
         organization = pkg.get('organization').get('name')
         for contact in contacts:
             self.csvwriter.writerow(
@@ -155,7 +144,7 @@ class ShaclChecker(CheckerInterface):
                  'value': shacl_result.value,
                  'msg': shacl_result.msg,
                  })
-            msg = utils._build_msg_per_shacl_result(
+            msg = utils.build_msg_per_shacl_result(
                 dataset_url=dataset_url,
                 title=title,
                 node=shacl_result.node,
@@ -164,8 +153,8 @@ class ShaclChecker(CheckerInterface):
                 shacl_msg=shacl_result.msg,
             )
             self.mailwriter.writerow({
-                'contact_email': contact.email,
-                'contact_name': contact.name,
+                'contact_email': pkg.get('send_to', contact.email),
+                'contact_name': pkg.get('send_to', contact.name),
                 'pkg_type': pkg_type,
                 'msg': msg,
             })

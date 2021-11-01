@@ -1,2 +1,5 @@
 [run]
 source = ckan_pkg_checker
+
+[coverage:report]
+skip_empty = true

@@ -2,13 +2,12 @@
 Script to start the Worklogdb Application
 """
 import click
-import configparser
 import logging
-from pathlib import Path
 
 from ckan_pkg_checker.pkg_checker import PackageCheck
+from ckan_pkg_checker.email_builder import EmailBuilder
 from ckan_pkg_checker.email_sender import EmailSender
-from ckan_pkg_checker.utils import utils
+from ckan_pkg_checker.utils.utils import set_runparms, MODE_SHACL
 
 log = logging.getLogger(__name__)
 
@@ -23,18 +22,13 @@ log = logging.getLogger(__name__)
 @click.option('-o', '--org',
               help='Check only a single organization. '
                    'Example --org bernmobil.')
-@click.option('-m', '--mode',
+@click.option('-m', '--mode', default=MODE_SHACL,
               help='Mode: LinkChecker (link) or ShaclChecker (shacl) . '
                    'Example --m link. Default is ShaclChecker')
 @click.option('-c', '--configpath',
               help='Path to the configuration file. '
                    'Example --config config/development.ini'
                    'The checker must always be run with a '
-                   'configuration file.')
-@click.option('-u', '--siteurl',
-              help='Siteurl: the url of the site where datasets are validated. '
-                   'Example --siteurl https://opendata.swiss'
-                   'the fallback ist the siteurl specified in the '
                    'configuration file.')
 @click.option('-b', '--build/--no-build', default=False,
               help='Build the mails in the mails directory. '
@@ -55,8 +49,8 @@ log = logging.getLogger(__name__)
                    'set up a directory with results '
                    'of that run. With this option mails can be build and '
                    'send out from the results of a previous checker run.')
-def check_packages(limit=None, pkg=None, org=None, configpath=None, siteurl=None,
-                   build=False, send=False, run=None, test=False, mode=utils.MODE_SHACL):
+def check_packages(limit=None, pkg=None, org=None, configpath=None,
+                   build=False, send=False, run=None, test=False, mode=MODE_SHACL):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
 
@@ -74,118 +68,36 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None, siteurl=None
     You can just send emails when you run the command with --run and --send.
     This assumes a previous check run has been taken place.
     """
-    config = configparser.ConfigParser()
-    config.read(configpath)
-    if not config.sections():
-        raise click.UsageError(f"Configuration could not be read from file '{configpath}'")
-    tmpdir = Path(utils._get_config(config, 'tmpdir', 'tmppath'))
-    if not siteurl:
-        siteurl = utils._get_config(config, 'site', 'siteurl')
-    try:
-        runparms = _check_and_format_runparms(
-            org=org,
-            limit=limit,
-            pkg=pkg,
-            run=run,
-            mode=mode,
-            siteurl=siteurl,
-            configpath=configpath,
-            build=build,
-            send=send)
-    except click.UsageError as e:
-        raise(e)
+    runparms = set_runparms(
+        org=org,
+        limit=limit,
+        pkg=pkg,
+        run=run,
+        configpath=configpath,
+        build=build,
+        send=send,
+        test=test,
+        mode=mode)
 
-    if not run:
-        run_checkers = True
-        runname = utils._get_runname(
-            org=org,
-            limit=limit,
-            pkg=pkg,
-            mode=mode,
-            siteurl=siteurl)
-        rundir = utils._make_dirs(tmpdir=tmpdir, runname=runname)
-        build_mails = build or send or test
-    else:
-        run_checkers = False
-        rundir = tmpdir / run
-        build_mails = build
-
-    runparms += "Find output at {}".format(rundir)
-
-    logdir = utils._get_logdir(rundir)
-    loglevel = utils._get_config(config, 'logging', 'level')
-    utils._setup_loggers(logdir, loglevel)
-
-    if run_checkers:
-        click.echo(runparms)
-        check = PackageCheck(
-            config=config,
-            siteurl=siteurl,
-            limit=limit,
-            mode=mode,
-            pkg=pkg,
-            org=org,
-            rundir=rundir,
-        )
+    if runparms.check:
+        check = PackageCheck(config=runparms.config,
+                             siteurl=runparms.siteurl,
+                             rundir=runparms.rundir,
+                             mode=runparms.mode,
+                             limit=runparms.limit,
+                             pkg=runparms.pkg,
+                             org=runparms.org)
         check.run()
-    if build or send or test:
-        sender = EmailSender(
-            rundir=rundir,
-            config=config,
-            test=test,
-            mode=mode,
-        )
-        if build_mails:
-            click.echo("building emails")
-            sender.build()
-        if send or test:
-            click.echo("sending emails")
-            sender.send()
-
-
-def _check_and_format_runparms(
-        org, limit, pkg, run, configpath, siteurl, build, send, mode):
-    nr_scope_options = \
-        len([opt for opt in [limit, pkg, org] if opt])
-    if not configpath:
-        raise click.UsageError("The package checker needs a "
-                               "configuration path\n"
-                               "--config must always be used.")
-    if len([opt for opt in [limit, pkg, org] if opt]) > 1:
-        raise click.UsageError("Only one of the options --org, --limit, "
-                               "--pkg can be used.")
-    if run and nr_scope_options:
-        raise click.UsageError("--rundir can only be used with "
-                               "--build and --send:\n"
-                               "it implies that the check has "
-                               "already been performed "
-                               "and just the emails\n"
-                               "should be build and send out")
-    if mode and mode not in [utils.MODE_SHACL, utils.MODE_LINK]:
-        raise click.UsageError(f"--mode can only contain {utils.MODE_SHACL} or {utils.MODE_LINK}")
-    if siteurl and siteurl not in [utils.SITE_ABNAHME, utils.SITE_TEST, utils.SITE_PROD]:
-        raise click.UsageError("--siteurl can only contain the following urls:\n"
-                               f"{utils.SITE_PROD}\n{utils.SITE_ABNAHME}\n{utils.SITE_TEST}")
-    runparms = "Run of pkg_checker:\n-------------------\n"
-    if org:
-        runparms += "organization: {}\n".format(org)
-    if limit:
-        runparms += "limit       : {}\n".format(limit)
-    if pkg:
-        runparms += "package     : {}\n".format(pkg)
-    if configpath:
-        runparms += "configpath  : {}\n".format(configpath)
-    if run:
-        runparms += "run         : {}\n".format(run)
-    if build:
-        runparms += "build mails : {}\n".format(build)
-    if send:
-        runparms += "send mails  : {}\n".format(send)
-    if mode:
-        runparms += "mode        : {}\n".format(mode)
-    if siteurl:
-        runparms += "siteurl     : {}\n".format(siteurl)
-    return runparms
+    if runparms.build:
+        builder = EmailBuilder(rundir=runparms.rundir,
+                               config=runparms.config)
+        builder.build()
+    if runparms.send:
+        sender = EmailSender(rundir=runparms.rundir,
+                             config=runparms.config,
+                             test=runparms.test,
+                             mode=runparms.mode)
+        sender.send()
 
 
 if __name__ == '__main__':

@@ -124,6 +124,8 @@ to a test address
 python pkg_checker.py --c config.ini -m shacl -s -t
 ```
 
+aktuelle-wahl-bzw-abstimmungsresultate-kanton-st-gallen frequency
+
 ## Tests
 
 To run the tests: 
@@ -138,4 +140,11 @@ After the installation you will be able to run the tests and see the current cov
 coverage run -m unittest discover
 coverage report
 coverage html
+```
+
+# Flake 8
+
+```
+flake8 --statistics --show-source ckan_pkg_checker --ignore W504,E501
+flake8 --statistics --show-source pkg_checker.py --ignore E501
 ```

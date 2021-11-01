@@ -1,60 +1,59 @@
-import random
+import csv
 import sys
 import click
 import logging
+import configparser
+from rdflib import Graph
 from datetime import datetime
 from collections import namedtuple
 from urllib.parse import urljoin
-from string import ascii_lowercase
 from configparser import NoSectionError, NoOptionError
+from urllib.error import HTTPError, URLError
+from pathlib import Path
 
-
+log = logging.getLogger(__name__)
 Contact = namedtuple('Contact', ['name', 'email'])
+ContactKey = namedtuple('ContactKey', ['organization', 'pkg_type'])
+RunParms = namedtuple('runParms', ['siteurl',
+                                   'org', 'pkg', 'limit',
+                                   'config', 'tmpdir', 'rundir',
+                                   'mode', 'check', 'build', 'send', 'test'])
 FieldNamesMsgFile = ['contact_email', 'contact_name', 'pkg_type', 'msg']
 FieldNamesContactFile = ['contact_email', 'contact_name', 'dataset', 'pkg_type']
 GEOCAT = 'geocat'
 DCAT = 'dcat'
 MODE_SHACL = 'shacl'
 MODE_LINK = 'link'
-MODE_ALL = 'all'
-SITE_ABNAHME = 'https://ckan.ogdch-abnahme.clients.liip.ch'
-SITE_TEST = 'https://ckan.ogdch-test.clients.liip.ch'
-SITE_PROD = 'https://ckan.opendata.swiss'
-map_siteurl_to_instance = {
-    SITE_PROD: 'prod',
-    SITE_ABNAHME: 'abnahme',
-    SITE_TEST: 'test,'
-}
 
 
-def _get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
-    return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id) # noqa
+def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
+    return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id)  # noqa
 
 
-def _get_ckan_dataset_url(ckan_siteurl, pkg_name):
+def get_ckan_dataset_url(ckan_siteurl, pkg_name):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name)
 
 
-def _build_msg_per_contact(receiver_name):
+def build_msg_per_contact(receiver_name):
     msg = f'Hello {receiver_name} <br><br>\n\n'
 
-    msg += '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n' # noqa
-    msg += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n' # noqa
+    msg += '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n'  # noqa
+    msg += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n'  # noqa
 
-    msg += '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n' # noqa
-    msg += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n' # noqa
+    msg += '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
+    msg += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
 
-    msg += '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n' # noqa
-    msg += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n' # noqa
+    msg += '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
+    msg += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
 
-    msg += '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n' # noqa
+    msg += '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
     msg += 'Please check if those resources are still available.<br><br>\n\n'
 
     msg += '-----<br><br>\n\n'
     return msg
 
 
-def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None):
+def build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None):
     msg = f"Dataset: <a href='{dataset_url}'>{title}</a>"
     if resource_url:
         resource_url = resource_url
@@ -67,9 +66,9 @@ def _build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=N
     return msg
 
 
-def _build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl_msg):
+def build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl_msg):
     msg = f"Dataset: <a href='{dataset_url}'>{title}</a>\n"
-    msg += f"A Validation Error occured"
+    msg += "A Validation Error occured"
     if node:
         msg += f" at: <a href='{node}'>{node}</a>"
     msg += f"\nProperty '{property}': {shacl_msg}\n"
@@ -79,7 +78,7 @@ def _build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl
     return msg
 
 
-def _get_field_in_one_language(multi_language_field, backup):
+def get_field_in_one_language(multi_language_field, backup):
     if multi_language_field.get('de'):
         return multi_language_field['de']
     elif multi_language_field.get('fr'):
@@ -92,86 +91,159 @@ def _get_field_in_one_language(multi_language_field, backup):
         return backup
 
 
-def _get_email_subject():
-    return 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker' # noqa
+def get_email_subject():
+    return 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker'  # noqa
 
 
-def _get_pkg_contacts(pkg_contact_points):
+def get_pkg_contacts(pkg_contact_points):
     recipients = []
     for contact in pkg_contact_points:
-        recipients.append(Contact(email=contact['email'], name=contact['name'])) # noqa
+        recipients.append(Contact(email=contact['email'], name=contact['name']))  # noqa
     return recipients
 
 
-def _get_runname(org, pkg, mode, limit, siteurl):
-    name_parts = []
-    name_parts.append(datetime.now().strftime("%Y%m%d-%H%M"))
-    if siteurl:
-        name_parts.append(map_siteurl_to_instance.get(siteurl))
-    if mode:
-        name_parts.append(f"{mode}")
-    if org:
-        name_parts.append(f"org-{org[:10]}")
-    if pkg:
-        name_parts.append(f"pkg-{pkg[:10]}")
-    if limit:
-        name_parts.append(f"limit-{limit}")
-    runname = '-'.join(name_parts)
-    click.echo(runname)
-    return runname
-
-
-def _get_csvdir(rundir):
+def get_csvdir(rundir):
     return rundir / 'csv'
 
 
-def _get_msgdir(rundir):
+def get_msgdir(rundir):
     return rundir / 'msgs'
 
 
-def _get_maildir(rundir):
+def get_maildir(rundir):
     return rundir / 'mails'
 
 
-def _get_logdir(rundir):
+def get_logdir(rundir):
     return rundir / 'logs'
 
 
-def _make_dirs(tmpdir, runname):
-    rundir = tmpdir / runname
-    try:
-        rundir.mkdir()
-    except Exception as e:
-        click.echo(f"An Error {e} occured:\n"
-                   f"The specified tmp directory {rundir} does not exist.\n"
-                   f"Please set it up and run again.")
-        sys.exit()
-    maildir = _get_maildir(rundir)
-    maildir.mkdir()
-    logdir = _get_logdir(rundir)
-    logdir.mkdir()
-    csvdir = _get_csvdir(rundir)
-    csvdir.mkdir()
-    msgdir = _get_msgdir(rundir)
-    msgdir.mkdir()
-    return rundir
-
-
-def _process_msg_file_name(filename):
+def process_msg_file_name(filename):
     components = filename.split('#')
     contact_type = components[0]
     contact_email = '#'.join(components[1:])
     return contact_type, contact_email
 
 
-def _get_config(config, section, option):
+def get_config(config, section, option, required=False, fallback=None):
+    value = ''
     try:
-       value = config.get(section, option)
+        value = config.get(section, option)
     except NoSectionError:
-        raise click.UsageError(f"Configuration: Section '{section}' is missing.")
+        if required:
+            raise click.UsageError(f"Configuration: Section '{section}' is missing.")
     except NoOptionError:
-        raise click.UsageError(f"Configuration:  Section '{section}' is missing the option '{option}'.")
+        if required:
+            raise click.UsageError(f"Configuration:  Section '{section}' is missing the option '{option}'.")
+    if not value and required:
+        raise click.UsageError(f"Configuration value for '[{section}] {option}' is missing. Please enter it in "
+                               "the configuration file. See --help"
+                               " for more information.")
+    if not value and fallback:
+        return fallback
     return value
+
+
+def set_up_contact_mapping(config):
+    contact_file = get_config(config, 'contacts', 'csvfile', fallback=None)
+    contact_dict = {}
+    if contact_file:
+        with open(contact_file, 'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if not row.get('organization_slug') or not row.get('pkg_type') or not row.get('contact_email'):
+                    continue
+                contact_key = ContactKey(organization=row['organization_slug'], pkg_type=row['pkg_type'])
+                contact_dict[contact_key] = row['contact_email']
+    return contact_dict
+
+
+def get_object_from_graph(graph, subject, predicate):
+    objects = []
+    for item in graph.objects(subject=subject, predicate=predicate):
+        objects.append(item)
+    if objects:
+        return objects[0]
+    return None
+
+
+def parse_rdf_graph_from_url(url=None, file=None):
+    graph = None
+    if url:
+        try:
+            graph = Graph().parse(url)
+        except (HTTPError, URLError) as e:
+            log_and_echo_msg(f"Request Error {e} occured for {url}")
+        except Exception as e:
+            log_and_echo_msg(f"Exception {e} of type {type(e).__name__} occured at {url}")
+    if not graph and file:
+        try:
+            graph = Graph().parse(file)
+        except Exception as e:
+            log_and_echo_msg(f"Exception {e} of type {type(e).__name__} occured at {url}")
+    return graph
+
+
+def log_and_echo_msg(msg, error=False):
+    if error:
+        msg = f"\nERROR: {msg}\n"
+        log.error(msg)
+    else:
+        log.info(msg)
+    click.echo(f"{msg}")
+
+
+def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
+    config = configparser.ConfigParser()
+    config.read(configpath)
+    if not config.sections():
+        raise click.UsageError(f"Configuration could not be read from file '{configpath}'. Make"
+                               f"sure that the fill exists and contains a configuration such as provided"
+                               f"in 'config.ini.dist'")
+    nr_scope_options = len([opt for opt in [limit, pkg, org] if opt])
+    if len([opt for opt in [limit, pkg, org] if opt]) > 1:
+        raise click.UsageError("Only one of the options --org, --limit, "
+                               "--pkg can be used.")
+    check = False
+    if run:
+        if nr_scope_options or mode:
+            raise click.UsageError("--rundir can only be used with "
+                                   "--build and --send:\n"
+                                   "it implies that the check has "
+                                   "already been performed "
+                                   "and just the emails\n"
+                                   "should be build and send out")
+    else:
+        if mode and mode not in [MODE_SHACL, MODE_LINK]:
+            raise click.UsageError(f"--mode can only contain {MODE_SHACL} or {MODE_LINK}")
+        siteurl = get_config(config, 'site', 'siteurl', required=True)
+        check = True
+        run = _get_runname(org=org, limit=limit, pkg=pkg, mode=mode)
+    tmpdir = Path(get_config(config, 'tmpdir', 'tmppath', required=True))
+    rundir = _make_dirs(tmpdir=tmpdir, runname=run)
+    runparms = RunParms(siteurl=siteurl,
+                        org=org, pkg=pkg, limit=limit,
+                        config=config, tmpdir=tmpdir, rundir=rundir,
+                        mode=mode, check=check, build=build, send=send, test=test)
+    logdir = get_logdir(rundir)
+    loglevel = get_config(config, 'logging', 'level', fallback='INFO')
+    _setup_loggers(logdir, loglevel)
+    _log_run_parms(runparms)
+    return runparms
+
+
+def _log_run_parms(runparms):
+    info = "Run of pkg_checker:\n-------------------\n"
+    for name, value in runparms._asdict().items():
+        if name == 'config':
+            for section in runparms.config.sections():
+                for (key, val) in runparms.config.items(section):
+                    info += f"[{section}] {key}={val}\n"
+        else:
+            info += f"{name}: {value}\n"
+    log.info(info)
+    info += f"Find output at {runparms.rundir}"
+    click.echo(info)
 
 
 def _setup_loggers(logdir, loglevel):
@@ -188,11 +260,36 @@ def _setup_loggers(logdir, loglevel):
     logging.getLogger('').addHandler(errlog)
 
 
-def _get_run_info(org, pkg, limit):
+def _make_dirs(tmpdir, runname):
+    rundir = tmpdir / runname
+    try:
+        rundir.mkdir()
+    except Exception as e:
+        click.echo(f"An Error {e} occured:\n"
+                   f"The specified tmp directory {rundir} does not exist.\n"
+                   f"Please set it up and run again.")
+        sys.exit()
+    maildir = get_maildir(rundir)
+    maildir.mkdir()
+    logdir = get_logdir(rundir)
+    logdir.mkdir()
+    csvdir = get_csvdir(rundir)
+    csvdir.mkdir()
+    msgdir = get_msgdir(rundir)
+    msgdir.mkdir()
+    return rundir
+
+
+def _get_runname(org, pkg, mode, limit):
+    name_parts = []
+    name_parts.append(datetime.now().strftime("%Y%m%d-%H%M"))
+    if mode:
+        name_parts.append(f"{mode}")
     if org:
-        return f"Organization: {org}"
-    elif pkg:
-        return f"Dataset: {pkg}"
-    elif limit:
-        return f"Limit: {limit}"
-    return "Full run"
+        name_parts.append(f"org-{org[:10]}")
+    if pkg:
+        name_parts.append(f"pkg-{pkg[:10]}")
+    if limit:
+        name_parts.append(f"limit-{limit}")
+    runname = '-'.join(name_parts)
+    return runname

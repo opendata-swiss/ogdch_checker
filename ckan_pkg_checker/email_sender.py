@@ -1,55 +1,39 @@
 import os
-import csv
-import click
+import logging
 import smtplib
-from configparser import ConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from ckan_pkg_checker.utils import utils
 
-import logging
 log = logging.getLogger(__name__)
 
 
 class EmailSender():
     def __init__(self, rundir, config, test, mode):
-        self.msgfile = utils._get_msgdir(rundir) / utils._get_config(config, 'messages', 'msgfile')
-        self.maildir = utils._get_maildir(rundir)
-        self.sender = utils._get_config(config, 'emailsender', 'sender')
-        self.smtp_server = utils._get_config(config, 'emailsender', 'smtp_server')
-        self.bcc = utils._get_config(config, 'emailsender', 'bcc')
+        self.maildir = utils.get_maildir(rundir)
+        self.sender = utils.get_config(config, 'emailsender', 'sender', required=True)
+        self.smtp_server = utils.get_config(config, 'emailsender', 'smtp_server', required=True)
+        self.bcc = utils.get_config(config, 'emailsender', 'bcc', fallback=None)
         self.admin = self.default_contact = utils.Contact(
-            name=utils._get_config(config, 'emailsender', 'admin_name'),
-            email=utils._get_config(config, 'emailsender', 'admin_email'))
+            name=utils.get_config(config, 'emailsender', 'admin_name', required=True),
+            email=utils.get_config(config, 'emailsender', 'admin_email', required=True))
         self.geocat_admin = utils.Contact(
-            name=utils._get_config(config, 'emailsender', 'geocat_name'),
-            email=utils._get_config(config, 'emailsender', 'geocat_email'))
+            name=utils.get_config(config, 'emailsender', 'geocat_name', required=True),
+            email=utils.get_config(config, 'emailsender', 'geocat_email', required=True))
         self.test = test
         if self.test:
-            self.email_overwrites = utils._get_config(config, 'test', 'emails').split(' ')
-            click.echo(self.email_overwrites)
-
-    def build(self):
-        log.info("building emails")
-        fieldnames = utils.FieldNamesMsgFile
-        with open(self.msgfile, 'r') as readfile:
-            self.reader = csv.DictReader(readfile, fieldnames=fieldnames)
-            headerline = next(self.reader)
-            assert(','.join(headerline) == ','.join(fieldnames))
-            for row in self.reader:
-                self._process_line(row)
+            self.email_overwrites = utils.get_config(config, 'test', 'emails', required=True).split(' ')
 
     def send(self):
         log.info("sending emails")
         for filename in os.listdir(self.maildir):
-            contact_type, contact_email = utils._process_msg_file_name(filename)
+            contact_type, contact_email = utils.process_msg_file_name(filename)
             path = os.path.join(self.maildir, filename)
             with open(path, 'rb') as readfile:
-
                 text = MIMEText(readfile.read(), 'html', 'utf-8')
                 msg = MIMEMultipart('alternative')
 
-                msg['Subject'] = utils._get_email_subject()
+                msg['Subject'] = utils.get_email_subject()
 
                 msg['From'] = self.sender
                 send_from = self.sender
@@ -76,17 +60,3 @@ class EmailSender():
                     server.quit()
                     log.info(f"Email {filename} was sent to: {self.email_overwrites} "
                              f"from: {send_from}, msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
-
-    def _process_line(self, row):
-        contacts = [utils.Contact(
-            email=row['contact_email'], name=row['contact_name'])]
-        if not self.admin.email in [contact.email for contact in contacts]:
-            contacts.append(self.admin)
-        for contact in contacts:
-            mailfile = os.path.join(self.maildir, row['pkg_type'] + '#' + contact.email)
-            msg = ''
-            if not os.path.isfile(mailfile):
-                msg = utils._build_msg_per_contact(contact.name)
-            msg += row['msg']
-            with open(mailfile, 'a') as writemail:
-                writemail.write(msg)
