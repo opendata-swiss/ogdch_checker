@@ -1,10 +1,10 @@
 [site]
-# the default site url
+# site url of the ckan installation
 siteurl = https://ckan.opendata.swiss
 
 [tmpdir]
 # put a custom path here where you want to receive your output
-tmppath = /home/liip/tmp
+tmppath =
 
 [linkchecker]
 # chose name of the csv file to store the raw linkchecker results
@@ -14,15 +14,23 @@ csvfile = linkchecker.csv
 # chose name of the csv file to store the raw shaclchecker results
 csvfile = shaclchecker.csv
 frequency_url = http://purl.org/cld/freq
+shacl_graph = ogdch.shacl.ttl
 
 [messages]
 # choose name for the msgfile
 msgfile = emailmsgs.csv
 
-[test]
-# email address where the emails get send with the --test option
-# Example: emails = email1 email2
-emails =
+[extramessge]
+# per pkg_type dcat or geocat an extra message can be set
+geocat = "This is a geocat dataset."
+
+[contacts]
+# file to redirect contact emails per organizations
+# header: pkg_type,organization_slug,contact_email
+# row: geocat,example-org,contact@example.ch
+# pkg_type can be either 'dcat' or 'geocat'
+# organization_slug is the organization slug on opendata.swiss
+csvfile =
 
 [emailsender]
 # admin email and title: all emails go also to the admin
@@ -45,6 +53,11 @@ smtp_server = localhost
 
 # sender
 sender = no-reply@opendata.swiss
+
+[test]
+# email address where the emails get send with the --test option
+# Example: emails = email1 email2
+emails =
 
 [logging]
 # set the logging level
