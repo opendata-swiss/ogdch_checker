@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
 from ckan_pkg_checker.utils import utils
@@ -30,7 +31,7 @@ class TestResourceCheckMethods(unittest.TestCase):
             {'name': self.person2_name, 'email': self.person2_email}]
 
     def test__build_msg_per_contact(self):
-        msg_per_contact_build = utils._build_msg_per_contact(self.receiver_name)
+        msg_per_contact_build = utils.build_msg_per_contact(self.receiver_name)
         msg_per_contact_expected = u'Hello Hans <br><br>\n\n[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\nBitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n' +\
         u'[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\nMerci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n' +\
         u'[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\nLa preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n' + \
@@ -38,49 +39,49 @@ class TestResourceCheckMethods(unittest.TestCase):
         self.assertEqual(msg_per_contact_build, msg_per_contact_expected)
 
     def test__get_field_in_one_language_filled(self):
-        field_build = utils._get_field_in_one_language(self.multi_language_field_filled, self.backup)
+        field_build = utils.get_field_in_one_language(self.multi_language_field_filled, self.backup)
         field_expected = 'Haus'
         self.assertEqual(field_build, field_expected)
 
     def test__get_field_in_one_language_backup(self):
-        field_build = utils._get_field_in_one_language(self.multi_language_field_empty, self.backup)
+        field_build = utils.get_field_in_one_language(self.multi_language_field_empty, self.backup)
         field_expected = 'Pferd'
         self.assertEqual(field_build, field_expected)
 
     def test__get_field_in_one_language_fr(self):
-        field_build = utils._get_field_in_one_language(self.multi_language_field_fr, self.backup)
+        field_build = utils.get_field_in_one_language(self.multi_language_field_fr, self.backup)
         field_expected = 'maison'
         self.assertEqual(field_build, field_expected)
 
     def test__get_field_in_one_language_en(self):
-        field_build = utils._get_field_in_one_language(self.multi_language_field_en, self.backup)
+        field_build = utils.get_field_in_one_language(self.multi_language_field_en, self.backup)
         field_expected = 'house'
         self.assertEqual(field_build, field_expected)
 
     def test__get_field_in_one_language_it(self):
-        field_build = utils._get_field_in_one_language(self.multi_language_field_it, self.backup)
+        field_build = utils.get_field_in_one_language(self.multi_language_field_it, self.backup)
         field_expected = '?'
         self.assertEqual(field_build, field_expected)
 
     def test__get_csvdir(self):
-        csvdir = utils._get_csvdir(self.rundir)
+        csvdir = utils.get_csvdir(self.rundir)
         self.assertEqual(csvdir, self.rundir / 'csv')
 
     def test__get_maildir(self):
-        csvdir = utils._get_maildir(self.rundir)
+        csvdir = utils.get_maildir(self.rundir)
         self.assertEqual(csvdir, self.rundir / 'mails')
 
     def test__get_logdir(self):
-        csvdir = utils._get_logdir(self.rundir)
+        csvdir = utils.get_logdir(self.rundir)
         self.assertEqual(csvdir, self.rundir / 'logs')
 
     def test_get_ckan_dataset_url(self):
-        dataset_url = utils._get_ckan_dataset_url(self.siteurl, self.pkg_name)
+        dataset_url = utils.get_ckan_dataset_url(self.siteurl, self.pkg_name)
         expected_url = urljoin(self.siteurl, '/dataset/' + self.pkg_name)
         self.assertEqual(dataset_url, expected_url)
 
     def test_get_ckan_resource_url(self):
-        resource_url = utils._get_ckan_resource_url(self.siteurl, self.pkg_name, self.resource_id)
+        resource_url = utils.get_ckan_resource_url(self.siteurl, self.pkg_name, self.resource_id)
         expected_url = urljoin(self.siteurl, '/dataset/' + self.pkg_name + '/resource/' + self.resource_id)
         self.assertEqual(resource_url, expected_url)
 
@@ -93,23 +94,23 @@ class TestResourceCheckMethods(unittest.TestCase):
         self.assertListEqual(recipients, expected_recipients)
 
     def test__get_runname(self):
-        runname = utils._get_runname()
-        assert(runname.startswith('tmp'))
-        self.assertEqual(len(runname), 11)
+        runname = utils._get_runname(org='orgname', pkg=None, mode='shacl', limit='')
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        self.assertEqual(f"{timestamp}-shacl-org-orgname", runname)
 
     def test__get_email_subject(self):
-        email_subject = utils._get_email_subject()
+        email_subject = utils.get_email_subject()
         expected_email_subject = 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker'
         self.assertEqual(email_subject, expected_email_subject)
 
     def test__build_msg_per_error_with_resource_url(self):
-        msg_per_error_build = utils._build_msg_per_error(self.test_url, self.error_msg, self.dataset_url, self.title,
+        msg_per_error_build = utils.build_msg_per_error(self.test_url, self.error_msg, self.dataset_url, self.title,
                                                    self.resource_url)
         msg_per_error_expected = u"Dataset: <a href='https://ckan-site/dataset/some-dataset'>download_url</a> (<a href='https://ckan-site/dataset/some-dataset/resource/r42'>resource detail page</a>) <br>\nAccessed URL: https://some-url <br>\nError Message: Some 404 Error occured <br><br>\n\n-----<br><br>\n\n"
         self.assertEqual(msg_per_error_build, msg_per_error_expected)
 
     def test__build_msg_per_error_without_resource_url(self):
-        msg_per_error_build = utils._build_msg_per_error(self.test_url, self.error_msg, self.dataset_url, self.title)
+        msg_per_error_build = utils.build_msg_per_error(self.test_url, self.error_msg, self.dataset_url, self.title)
         msg_per_error_expected = u"Dataset: <a href='https://ckan-site/dataset/some-dataset'>download_url</a><br>\nRelation URL: https://some-url <br>\nError Message: Some 404 Error occured <br><br>\n\n-----<br><br>\n\n"
         self.assertEqual(msg_per_error_build, msg_per_error_expected)
 
