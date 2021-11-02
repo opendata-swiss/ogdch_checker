@@ -12,7 +12,7 @@ class EmailBuilder():
         self.maildir = utils.get_maildir(rundir)
         self.extra_message = {}
         for pkg_type in [utils.DCAT, utils.GEOCAT]:
-            self.extra_message[pkg_type] = utils.get_config(config, 'extramessge', pkg_type)
+            self.extra_message[pkg_type] = utils.get_config(config, 'extramessage', pkg_type)
         self.admin = self.default_contact = utils.Contact(
             name=utils.get_config(config, 'emailsender', 'admin_name', required=True),
             email=utils.get_config(config, 'emailsender', 'admin_email', required=True))

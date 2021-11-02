@@ -20,7 +20,7 @@ shacl_graph = ogdch.shacl.ttl
 # choose name for the msgfile
 msgfile = emailmsgs.csv
 
-[extramessge]
+[extramessage]
 # per pkg_type dcat or geocat an extra message can be set
 geocat = "This is a geocat dataset."
 
