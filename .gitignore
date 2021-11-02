@@ -5,3 +5,4 @@ htmlcov/*
 p3venv
 *.ini
 tmp/*
+*.csv
