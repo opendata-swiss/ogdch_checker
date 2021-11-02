@@ -148,13 +148,19 @@ def set_up_contact_mapping(config):
     contact_file = get_config(config, 'contacts', 'csvfile', fallback=None)
     contact_dict = {}
     if contact_file:
-        with open(contact_file, 'r') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if not row.get('organization_slug') or not row.get('pkg_type') or not row.get('contact_email'):
-                    continue
-                contact_key = ContactKey(organization=row['organization_slug'], pkg_type=row['pkg_type'])
-                contact_dict[contact_key] = row['contact_email']
+        try:
+            with open(contact_file, 'r') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    if not row.get('organization_slug') or not row.get('pkg_type') or not row.get('contact_email'):
+                        continue
+                    contact_key = ContactKey(organization=row['organization_slug'], pkg_type=row['pkg_type'])
+                    contact_dict[contact_key] = row['contact_email']
+        except FileNotFoundError:
+            raise click.UsageError("'contacts.csv' file configured, but file was not found.")
+        except AttributeError:
+            raise click.UsageError("'contacts.csv' file configured, but file has "
+                                   "not the correct format")
     return contact_dict
 
 
