@@ -115,16 +115,16 @@ class LinkChecker(CheckerInterface):
 
     def write_result(self, pkg, pkg_type, check_result):
         contacts = utils.get_pkg_contacts(
-            check_result.pkg.get('contact_points'))
+            pkg.get('contact_points'))
         title = utils.get_field_in_one_language(
-            check_result.pkg['title'], check_result.pkg['name'])
+            pkg['title'], pkg['name'])
         dataset_url = utils.get_ckan_dataset_url(
-            self.siteurl, check_result.pkg['name'])
-        organization = check_result.pkg.get('organization').get('name')
+            self.siteurl, pkg['name'])
+        organization = pkg.get('organization').get('name')
         resource_url = ''
         if check_result.resource:
             resource_url = utils.get_ckan_resource_url(
-                self.siteurl, check_result.pkg['name'],
+                self.siteurl, pkg['name'],
                 check_result.resource['id'])
         for contact in contacts:
             self.csvwriter.writerow(
