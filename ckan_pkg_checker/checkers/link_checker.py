@@ -46,7 +46,7 @@ class LinkChecker(CheckerInterface):
         """Check one data package"""
         pkg_type = pkg.get('pkg_type', utils.DCAT)
         check_results = []
-        landing_page = pkg['url']
+        landing_page = pkg.get('url')
         if landing_page:
             check_result = self._check_url_status(
                 "landing_page_url", landing_page, pkg)
@@ -55,7 +55,7 @@ class LinkChecker(CheckerInterface):
 
         if 'relations' in pkg:
             for relation in pkg['relations']:
-                relation_url = relation['url']
+                relation_url = relation.get('url')
                 if relation_url:
                     check_result = self._check_url_status(
                         "relations_url", relation_url, pkg)
