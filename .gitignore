@@ -6,3 +6,4 @@ p3venv
 *.ini
 tmp/*
 *.csv
+*.sh
