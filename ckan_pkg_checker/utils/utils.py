@@ -10,6 +10,11 @@ from urllib.parse import urljoin
 from configparser import NoSectionError, NoOptionError
 from urllib.error import HTTPError, URLError
 from pathlib import Path
+from jinja2 import Environment, PackageLoader, select_autoescape
+env = Environment(
+    loader=PackageLoader('ckan_pkg_checker', 'email_templates'),
+    autoescape=select_autoescape(['html', 'xml'])
+)
 
 log = logging.getLogger(__name__)
 Contact = namedtuple('Contact', ['name', 'email'])
@@ -18,13 +23,11 @@ RunParms = namedtuple('runParms', ['siteurl',
                                    'org', 'pkg', 'limit',
                                    'config', 'tmpdir', 'rundir',
                                    'mode', 'check', 'build', 'send', 'test'])
-FieldNamesMsgFile = ['contact_email', 'contact_name', 'pkg_type', 'msg']
-FieldNamesContactFile = ['contact_email', 'contact_name', 'dataset', 'pkg_type']
+FieldNamesMsgFile = ['contact_email', 'contact_name', 'pkg_type', 'checker_type', 'msg']
 GEOCAT = 'geocat'
 DCAT = 'dcat'
 MODE_SHACL = 'shacl'
 MODE_LINK = 'link'
-
 
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id)  # noqa
@@ -34,23 +37,69 @@ def get_ckan_dataset_url(ckan_siteurl, pkg_name):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name)
 
 
-def build_msg_per_contact(receiver_name):
-    msg = f'Hello {receiver_name} <br><br>\n\n'
+def build_msg_per_contact(receiver_name, checker_type, pkg_type):
+    contact_template = env.get_template('contact.html')
+    html = contact_template.render(
+        context={
+            'receiver_name': receiver_name,
+            'checker_type': checker_type,
+            'pkg_type': pkg_type,
+            'pkg_type_geocat': GEOCAT,
+            'checker_type_shacl': MODE_SHACL,
+            'checker_type_link': MODE_LINK,
+        })
+    return html
 
-    msg += '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n'  # noqa
-    msg += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n'  # noqa
 
-    msg += '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
-    msg += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
-
-    msg += '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
-    msg += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
-
-    msg += '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
-    msg += 'Please check if those resources are still available.<br><br>\n\n'
-
-    msg += '-----<br><br>\n\n'
+def _add_geocat_msg(msg, geocat_msg):
+    msg += geocat_msg
     return msg
+
+
+def _build_linkchecker_msg_per_contact():
+    msg_de = '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n'  # noqa
+    msg_de += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n'  # noqa
+
+    msg_fr = '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
+    msg_fr += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
+
+    msg_it = '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
+    msg_it += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
+
+    msg_en = '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
+    msg_en += 'Please check if those resources are still available.<br><br>\n\n'
+    return {
+        'de': msg_de,
+        'fr': msg_fr,
+        'it': msg_it,
+        'en': msg_en}
+
+
+def _build_validation_msg_per_contact():
+    msg_de = '[DE] - Fehlerhafte Metadaten.<br>\n'
+    msg_de += 'Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH. Bitte ergänzen Sie die entsprechenden Angaben.<br><br>\n\n'  # noqa
+
+    msg_fr = '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
+    msg_fr += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
+
+    msg_it = '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
+    msg_it += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
+
+    msg_en = '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
+    msg_en += 'Please check if those resources are still available.<br><br>\n\n'
+    return {
+        'de': msg_de,
+        'fr': msg_fr,
+        'it': msg_it,
+        'en': msg_en}
+
+
+def _add_geocat_msg_per_contact(msgs_dict):
+    msgs_dict['de'] += f"Geometadaten sind in <a href='{GEOCAT_URLS['de']}'>geocat.ch</a> zu aktualisieren."
+    msgs_dict['fr'] += f"Les géométadonnées doivent être mises à jour dans <a href='{GEOCAT_URLS['fr']}'>geocat.ch</a>."
+    msgs_dict['it'] += f"I geometadati devono essere attualizzati in <a href='{GEOCAT_URLS['it']}'>geocat.ch</a>."
+    msgs_dict['en'] += f"Geometadata need to be updated in <a href='{GEOCAT_URLS['en']}'>geocat.ch</a>"
+    return msgs_dict
 
 
 def build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None):
@@ -73,7 +122,7 @@ def build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl_
         msg += f" at: <a href='{node}'>{node}</a>"
     msg += f"\nProperty '{property}': {shacl_msg}\n"
     if value:
-        msg += f" Value received: {value}"
+        msg += f"Value received: '{value}'"
     msg += "<br><br>\n\n-----<br><br>\n\n"
     return msg
 

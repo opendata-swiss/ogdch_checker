@@ -39,7 +39,8 @@ class EmailBuilder():
             if not os.path.isfile(mailfile):
                 if pkg_type in self.extra_message:
                     msg += self.extra_message[pkg_type]
-                msg += utils.build_msg_per_contact(contact.name)
+                msg += utils.build_msg_per_contact(
+                    receiver_name=contact.name, checker_type=row['checker_type'], pkg_type=row['pkg_type'])
             msg += row['msg']
             with open(mailfile, 'a') as writemail:
                 writemail.write(msg)

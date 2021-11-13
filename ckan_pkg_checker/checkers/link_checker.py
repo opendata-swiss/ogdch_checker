@@ -143,6 +143,7 @@ class LinkChecker(CheckerInterface):
                 'contact_email': pkg.get('send_to', contact.email),
                 'contact_name': pkg.get('send_to', contact.name),
                 'pkg_type': pkg_type,
+                'checker_type': utils.MODE_LINK,
                 'msg': msg,
             })
 

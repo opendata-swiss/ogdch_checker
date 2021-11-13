@@ -1,0 +1,40 @@
+Hello {{ context.receiver_name }}
+{% if context.checker_type == context.checker_type_link %}[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
+Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
+{% elif context.checker_type == context.checker_type_shacl %}[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
+Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
+{% endif %}
+{% if context.pkg_type == context.pkg_type_geocat %}
+Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu aktualisieren.
+{% endif %}
+{% if context.checker_type == context.checker_type_link %}
+[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
+Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
+{% elif context.checker_type == context.checker_type_shacl %}
+[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
+Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
+{% endif %}
+{% if context.pkg_type == context.pkg_type_geocat %}
+Les géométadonnées doivent être mises à jour dans <a href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
+{% endif %}
+{% if context.checker_type == context.checker_type_link %}
+[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.
+La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.
+{% elif context.checker_type == context.checker_type_shacl %}
+[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.
+La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.
+{% endif %}
+{% if context.pkg_type == context.pkg_type_geocat %}
+I geometadati devono essere attualizzati in <a href='https://www.geocat.ch/geonetwork/srv/ita/catalog.search#/home'>geocat.ch</a>.
+{% endif %}
+{% if context.checker_type == context.checker_type_link %}
+[EN] - While accessing the following resources, we found some unexpected behaviour.
+Please check if those resources are still available.
+{% elif context.checker_type == context.checker_type_shacl %}
+[EN] - While accessing the following resources, we found some unexpected behaviour.
+Please check if those resources are still available.
+{% endif %}
+{% if context.pkg_type == context.pkg_type_geocat %}
+Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
+{% endif %}
+
