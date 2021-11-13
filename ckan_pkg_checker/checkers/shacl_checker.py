@@ -47,11 +47,9 @@ class ShaclChecker(CheckerInterface):
         """Initialize the validation checker"""
         self.siteurl = siteurl
         shaclfile = utils.get_config(config, 'shaclchecker', 'shacl_file', required=True)
-        msgfile = utils.get_msgdir(rundir) / utils.get_config(config, 'messages', 'msgfile', required=True)
         csvfile = utils.get_csvdir(rundir) / utils.get_config(config, 'shaclchecker', 'csvfile', required=True)
         frequency_file = utils.get_config(config, 'shaclchecker', 'frequency_file', required=True)
         self._prepare_csv_file(csvfile)
-        self._prepare_msg_file(msgfile)
         self.shacl_graph = utils.parse_rdf_graph_from_url(file=shaclfile)
         self.ont_graph = utils.parse_rdf_graph_from_url(file=frequency_file)
         for k, v in namespaces.items():
@@ -70,18 +68,15 @@ class ShaclChecker(CheckerInterface):
             'node',
             'property',
             'value',
-            'msg',
+            'error_msg',
+            'pkg_type',
+            'checker_type',
+            'template',
         ]
         self.csvfile = open(csvfile, 'w')
         self.csvwriter = csv.DictWriter(
             self.csvfile, fieldnames=self.csv_fieldnames)
         self.csvwriter.writeheader()
-
-    def _prepare_msg_file(self, msgfile):
-        self.msgfile = open(msgfile, 'w')
-        self.mailwriter = csv.DictWriter(
-            self.msgfile, fieldnames=utils.FieldNamesMsgFile)
-        self.mailwriter.writeheader()
 
     def check_package(self, pkg):
         """Check one data package"""
@@ -97,7 +92,7 @@ class ShaclChecker(CheckerInterface):
         validation_results = validate(dataset_graph, shacl_graph=self.shacl_graph, ont_graph=self.ont_graph)
         conforms, results_graph, results_text = validation_results
         if conforms:
-            click.echo(f"--> Dataset {pkg.get('name')} conforms")
+            utils.log_and_echo_msg(f"--> Dataset {pkg.get('name')} conforms")
         if not conforms:
             for k, v in namespaces.items():
                 results_graph.bind(k, v)
@@ -118,10 +113,10 @@ class ShaclChecker(CheckerInterface):
                         value=value,
                         msg=msg,
                     )
-                    click.echo(f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}")
+                    utils.log_and_echo_msg(f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}")
                     checker_results.append(shacl_result)
                 else:
-                    log.info(f"shacl result without property ref detected at {pkg.get('name')}: {results_text}")
+                    utils.log_and_echo_msg(f"shacl result without property ref detected at {pkg.get('name')}: {results_text}")
             for shacl_result in checker_results:
                 self.write_result(pkg, pkg_type, shacl_result)
 
@@ -132,8 +127,8 @@ class ShaclChecker(CheckerInterface):
         organization = pkg.get('organization').get('name')
         for contact in contacts:
             self.csvwriter.writerow(
-                {'contact_email': contact.email,
-                 'contact_name': contact.name,
+                {'contact_email': pkg.get('send_to', contact.email),
+                 'contact_name': pkg.get('send_to', contact.name),
                  'organization_name': organization,
                  'dataset_title': title,
                  'dataset_url': dataset_url,
@@ -142,28 +137,15 @@ class ShaclChecker(CheckerInterface):
                  'node': shacl_result.node,
                  'property': shacl_result.property,
                  'value': shacl_result.value,
-                 'msg': shacl_result.msg,
+                 'error_msg': shacl_result.msg,
+                 'pkg_type': pkg_type,
+                 'checker_type': utils.MODE_SHACL,
+                 'template': 'shaclchecker_error.html',
                  })
-            msg = utils.build_msg_per_shacl_result(
-                dataset_url=dataset_url,
-                title=title,
-                node=shacl_result.node,
-                property=shacl_result.property,
-                value=shacl_result.value,
-                shacl_msg=shacl_result.msg,
-            )
-            self.mailwriter.writerow({
-                'contact_email': pkg.get('send_to', contact.email),
-                'contact_name': pkg.get('send_to', contact.name),
-                'pkg_type': pkg_type,
-                'checker_type': utils.MODE_SHACL,
-                'msg': msg,
-            })
 
     def finish(self):
         """Close the file"""
         self.csvfile.close()
-        self.msgfile.close()
 
     def __repr__(self):
         return "Shacl Checker"

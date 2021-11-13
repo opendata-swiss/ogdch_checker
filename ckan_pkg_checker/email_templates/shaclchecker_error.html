@@ -1,0 +1,13 @@
+<p>-----</p>
+<p>
+Dataset: <a href='{{ context.dataset_url }}'>{{ context.dataset_title }}</a>
+<br>A Validation Error occured
+{% if context.node %}
+at: <a href='{{ context.node }}'>{{ context.node }}</a>
+{% endif %}
+<br>Property: '{{ context.property }}'
+<br>{{ context.error_msg }}
+{% if context.value %}
+<br>Value received: '{{ context.value }}'
+{% endif %}
+</p>

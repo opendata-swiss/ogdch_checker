@@ -17,9 +17,7 @@ class LinkChecker(CheckerInterface):
         self.url_result_cache = {}
         self.siteurl = siteurl
         csvfile = utils.get_csvdir(rundir) / utils.get_config(config, 'linkchecker', 'csvfile')
-        msgfile = utils.get_msgdir(rundir) / utils.get_config(config, 'messages', 'msgfile')
         self._prepare_csv_file(csvfile)
-        self._prepare_msg_file(msgfile)
 
     def _prepare_csv_file(self, csvfile):
         self.csv_fieldnames = [
@@ -30,17 +28,15 @@ class LinkChecker(CheckerInterface):
             'error_message',
             'dataset_title',
             'dataset_url',
-            'resource_url']
+            'resource_url',
+            'pkg_type',
+            'checker_type',
+            'template',
+        ]
         self.csvfile = open(csvfile, 'w')
         self.csvwriter = csv.DictWriter(
             self.csvfile, fieldnames=self.csv_fieldnames)
         self.csvwriter.writeheader()
-
-    def _prepare_msg_file(self, msgfile):
-        self.msgfile = open(msgfile, 'w')
-        self.mailwriter = csv.DictWriter(
-            self.msgfile, fieldnames=utils.FieldNamesMsgFile)
-        self.mailwriter.writeheader()
 
     def check_package(self, pkg):
         """Check one data package"""
@@ -72,7 +68,6 @@ class LinkChecker(CheckerInterface):
 
     def finish(self):
         self.csvfile.close()
-        self.msgfile.close()
 
     def _check_resource(self, pkg, resource):
         """Check one resource"""
@@ -128,24 +123,18 @@ class LinkChecker(CheckerInterface):
                 check_result.resource['id'])
         for contact in contacts:
             self.csvwriter.writerow(
-                {'contact_email': contact.email,
-                 'contact_name': contact.name,
+                {'contact_email': pkg.get('send_to', contact.email),
+                 'contact_name': pkg.get('send_to', contact.name),
                  'organization_name': organization,
                  'test_url': check_result.item,
                  'error_message': check_result.msg,
                  'dataset_title': title,
                  'dataset_url': dataset_url,
-                 'resource_url': resource_url})
-            msg = utils.build_msg_per_error(
-                check_result.item, check_result.msg,
-                dataset_url, title, resource_url)
-            self.mailwriter.writerow({
-                'contact_email': pkg.get('send_to', contact.email),
-                'contact_name': pkg.get('send_to', contact.name),
-                'pkg_type': pkg_type,
-                'checker_type': utils.MODE_LINK,
-                'msg': msg,
-            })
+                 'resource_url': resource_url,
+                 'pkg_type': pkg_type,
+                 'checker_type': utils.MODE_LINK,
+                 'template': 'linkchecker_error.html',
+                 })
 
     def __repr__(self):
         return "Link Checker"

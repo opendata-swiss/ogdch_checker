@@ -51,80 +51,10 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
     return html
 
 
-def _add_geocat_msg(msg, geocat_msg):
-    msg += geocat_msg
-    return msg
-
-
-def _build_linkchecker_msg_per_contact():
-    msg_de = '[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.<br>\n'  # noqa
-    msg_de += 'Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.<br><br>\n\n'  # noqa
-
-    msg_fr = '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
-    msg_fr += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
-
-    msg_it = '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
-    msg_it += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
-
-    msg_en = '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
-    msg_en += 'Please check if those resources are still available.<br><br>\n\n'
-    return {
-        'de': msg_de,
-        'fr': msg_fr,
-        'it': msg_it,
-        'en': msg_en}
-
-
-def _build_validation_msg_per_contact():
-    msg_de = '[DE] - Fehlerhafte Metadaten.<br>\n'
-    msg_de += 'Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH. Bitte ergänzen Sie die entsprechenden Angaben.<br><br>\n\n'  # noqa
-
-    msg_fr = '[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.<br>\n'  # noqa
-    msg_fr += 'Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.<br><br>\n\n'  # noqa
-
-    msg_it = '[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.<br>\n'  # noqa
-    msg_it += 'La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.<br><br>\n\n'  # noqa
-
-    msg_en = '[EN] - While accessing the following resources, we found some unexpected behaviour.<br>\n'  # noqa
-    msg_en += 'Please check if those resources are still available.<br><br>\n\n'
-    return {
-        'de': msg_de,
-        'fr': msg_fr,
-        'it': msg_it,
-        'en': msg_en}
-
-
-def _add_geocat_msg_per_contact(msgs_dict):
-    msgs_dict['de'] += f"Geometadaten sind in <a href='{GEOCAT_URLS['de']}'>geocat.ch</a> zu aktualisieren."
-    msgs_dict['fr'] += f"Les géométadonnées doivent être mises à jour dans <a href='{GEOCAT_URLS['fr']}'>geocat.ch</a>."
-    msgs_dict['it'] += f"I geometadati devono essere attualizzati in <a href='{GEOCAT_URLS['it']}'>geocat.ch</a>."
-    msgs_dict['en'] += f"Geometadata need to be updated in <a href='{GEOCAT_URLS['en']}'>geocat.ch</a>"
-    return msgs_dict
-
-
-def build_msg_per_error(test_url, error_msg, dataset_url, title, resource_url=None):
-    msg = f"Dataset: <a href='{dataset_url}'>{title}</a>"
-    if resource_url:
-        resource_url = resource_url
-        msg += f" (<a href='{resource_url}'>resource detail page</a>) <br>\n"
-        msg += f'Accessed URL: {test_url} <br>\n'
-    else:
-        msg += '<br>\n'
-        msg += f'Relation URL: {test_url} <br>\n'
-    msg += f'Error Message: {error_msg} <br><br>\n\n-----<br><br>\n\n'
-    return msg
-
-
-def build_msg_per_shacl_result(dataset_url, title, node, property, value, shacl_msg):
-    msg = f"Dataset: <a href='{dataset_url}'>{title}</a>\n"
-    msg += "A Validation Error occured"
-    if node:
-        msg += f" at: <a href='{node}'>{node}</a>"
-    msg += f"\nProperty '{property}': {shacl_msg}\n"
-    if value:
-        msg += f"Value received: '{value}'"
-    msg += "<br><br>\n\n-----<br><br>\n\n"
-    return msg
+def build_msg_per_error(row):
+    error_template = env.get_template(row['template'])
+    html = error_template.render(context=row)
+    return html
 
 
 def get_field_in_one_language(multi_language_field, backup):
@@ -155,10 +85,6 @@ def get_csvdir(rundir):
     return rundir / 'csv'
 
 
-def get_msgdir(rundir):
-    return rundir / 'msgs'
-
-
 def get_maildir(rundir):
     return rundir / 'mails'
 
@@ -168,6 +94,7 @@ def get_logdir(rundir):
 
 
 def process_msg_file_name(filename):
+    filename.replace('.html', '')
     components = filename.split('#')
     contact_type = components[0]
     contact_email = '#'.join(components[1:])
@@ -330,8 +257,6 @@ def _make_dirs(tmpdir, runname):
     logdir.mkdir()
     csvdir = get_csvdir(rundir)
     csvdir.mkdir()
-    msgdir = get_msgdir(rundir)
-    msgdir.mkdir()
     return rundir
 
 

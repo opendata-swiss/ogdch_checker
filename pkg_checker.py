@@ -90,6 +90,7 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
         check.run()
     if runparms.build:
         builder = EmailBuilder(rundir=runparms.rundir,
+                               mode=runparms.mode,
                                config=runparms.config)
         builder.build()
     if runparms.send:

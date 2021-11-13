@@ -20,10 +20,6 @@ shacl_graph = ogdch.shacl.ttl
 # choose name for the msgfile
 msgfile = emailmsgs.csv
 
-[extramessage]
-# per pkg_type dcat or geocat an extra message can be set
-geocat = "This is a geocat dataset."
-
 [contacts]
 # file to redirect contact emails per organizations
 # header: pkg_type,organization_slug,contact_email
