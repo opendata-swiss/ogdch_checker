@@ -53,7 +53,7 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
 
 def build_msg_per_error(row):
     error_template = env.get_template(row['template'])
-    html = error_template.render(context=row)
+    html = error_template.render(context={'row': row})
     return html
 
 
