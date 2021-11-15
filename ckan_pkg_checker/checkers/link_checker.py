@@ -8,7 +8,7 @@ from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 import logging
 log = logging.getLogger(__name__)
 
-CheckResult = namedtuple('CheckResult', ['resource', 'item', 'msg'])
+CheckResult = namedtuple('CheckResult', ['resource_id', 'item', 'msg', 'test_title'])
 
 
 class LinkChecker(CheckerInterface):
@@ -29,6 +29,7 @@ class LinkChecker(CheckerInterface):
             'dataset_title',
             'dataset_url',
             'resource_url',
+            'test_title',
             'pkg_type',
             'checker_type',
             'template',
@@ -45,7 +46,7 @@ class LinkChecker(CheckerInterface):
         landing_page = pkg.get('url')
         if landing_page:
             check_result = self._check_url_status(
-                "landing_page_url", landing_page, pkg)
+                "dcat:landingPage", landing_page)
             if check_result:
                 check_results.append(check_result)
 
@@ -54,7 +55,7 @@ class LinkChecker(CheckerInterface):
                 relation_url = relation.get('url')
                 if relation_url:
                     check_result = self._check_url_status(
-                        "relations_url", relation_url, pkg)
+                        "dct:relation", relation_url)
                     if check_result:
                         check_results.append(check_result)
 
@@ -72,25 +73,25 @@ class LinkChecker(CheckerInterface):
     def _check_resource(self, pkg, resource):
         """Check one resource"""
         resource_results = []
-        resource_url = resource['url']
+        access_url = resource['url']
         try:
             download_url = resource['download_url']
         except KeyError:
             download_url = None
             pass
-        if resource_url:
+        if access_url:
             check_result = self._check_url_status(
-                'resource_url', resource_url, resource)
+                'dcat:accessURL', access_url, resource['id'])
             if check_result:
                 resource_results.append(check_result)
-        if download_url and download_url != resource_url:
+        if download_url and download_url != access_url:
             check_result = self._check_url_status(
-                'download_url', download_url, resource)
+                'dcat:downloadURL', download_url, resource['id'])
             if check_result:
                 resource_results.append(check_result)
         return resource_results
 
-    def _check_url_status(self, test_title, test_url, resource=None):
+    def _check_url_status(self, test_title, test_url, resource_id=None):
         """Check one url"""
         if test_url in self.url_result_cache:
             test_result = self.url_result_cache[test_url]
@@ -103,7 +104,7 @@ class LinkChecker(CheckerInterface):
             self.url_result_cache[test_url] = test_result
         if test_result:
             check_result = CheckResult(
-                msg=test_result, resource=resource, item=test_url)
+                msg=test_result, resource_id=resource_id, item=test_url, test_title=test_title)
             log.info(f"LINKCHECKER: ERROR: \n{test_title} \nURL {test_url}\nMSG {check_result.msg}")
             click.echo(f"Linkchecker Error: {test_title} url {test_url} msg {check_result.msg}")
             return check_result
@@ -117,10 +118,10 @@ class LinkChecker(CheckerInterface):
             self.siteurl, pkg['name'])
         organization = pkg.get('organization').get('name')
         resource_url = ''
-        if check_result.resource:
+        if check_result.resource_id:
             resource_url = utils.get_ckan_resource_url(
                 self.siteurl, pkg['name'],
-                check_result.resource['id'])
+                check_result.resource_id)
         for contact in contacts:
             self.csvwriter.writerow(
                 {'contact_email': pkg.get('send_to', contact.email),
@@ -131,6 +132,7 @@ class LinkChecker(CheckerInterface):
                  'dataset_title': title,
                  'dataset_url': dataset_url,
                  'resource_url': resource_url,
+                 'test_title': check_result.test_title,
                  'pkg_type': pkg_type,
                  'checker_type': utils.MODE_LINK,
                  'template': 'linkchecker_error.html',
