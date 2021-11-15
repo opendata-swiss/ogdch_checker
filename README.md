@@ -103,14 +103,13 @@ Here you will find some common use cases as examples:
 # checking a dataset on prod with the shaclchecker and building emails but not 
 sending them
 python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m shacl -b 
--u https://ckan.opendata.swiss -b
 
 # checking a dataset on prod with the linkchecker and sending them
 python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m link -b
 
 # checking all datasets on prod with the shaclchecker and sending the emails 
 to a test address
-python pkg_checker.py --c config.ini -m shacl -s -t
+python pkg_checker.py --c config.ini -m shacl -b -s -t
 ```
 
 ## Tests
