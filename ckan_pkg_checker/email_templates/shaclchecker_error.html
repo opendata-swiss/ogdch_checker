@@ -1,13 +1,13 @@
 <p>-----</p>
 <p>
-Dataset: <a href='{{ context.dataset_url }}'>{{ context.dataset_title }}</a>
+Dataset: <a href='{{ context.row.dataset_url }}'>{{ context.row.dataset_title }}</a>
 <br>A Validation Error occured
-{% if context.node %}
-at: <a href='{{ context.node }}'>{{ context.node }}: </a>
+{% if context.row.node %}
+at: <a href='{{ context.row.node }}'>{{ context.row.node }}: </a>
 {% endif %}
-Property: '{{ context.property }}.'
-{{ context.error_msg | e }}
-{% if context.value %}
-Value received: '{{ context.value }}'
+Property: '{{ context.row.property }}.'
+{{ context.row.error_msg | e }}
+{% if context.row.value %}
+Value received: '{{ context.row.value }}'
 {% endif %}
 </p>
