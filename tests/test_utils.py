@@ -87,10 +87,16 @@ class TestResourceCheckMethods(unittest.TestCase):
 
     def test__get_runname(self):
         runname = utils._get_runname(org='orgname', pkg=None, mode='shacl', limit='')
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H%M")
         self.assertEqual(f"{timestamp}-shacl-org-orgname", runname)
 
     def test__get_email_subject(self):
         email_subject = utils.get_email_subject()
         expected_email_subject = 'opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker'
         self.assertEqual(email_subject, expected_email_subject)
+
+    def test__process_msg_file_name(self):
+        filename = 'geocat#max.moore@swisstopo.ch.html'
+        contact_type, contact_mail = utils.process_msg_file_name(filename)
+        self.assertEqual(contact_type, 'geocat')
+        self.assertEqual(contact_mail, 'max.moore@swisstopo.ch')
