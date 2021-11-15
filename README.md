@@ -7,48 +7,30 @@ There are currently two checkers in place:
 
 - a linkchecker: checks link on datasets for their HTTP response codes (this 
   checker has a long run time, since it repeats requests, if they fail.)
-- a shaclchecker that checks datasets against a shacl graph
+- a shaclchecker that checks datasets against a shacl graph (the shacl graph can be set in the configuration).
 
 For each run of the tool a temporary directory is set up to store the 
 results of the run: 
 
-- the tmp directory to store the runs is set up in the configuration
-- the name of the run directory is derived from the current time and the run 
-  parameters
-
-In each run directory the following subdirectories are build by the tool
+The run name formed of the arguments of the run. In the directory: `<tmpdir>/<runname>` the following subdirectories can be found:
 
 - `csv`: includes a csv file with raw results from each checker
-- `msgs`: includes alls msgs in one file
-- `mails`: here the messages are split up by contact 
-- `logs`: includes and error log and and info log
-
-### Geocat
-
-Datasets that come to opendata.swiss via the geocat harvesters receive some 
-special treatments:
-
-- the contacts are derived differently
+- `mails`: here the messages are split up by contact and provided as html files
+- `logs`: includes and error log and an info log: the error log contains setup errors if they occured and will otherwise be empty.
 
 ### Scope
 
-The checkers can be run with a limited scope:
+The checkers are checking the ckan site `https://ckan.opendata.swiss` and its test instances.
+They can be run with the following scopes:
 
-- `--org <organization-slug>` restricts it to that organizations datasets
+- default: check all datasets on the site
+- `--org <organization-slug>` restricts to the datasets of one organization
 - `--limit <number>` restricts it to the first `<number>` of packages
-- `--pkg <slug of a package>` restrict it to a single package
+- `--pkg <slug of a dataset>` restrict it to a single dataset
 
-### Instance
+### Configuration
 
-The checkers can be run on Prod, Abnahme or Test by specifying the URL of 
-that instance (`--siteurl`)
-
-### Checker Modes
-
-The checker mode can be chosen: 
-
-- `--mode shacl` runs the shacl checker
-- `--mode link` runs the link checker
+There is a [`config.ini.dist`](config.ini.dist) file to explain the configuration
 
 ### Operation Modes
 
@@ -64,19 +46,34 @@ Use:
 - `--run <runname> --send`: sends prebuild emails from a `mails` subdirectory: this option 
   can be used to split between email building and email sending 
 
-### Linkchecker
+
+### Checker Modes
+
+The checker mode can be chosen: 
+
+- `--mode shacl` runs the shacl checker
+- `--mode link` runs the link checker
+
+#### Linkchecker
 
 - it checks the links for datasets and resources. 
 - it first tries the HEAD 
   method and if this method fails it tries again with a GET request.
 
-### ShaclChecker
+#### ShaclChecker
 
 See https://www.w3.org/TR/shacl/ for documentation on Shacl.
 The shacl checker checks the datasets against a shacl graph that is 
 specified in the `[shaclchecker]` section
 
 It makes use of pyshacl: see here for a documentation: https://github.com/RDFLib/pySHACL
+
+### Contacts
+
+Datasets that come to opendata.swiss via the geocat harvesters receive some 
+special treatments:
+
+- the contacts are derived differently
   
 ## Install 
 
@@ -91,14 +88,6 @@ cp config.ini.dist config.ini
 ## Deploy
 
 Currently there is no deployment script in place for the ogdch_checker.
-Just go ot the server:
-
-```
-ssh -p 22022 -l liip vps27.rs.bsa.oriented.ch
-cd ogdch_checker
-git fetch
-git checkout master
-``` 
 
 ## Usage
 
