@@ -94,7 +94,7 @@ def get_logdir(rundir):
 
 
 def process_msg_file_name(filename):
-    filename.replace('.html', '')
+    filename = filename.replace('.html', '')
     components = filename.split('#')
     contact_type = components[0]
     contact_email = '#'.join(components[1:])
