@@ -1,2 +1,4 @@
 [run]
 source = ckan_pkg_checker
+omit =
+        *__init__*
