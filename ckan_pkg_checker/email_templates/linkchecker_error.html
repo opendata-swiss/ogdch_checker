@@ -1,11 +1,11 @@
 <p>-----</p>
 <p>
-Dataset: <a href='{{ context.dataset_url }}'>{{ context.dataset_title }}</a>
-{% if context.resource_url %}
-(<a href='{{ context.resource_url }}'>resource detail page</a>)<br>
-Accessed URL: {{ context.test_url }}<br>
+Dataset: <a href='{{ context.row.dataset_url }}'>{{ context.row.dataset_title }}</a>
+{% if context.row.resource_url %}
+(<a href='{{ context.row.resource_url }}'>resource detail page</a>)<br>
+Accessed URL ({{ context.row.test_title }}): {{ context.row.test_url }}<br>
 {% else %}
-Relation URL: {{ context.test_url }} <br>
-Error Message: {{ context.error_msg }}
+Relation URL ({{ context.row.test_title }}): {{ context.row.test_url }}<br>
 {% endif %}
+Error Message: {{ context.row.error_message | e }}
 </p>

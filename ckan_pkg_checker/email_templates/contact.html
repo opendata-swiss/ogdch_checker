@@ -1,11 +1,11 @@
-<p>Hello {{ context.receiver_name }}</p>
+<p>Hello {{ context.receiver_name | e}}</p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
->[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
-<br>Bitte kontrollieren Sie, ob diese Quellen noch zugänglich sind und korrigieren Sie sie nötigenfalls.
+[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
+<br>Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
 {% elif context.checker_type == context.checker_type_shacl %}
 [DE] - Fehlerhafte Metadaten.
-<br>Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH. Bitte ergänzen Sie die entsprechenden Angaben.
+<br>Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH. Bitte erg&auml;nzen Sie die entsprechenden Angaben.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
 <br>Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu aktualisieren.
@@ -13,14 +13,14 @@
 </p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
-[FR] - Nous avons constaté un problème en essayant d'accéder aux ressources suivantes.
-<br>Merci de vérifier si ces ressources sont toujours disponibles et de les corriger si nécessaire.
+[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
+<br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
 {% elif context.checker_type == context.checker_type_shacl %}
 [FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
 <br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
-<br>Les géométadonnées doivent être mises à jour dans <a href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
+<br>Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
 {% endif %}
 </p>
 <p>
