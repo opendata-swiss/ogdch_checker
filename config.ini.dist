@@ -1,5 +1,6 @@
 [site]
 # site url of the ckan installation
+# alternatives are the ckan test and abnahme instance of opendata.swiss
 siteurl = https://ckan.opendata.swiss
 
 [tmpdir]
@@ -13,12 +14,15 @@ csvfile = linkchecker.csv
 [shaclchecker]
 # chose name of the csv file to store the raw shaclchecker results
 csvfile = shaclchecker.csv
-frequency_url = http://purl.org/cld/freq
-shacl_graph = ogdch.shacl.ttl
 
-[messages]
-# choose name for the msgfile
-msgfile = emailmsgs.csv
+# provide the path of the frequency vocabulary [http://purl.org/cld/freq](http://purl.org/cld/freq)
+# it is currently provided as a file, to avoid downtimes of the vocabulary site and expected in Turtle
+# format
+frequency_file = frequency.ttl
+
+# path to the shacl file that is used for the shacl validation
+# the Shacl file is expected in Turtle format
+shacl_file = ogdch.shacl.ttl
 
 [contacts]
 # file to redirect contact emails per organizations
