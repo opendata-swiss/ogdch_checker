@@ -262,7 +262,7 @@ def _make_dirs(tmpdir, runname):
 
 def _get_runname(org, pkg, mode, limit):
     name_parts = []
-    name_parts.append(datetime.now().strftime("%Y%m%d-%H%M"))
+    name_parts.append(datetime.now().strftime("%Y-%m-%d-%H%M"))
     if mode:
         name_parts.append(f"{mode}")
     if org:
