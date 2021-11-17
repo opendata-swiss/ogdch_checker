@@ -16,8 +16,8 @@
 [FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
 <br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
 {% elif context.checker_type == context.checker_type_shacl %}
-[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
-<br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
+[FR] - Métadonnées erronées
+<br>Les champs suivants de vos jeux de données sur opendata.swiss ne répondent pas aux exigences de la DCAT-AP CH. Veuillez compléter les informations correspondantes.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
 <br>Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
@@ -28,8 +28,8 @@
 [IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.
 <br>La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.
 {% elif context.checker_type == context.checker_type_shacl %}
-[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.
-<br>La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.
+[IT] - Metadati mancanti
+<br>I seguenti campi dei tuoi dataset pubblicati su opendata.swiss non soddisfano i requisiti del profilo DCAT-AP CH. Ti preghiamo di completarli con le informazioni corrispondenti.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
 <br>I geometadati devono essere attualizzati in <a href='https://www.geocat.ch/geonetwork/srv/ita/catalog.search#/home'>geocat.ch</a>.
@@ -40,8 +40,8 @@
 [EN] - While accessing the following resources, we found some unexpected behaviour.
 <br>Please check if those resources are still available.
 {% elif context.checker_type == context.checker_type_shacl %}
-[EN] - While accessing the following resources, we found some unexpected behaviour.
-<br>Please check if those resources are still available.
+[EN] - Incorrect metadata
+<br>The following fields of your datasets on opendata.swiss do not meet the requirements of DCAT-AP CH. Please complete the corresponding information.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
 <br>Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
