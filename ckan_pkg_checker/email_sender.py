@@ -42,8 +42,7 @@ class EmailSender():
                 send_to = [self.admin.email]
                 if contact_type == utils.GEOCAT:
                     send_to.append(self.geocat_admin.email)
-                else:
-                    send_to.append(contact_email)
+                send_to.append(contact_email)
                 if self.bcc:
                     msg['Bcc'] = self.bcc
                     send_to.append(self.bcc)
