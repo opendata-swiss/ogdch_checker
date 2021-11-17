@@ -53,10 +53,13 @@ class EmailSender():
                 if not self.test:
                     server.sendmail(send_from, send_to, msg.as_string())
                     server.quit()
-                    log.info(f"Email {filename} was sent to: {send_to} "
-                             f"from: {send_from}, msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
+                    utils.log_and_echo_msg(f"Email {filename} was sent to: {send_to} \n"
+                                           f"send from: {send_from}\n"
+                                           f"send info: msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
                 else:
                     server.sendmail(send_from, self.email_overwrites, msg.as_string())
                     server.quit()
-                    log.info(f"Email {filename} was sent to: {self.email_overwrites} "
-                             f"from: {send_from}, msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
+                    utils.log_and_echo_msg(f"Email {filename} was sent to: {self.email_overwrites} "
+                                           f"would normally be send to: {send_to}\n"
+                                           f"send from: {send_from}\n"
+                                           f"send info: msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
