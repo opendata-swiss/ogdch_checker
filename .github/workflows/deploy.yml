@@ -1,0 +1,11 @@
+name: Deploy
+on: [workflow_dispatch]
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Deploy
+          run: |
+              rsync -a --delete -e "ssh -o StrictHostKeyChecking=no -p ${SSH_PORT_PRODUCTION}" -v . ${SSH_USER}@${SSH_HOST_PRODUCTION}:${DEST_PATH}
