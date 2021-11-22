@@ -109,7 +109,7 @@ Here you will find some common use cases as examples:
 ```
 # checking a dataset on prod with the shaclchecker and building emails but not 
 sending them
-python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m shacl -b 
+python pkg_checker.py -c config.ini -p bauprojekte-immobilien1 -m shacl -b 
 
 # checking a dataset on prod with the linkchecker and sending them
 python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m link -b
