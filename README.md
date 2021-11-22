@@ -70,9 +70,9 @@ It makes use of pyshacl: see here for a documentation: https://github.com/RDFLib
 
 ### Email Receivers
 
-The checkers can be set to send out emails about the datasets, that failed the checks with the opition `--send`.
+The checkers can be set to send out emails about the datasets, that failed the checks with the option `--send`.
 The emails go to the contacts mentioned in the packages and additionally some administrators, that are set in the configuration file.
-In case the contact for the metadata of an organization differs form the contact given in the packages, this can be specified in a csv file with the following fields:
+In case the contact for the metadata of an organization differs from the contact given in the packages, this can be specified in a csv file with the following fields:
 
 ```
 pkg_type,organization_slug,contact_email
@@ -80,7 +80,11 @@ geocat,example-org,example-contact-email@gmail.com
 dcat,other-example-org,other-contact-email@org.ch
 ```
 
-- the contacts are derived differently
+These fields are to be filled as follows:
+
+- `pkg_type`: `geocat` for datasets that are harvested from https://geocat.ch, `dcat` for all other datasets
+- `organization_slug`: slug of the organization on https://opendata.swiss
+- `contact_email`: metadata contact for that organization: an email of a peron or organization that can change the metadata of datasets of that organization
   
 ## Install 
 
