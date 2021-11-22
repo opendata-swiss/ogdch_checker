@@ -112,7 +112,7 @@ sending them
 python pkg_checker.py -c config.ini -p bauprojekte-immobilien1 -m shacl -b 
 
 # checking a dataset on prod with the linkchecker and sending them
-python pkg_checker.py --c config.ini -p bauprojekte-immobilien1 -m link -b
+python pkg_checker.py -c config.ini -p bauprojekte-immobilien1 -m link -b -s
 
 # checking all datasets on prod with the shaclchecker and sending the emails 
 to a test address
