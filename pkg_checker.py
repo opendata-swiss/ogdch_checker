@@ -2,13 +2,12 @@
 Script to start the Worklogdb Application
 """
 import click
-import configparser
 import logging
-from pathlib import Path
 
 from ckan_pkg_checker.pkg_checker import PackageCheck
+from ckan_pkg_checker.email_builder import EmailBuilder
 from ckan_pkg_checker.email_sender import EmailSender
-from ckan_pkg_checker.utils import utils
+from ckan_pkg_checker.utils.utils import set_runparms, MODE_SHACL
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +22,9 @@ log = logging.getLogger(__name__)
 @click.option('-o', '--org',
               help='Check only a single organization. '
                    'Example --org bernmobil.')
+@click.option('-m', '--mode', default=MODE_SHACL,
+              help='Mode: LinkChecker (link) or ShaclChecker (shacl) . '
+                   'Example --m link. Default is ShaclChecker')
 @click.option('-c', '--configpath',
               help='Path to the configuration file. '
                    'Example --config config/development.ini'
@@ -48,7 +50,7 @@ log = logging.getLogger(__name__)
                    'of that run. With this option mails can be build and '
                    'send out from the results of a previous checker run.')
 def check_packages(limit=None, pkg=None, org=None, configpath=None,
-                   build=False, send=False, run=None, test=False):
+                   build=False, send=False, run=None, test=False, mode=MODE_SHACL):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
 
@@ -66,104 +68,37 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
     You can just send emails when you run the command with --run and --send.
     This assumes a previous check run has been taken place.
     """
-    try:
-        runparms = _check_and_format_runparms(
-            org=org,
-            limit=limit,
-            pkg=pkg,
-            run=run,
-            configpath=configpath,
-            build=build,
-            send=send)
-    except click.UsageError as e:
-        raise(e)
+    runparms = set_runparms(
+        org=org,
+        limit=limit,
+        pkg=pkg,
+        run=run,
+        configpath=configpath,
+        build=build,
+        send=send,
+        test=test,
+        mode=mode)
 
-    config = configparser.ConfigParser()
-    try:
-        config.read(configpath)
-        tmpdir = Path(config.get('tmpdir', 'tmppath'))
-    except configparser.Error as e:
-        raise click.UsageError(
-            "Configuration Error {} in configuration file '{}'"
-            .format(e, configpath))
-
-    if not run:
-        run_checkers = True
-        runname = utils._get_runname()
-        rundir = utils._make_dirs(tmpdir=tmpdir, rundir=runname)
-        build_mails = build or send or test
-    else:
-        run_checkers = False
-        rundir = tmpdir / run
-        build_mails = build
-
-    runparms += "Find output at {}".format(rundir)
-
-    logging.basicConfig(
-        filename=utils._get_logdir(rundir) / 'package-checker.log',
-        format='%(asctime)s %(levelname)s %(name)s %(message)s %(funcName)s %(lineno)d', # noqa
-        level=config.get('logging', 'level'),
-        filemode='a+'
-    )
-
-    if run_checkers:
-        click.echo(runparms)
-        check = PackageCheck(
-            configpath=configpath,
-            limit=limit,
-            pkg=pkg,
-            org=org,
-            rundir=rundir,
-        )
+    if runparms.check:
+        check = PackageCheck(config=runparms.config,
+                             siteurl=runparms.siteurl,
+                             rundir=runparms.rundir,
+                             mode=runparms.mode,
+                             limit=runparms.limit,
+                             pkg=runparms.pkg,
+                             org=runparms.org)
         check.run()
-    if build or send or test:
-        sender = EmailSender(
-            rundir=rundir,
-            configpath=configpath,
-            test=test,
-        )
-        if build_mails:
-            click.echo("building emails")
-            sender.build()
-        if send or test:
-            click.echo("sending emails")
-            sender.send()
-
-
-def _check_and_format_runparms(
-        org, limit, pkg, run, configpath, build, send):
-    nr_scope_options = \
-        len([opt for opt in [limit, pkg, org] if opt])
-    if not configpath:
-        raise click.UsageError("The package checker needs a "
-                               "configuration path\n"
-                               "--config must always be used.")
-    if len([opt for opt in [limit, pkg, org] if opt]) > 1:
-        raise click.UsageError("Only one of the options --org, --limit, "
-                               "--pkg can be used.")
-    if run and nr_scope_options:
-        raise click.UsageError("--rundir can only be used with "
-                               "--build and --send:\n"
-                               "it implies that the check has "
-                               "already been performed "
-                               "and just the emails\n"
-                               "should be build and send out")
-    runparms = "Run of pkg_checker:\n-------------------\n"
-    if org:
-        runparms += "organization: {}\n".format(org)
-    if limit:
-        runparms += "limit       : {}\n".format(limit)
-    if pkg:
-        runparms += "package     : {}\n".format(pkg)
-    if configpath:
-        runparms += "configpath  : {}\n".format(configpath)
-    if run:
-        runparms += "run         : {}\n".format(run)
-    if build:
-        runparms += "build mails : {}\n".format(build)
-    if send:
-        runparms += "send mails  : {}\n".format(send)
-    return runparms
+    if runparms.build:
+        builder = EmailBuilder(rundir=runparms.rundir,
+                               mode=runparms.mode,
+                               config=runparms.config)
+        builder.build()
+    if runparms.send:
+        sender = EmailSender(rundir=runparms.rundir,
+                             config=runparms.config,
+                             test=runparms.test,
+                             mode=runparms.mode)
+        sender.send()
 
 
 if __name__ == '__main__':

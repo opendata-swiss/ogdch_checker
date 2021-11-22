@@ -3,3 +3,7 @@
 htmlcov/*
 *.pyc
 p3venv
+*.ini
+tmp/*
+*.csv
+*.sh

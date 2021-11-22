@@ -3,17 +3,88 @@
 ## About 
 
 This a tool for checking datasets and resources of a ckan installation.
+There are currently two checkers in place: 
 
-- Emails can be send to the contacts of these datasets.
-- The two steps: checking datasets and sending out emails can be separated 
-  from each other
-- There is a contactchecker, that writes the contacts of a dataset to a csv file
-- There is a linkchecker which writes a linkchecker_msgs.csv file and a linkchecker.csv file
-- the checker can be limited to a number of datasets (`--limit`) to one dataset (`--pkg`) or to and
-  organization (`--org`)
-- the checkers write `csv` files, since these can be easily used for data analysis (with jupyther notebooks)
-- the checkers come with an interface, so it is fairly easy to add custom checkers as needed  
-     
+- a linkchecker: checks link on datasets for their HTTP response codes (this 
+  checker has a long run time, since it repeats requests, if they fail.)
+- a shaclchecker that checks datasets against a shacl graph (the shacl graph can be set in the configuration).
+
+For each run of the tool a temporary directory is set up to store the 
+results of the run: 
+
+The run name formed of the arguments of the run. In the directory: `<tmpdir>/<runname>` the following subdirectories can be found:
+
+- `csv`: includes a csv file with raw results from each checker
+- `mails`: here the messages are split up by contact and provided as html files
+- `logs`: includes and error log and an info log: the error log contains setup errors if they occured and will otherwise be empty.
+
+### Scope
+
+The checkers are checking the ckan site `https://ckan.opendata.swiss` and its test instances.
+They can be run with the following scopes:
+
+- default: check all datasets on the site
+- `--org <organization-slug>` restricts to the datasets of one organization
+- `--limit <number>` restricts it to the first `<number>` of packages
+- `--pkg <slug of a dataset>` restrict it to a single dataset
+
+### Configuration
+
+There is a [`config.ini.dist`](config.ini.dist) file to explain the configuration
+
+### Operation Modes
+
+The tool can be called with different options to perform different steps:
+
+By default emails are neither build (`mails` subdirectory) nor send.
+
+Use:
+- `--build`: to build the emails in the `mails` subdirectory
+- `--send`: to also send them to the adresses specified in the `config.ini` file
+- `--test`: sends the emails ot the emails specified in the `[test]` section of 
+  the configuration file only
+- `--run <runname> --send`: sends prebuild emails from a `mails` subdirectory: this option 
+  can be used to split between email building and email sending 
+
+
+### Checker Modes
+
+The checker mode can be chosen: 
+
+- `--mode shacl` runs the shacl checker
+- `--mode link` runs the link checker
+
+#### Linkchecker
+
+- it checks the links for datasets and resources. 
+- it first tries the HEAD 
+  method and if this method fails it tries again with a GET request.
+
+#### ShaclChecker
+
+See https://www.w3.org/TR/shacl/ for documentation on Shacl.
+The shacl checker checks the datasets against a shacl graph that is 
+specified in the `[shaclchecker]` section
+
+It makes use of pyshacl: see here for a documentation: https://github.com/RDFLib/pySHACL
+
+### Email Receivers
+
+The checkers can be set to send out emails about the datasets, that failed the checks with the option `--send`.
+The emails go to the contacts mentioned in the packages and additionally some administrators, that are set in the configuration file.
+In case the contact for the metadata of an organization differs from the contact given in the packages, this can be specified in a csv file with the following fields:
+
+```
+pkg_type,organization_slug,contact_email
+geocat,example-org,example-contact-email@gmail.com
+dcat,other-example-org,other-contact-email@org.ch
+```
+
+These fields are to be filled as follows:
+
+- `pkg_type`: `geocat` for datasets that are harvested from https://geocat.ch, `dcat` for all other datasets
+- `organization_slug`: slug of the organization on https://opendata.swiss
+- `contact_email`: metadata contact for that organization: an email of a peron or organization that can change the metadata of datasets of that organization
   
 ## Install 
 
@@ -22,89 +93,42 @@ git clone <repo>
 python3 -m venv p3venv
 source p3venv/bin/activate
 pip install -r requirements.txt
+cp config.ini.dist config.ini
 ```
 
 ## Deploy
 
 Currently there is no deployment script in place for the ogdch_checker.
-Just go ot the server:
-
-```
-ssh -p 22022 -l liip vps27.rs.bsa.oriented.ch
-cd ogdch_checker
-git fetch
-git checkout master
-``` 
 
 ## Usage
 
-Just call the command with --help to get detailed instructions on how to use it:
+Call the command with --help to get detailed instructions on how to use it:
 
 ```
 python pkg_checker.py --help
-``` 
-
-The ogdch_checker currently runs as linkchecker once a month and
-is entered in the crontab of the server:
-
-```
-5 0 4 * * /home/liip/checker_venv/bin/python3 /home/liip/ogdch_checker/pkg_checker.py --configpath /home/liip/ogdch_checker/config/production.ini --send
 ```
 
-### Configuration files
-
-There are two configuration files: one for development and one for production.
-The package checker must always be called with a configuration file.
+Here you will find some common use cases as examples:
 
 ```
-python pkg_checker.py --configpath config/development.ini
-``` 
+# checking a dataset on prod with the shaclchecker and building emails but not 
+sending them
+python pkg_checker.py -c config.ini -p bauprojekte-immobilien1 -m shacl -b 
 
-By default the command will perform the checks that are specified in the configuration
-file and write csv files.
+# checking a dataset on prod with the linkchecker and sending them
+python pkg_checker.py -c config.ini -p bauprojekte-immobilien1 -m link -b -s
 
-### Send and build emails
-
-In order to send and build emails call it with `--send` or `--build`
-You can combine this options to have the check and sending done in one go.
-Or you can check first and send emails later. To send emails from a previous run,
-use the name of that run and start the command withh `--run <runname> --send`.
-You can also testrun the emails with `-t -s`: this does just log the emails, that would normally be send.
-
-### Limit the scope of the package checker
-
-You can restrict the checks and emailing on several levels:
-
-- `--org <organization-slug>` restricts it to that organizations datasets
-- `--limit <number>` restricts it to the first `<number>` of packages
-- `--pkg <slug of a package>` restrict it to a single package
-
-### Linkchecker-Emails
-
-For the linkchecker emails only the linkchecker needs to be activated in the config files:
-
-- LinkChecker: it checks the links for datasets and resources. 
-
-It first tries the HEAD method and if this method fails it tries again with a GET request.
-
-### The Run directory
-
-Each run produces a directory in the tmp directory specified in the configuration file.
-All information on that run is kept in that file including the logs, the csv files, that 
-are written as results of the checks and also the mails that are build before they will be send.
-
-So after the checker has run you can send or resend the emails with:
-
+# checking all datasets on prod with the shaclchecker and sending the emails 
+to a test address
+python pkg_checker.py -c config.ini -m shacl -b -s -t
 ```
-python pkg_checker.py --run <rundirectory name> --send
-``` 
 
 ## Tests
 
 To run the tests: 
 
 ```
-pip install -r requirements.txt
+pip install -r dev_requirements.txt
 ```
 
 After the installation you will be able to run the tests and see the current coverage.
@@ -114,21 +138,3 @@ coverage run -m unittest discover
 coverage report
 coverage html
 ```
-
-## Setting up different emails for a contact
-
-### Default
-
-By default emails about failed link checks will be send to the contacts provided
-in a dataset.
-
-### Geocat
-
-For datasets harvested by geocat, the emails are sent to the email provided for geocat in
-the configuration file instead of the publisher of the dataset.
-
-### Generalize this for other datasets
-
-The email sending is decided by dataset type. In case there are other special dataset types this approach
-can be easily generalize by writing also these dataset types to the files and adding special rules
-in the email sender on where to send the emails for those other dataset types.

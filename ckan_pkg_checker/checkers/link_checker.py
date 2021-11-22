@@ -1,6 +1,5 @@
 import csv
 import click
-from configparser import ConfigParser
 from collections import namedtuple
 from ckan_pkg_checker.utils import utils
 import ckan_pkg_checker.utils.request_utils as request_utils
@@ -9,23 +8,16 @@ from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 import logging
 log = logging.getLogger(__name__)
 
-CheckResult = namedtuple('CheckResult', ['pkg', 'resource', 'item', 'msg'])
+CheckResult = namedtuple('CheckResult', ['resource_id', 'item', 'msg', 'test_title'])
 
 
 class LinkChecker(CheckerInterface):
-    def initialize(self, geocat_packages, rundir, configpath):
+    def __init__(self, rundir, config, siteurl):
         """Initialize the link checker"""
         self.url_result_cache = {}
-        config = ConfigParser()
-        config.read(configpath)
-        self.siteurl = config.get('site', 'siteurl')
-        self.geocat_pkg_ids = geocat_packages
-        csvfile = \
-            utils._get_csvdir(rundir) / config.get('linkchecker', 'csvfile')
-        msgfile = \
-            utils._get_csvdir(rundir) / config.get('linkchecker', 'msgfile')
+        self.siteurl = siteurl
+        csvfile = utils.get_csvdir(rundir) / utils.get_config(config, 'linkchecker', 'csvfile')
         self._prepare_csv_file(csvfile)
-        self._prepare_msg_file(msgfile)
 
     def _prepare_csv_file(self, csvfile):
         self.csv_fieldnames = [
@@ -36,77 +28,70 @@ class LinkChecker(CheckerInterface):
             'error_message',
             'dataset_title',
             'dataset_url',
-            'resource_url']
+            'resource_url',
+            'test_title',
+            'pkg_type',
+            'checker_type',
+            'template',
+        ]
         self.csvfile = open(csvfile, 'w')
         self.csvwriter = csv.DictWriter(
             self.csvfile, fieldnames=self.csv_fieldnames)
         self.csvwriter.writeheader()
 
-    def _prepare_msg_file(self, msgfile):
-        self.msgfile = open(msgfile, 'w')
-        self.mailwriter = csv.DictWriter(
-            self.msgfile, fieldnames=utils.FieldNamesMsgFile)
-        self.mailwriter.writeheader()
-
     def check_package(self, pkg):
         """Check one data package"""
-        if pkg['name'] in self.geocat_pkg_ids:
-            pkg_type = utils.GEOCAT
-        else:
-            pkg_type = utils.DCAT
+        pkg_type = pkg.get('pkg_type', utils.DCAT)
         check_results = []
-        landing_page = pkg['url']
+        landing_page = pkg.get('url')
         if landing_page:
             check_result = self._check_url_status(
-                "landing_page_url", landing_page, pkg)
+                "dcat:landingPage", landing_page)
             if check_result:
                 check_results.append(check_result)
 
         if 'relations' in pkg:
             for relation in pkg['relations']:
-                relation_url = relation['url']
+                relation_url = relation.get('url')
                 if relation_url:
                     check_result = self._check_url_status(
-                        "relations_url", relation_url, pkg)
+                        "dct:relation", relation_url)
                     if check_result:
                         check_results.append(check_result)
 
         for resource in pkg['resources']:
-            log.info("LINKCHECKER: checking RESOURCE: {}".format(
-                utils._get_field_in_one_language(resource['display_name'], '')
-            ))
+            log.info(f"LINKCHECKER: checking RESOURCE: {utils.get_field_in_one_language(resource['display_name'], '')}")
             resource_results = self._check_resource(pkg, resource)
             if resource_results:
                 check_results.extend(resource_results)
-        for result in check_results:
-            self.write_result(pkg_type, result)
+        for check_result in check_results:
+            self.write_result(pkg, pkg_type, check_result)
 
     def finish(self):
         self.csvfile.close()
-        self.msgfile.close()
 
     def _check_resource(self, pkg, resource):
         """Check one resource"""
         resource_results = []
-        resource_url = resource['url']
+        access_url = resource['url']
         try:
             download_url = resource['download_url']
         except KeyError:
             download_url = None
             pass
-        if resource_url:
+        if access_url:
             check_result = self._check_url_status(
-                'resource_url', resource_url, pkg, resource)
+                'dcat:accessURL', access_url, resource['id'])
             if check_result:
                 resource_results.append(check_result)
-        if download_url and download_url != resource_url:
+        if download_url and download_url != access_url:
             check_result = self._check_url_status(
-                'download_url', download_url, pkg, resource)
+                'dcat:downloadURL', download_url, resource['id'])
             if check_result:
                 resource_results.append(check_result)
         return resource_results
 
-    def _check_url_status(self, test_title, test_url, pkg, resource=None):
+    def _check_url_status(self, test_title, test_url, resource_id=None):
         """Check one url"""
         if test_url in self.url_result_cache:
             test_result = self.url_result_cache[test_url]
@@ -119,58 +104,39 @@ class LinkChecker(CheckerInterface):
             self.url_result_cache[test_url] = test_result
         if test_result:
             check_result = CheckResult(
-                msg=test_result, pkg=pkg,
-                resource=resource, item=test_url)
-            log.info("LINKCHECKER: ERROR: \n{} \nURL {}\nMSG {}".format(
-                test_title, test_url, check_result.msg))
-            click.echo("Linkchecker Error: {} url {} msg {}".format(
-                test_title, test_url, check_result.msg
-            ))
+                msg=test_result, resource_id=resource_id, item=test_url, test_title=test_title)
+            log.info(f"LINKCHECKER: ERROR: \n{test_title} \nURL {test_url}\nMSG {check_result.msg}")
+            click.echo(f"Linkchecker Error: {test_title} url {test_url} msg {check_result.msg}")
             return check_result
 
-    def write_result(self, pkg_type, check_result):
+    def write_result(self, pkg, pkg_type, check_result):
         contacts = utils.get_pkg_contacts(
-            check_result.pkg.get('contact_points'))
-        title = utils._get_field_in_one_language(
-            check_result.pkg['title'], check_result.pkg['name'])
-        dataset_url = utils._get_ckan_dataset_url(
-            self.siteurl, check_result.pkg['name'])
-        organization = check_result.pkg.get('organization').get('name')
+            pkg.get('contact_points'))
+        title = utils.get_field_in_one_language(
+            pkg['title'], pkg['name'])
+        dataset_url = utils.get_ckan_dataset_url(
+            self.siteurl, pkg['name'])
+        organization = pkg.get('organization').get('name')
         resource_url = ''
-        if check_result.resource:
-            resource_url = utils._get_ckan_resource_url(
-                self.siteurl, check_result.pkg['name'],
-                check_result.resource['id'])
+        if check_result.resource_id:
+            resource_url = utils.get_ckan_resource_url(
+                self.siteurl, pkg['name'],
+                check_result.resource_id)
         for contact in contacts:
-            self.write_to_csv(contact, organization, check_result, title,
-                              dataset_url, resource_url=resource_url)
-            self.write_for_email(contact, pkg_type, check_result, title, dataset_url,
-                                 resource_url=resource_url)
+            self.csvwriter.writerow(
+                {'contact_email': pkg.get('send_to', contact.email),
+                 'contact_name': pkg.get('send_to', contact.name),
+                 'organization_name': organization,
+                 'test_url': check_result.item,
+                 'error_message': check_result.msg,
+                 'dataset_title': title,
+                 'dataset_url': dataset_url,
+                 'resource_url': resource_url,
+                 'test_title': check_result.test_title,
+                 'pkg_type': pkg_type,
+                 'checker_type': utils.MODE_LINK,
+                 'template': 'linkchecker_error.html',
+                 })
 
-    def write_to_csv(self, contact, organization, check_result,
-                     title, dataset_url, resource_url):
-        self.csvwriter.writerow(
-            {
-                'contact_email': contact.email,
-                'contact_name': contact.name,
-                'organization_name': organization,
-                'test_url': check_result.item,
-                'error_message': check_result.msg,
-                'dataset_title': title,
-                'dataset_url': dataset_url,
-                'resource_url': resource_url,
-            }
-        )
-
-    def write_for_email(self, contact, pkg_type, check_result, title,
-                        dataset_url, resource_url):
-        msg = utils._build_msg_per_error(
-            check_result.item, check_result.msg,
-            dataset_url, title, resource_url)
-        self.mailwriter.writerow({
-                'contact_email': contact.email,
-                'contact_name': contact.name,
-                'pkg_type': pkg_type,
-                'msg': msg,
-            }
-        )
+    def __repr__(self):
+        return "Link Checker"

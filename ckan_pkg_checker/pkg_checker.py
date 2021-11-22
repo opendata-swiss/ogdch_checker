@@ -1,54 +1,62 @@
 import ckanapi
-from configparser import ConfigParser
-from ckan_pkg_checker.checkers.contact_checker import ContactChecker
-from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
-# this import in needed because the LinkChecker Class is used here
-from ckan_pkg_checker.checkers.link_checker import LinkChecker # noqa
-from ckan_pkg_checker.checkers.coverage_checker import CoverageChecker
-
 import logging
+import click
+from ckanapi.errors import NotFound as DatasetNotFoundException
+from ckan_pkg_checker.checkers.link_checker import LinkChecker
+from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
+from ckan_pkg_checker.utils.utils import (log_and_echo_msg, MODE_SHACL, MODE_LINK,
+                                          set_up_contact_mapping, DCAT, GEOCAT, ContactKey)
+
 log = logging.getLogger(__name__)
 
 
 class PackageCheck():
-    def __init__(self, limit, pkg, org, rundir, configpath):
-        config = ConfigParser()
-        config.read(configpath)
-        self.siteurl = config.get('site', 'siteurl')
+    def __init__(self, config, siteurl, rundir, mode, limit, pkg, org):
+        self.siteurl = siteurl
         self.ogdremote = ckanapi.RemoteCKAN(self.siteurl)
         self.pkgs = self._get_packages(
             limit=limit, pkg=pkg, org=org)
         self.pkgs_count = len(self.pkgs)
+        self.geocat_pkg_ids = self._get_geocat_package_ids()
+        self.contact_dict = set_up_contact_mapping(config)
         self.active_checkers = []
-        checker_classnames = config.get(
-            'checkers', 'checker_classnames').split(' ')
-        for checker_class in _get_checker_classes(
-                checker_names=checker_classnames):
-            checker = checker_class()
-            kwargs = {'rundir': rundir, 'configpath': configpath}
-            if checker_class in [ContactChecker, LinkChecker]:
-                geocat_pkg_ids = self._get_geocat_package_ids()
-                kwargs['geocat_packages'] = geocat_pkg_ids
-            checker.initialize(**kwargs)
+        checker_classes = []
+        kwargs = {'rundir': rundir, 'config': config, 'siteurl': siteurl}
+        if mode == MODE_SHACL:
+            checker_classes.append(ShaclChecker)
+        elif mode == MODE_LINK:
+            checker_classes.append(LinkChecker)
+        for checker_class in checker_classes:
+            checker = checker_class(**kwargs)
             self.active_checkers.append(checker)
-        log.info(
-            "CHECKER-CONFIG:\nsiteurl: {}\nlimit: {}\npackages: {}"
-            "\norganizations: {}\ncheckers: {}"
-            .format(self.siteurl, limit, self.pkgs_count, org,
-                    self.active_checkers))
+        log_and_echo_msg(f"--> {self.pkgs_count} datasets to process")
 
     def run(self):
         for idx, id in enumerate(self.pkgs):
-            log.info("({}/{}) DATASET {}".format(idx + 1, self.pkgs_count, id))
+            log_and_echo_msg(f"({idx + 1}/{self.pkgs_count}) DATASET {id}")
             try:
                 pkg = self.ogdremote.action.package_show(id=id)
+                self._enrich_package(pkg)
                 if pkg['type'] == 'dataset':
                     for checker in self.active_checkers:
                         checker.check_package(pkg)
-            except Exception as e:
-                log.exception('check_package failed {}'.format(e))
+            except DatasetNotFoundException:
+                log_and_echo_msg(f"No dataset found for id: {id}")
         for checker in self.active_checkers:
             checker.finish()
+
+    def _enrich_package(self, pkg):
+        if pkg['name'] in self.geocat_pkg_ids:
+            pkg['pkg_type'] = GEOCAT
+        else:
+            pkg['pkg_type'] = DCAT
+        if pkg.get('organization'):
+            contact_key = ContactKey(organization=pkg['organization'].get('name'),
+                                     pkg_type=pkg['pkg_type'])
+            if contact_key in self.contact_dict:
+                email = self.contact_dict.get(contact_key)
+                pkg['send_to'] = email
+                click.echo(email)
 
     def _get_packages(self, limit=None, pkg=None, org=None):
         if pkg:
@@ -63,14 +71,14 @@ class PackageCheck():
         try:
             pkg_ids = self.ogdremote.action.package_list()
         except Exception as e:
-            log.exception('getting packages failed: {}'.format(e))
+            log.exception(f"getting packages failed: {e}")
         public_packages = [id for id in pkg_ids if not id.startswith('__')]
         if limit:
             return public_packages[:limit]
         return public_packages
 
     def _get_organization_package_ids(self, org):
-        fq_organization = 'organization:{}'.format(org)
+        fq_organization = f"organization:{org}"
         organization_pkg_ids = \
             self._get_pkg_ids_from_package_search(fq_organization)
         return organization_pkg_ids
@@ -100,21 +108,6 @@ class PackageCheck():
                 if not result_count:
                     result_count = result['count']
                 pkg_ids.extend([pkg[target] for pkg in result['results']])
-            except Exception as e:
-                log.exception("Error occured while searching for packages "
-                              "with fq: {}, error: {}"
-                              .format(fq, e))
+            except DatasetNotFoundException:
+                log_and_echo_msg(f"No datasets found for search with fw: {fq}")
         return pkg_ids
-
-
-def _get_checker_classes(checker_names):
-    checkerclasses = []
-    for checkername in checker_names:
-        try:
-            checker = eval(checkername)
-            assert(issubclass(checker, CheckerInterface))
-        except Exception as e:
-            raise(e)
-        else:
-            checkerclasses.append(checker)
-    return checkerclasses

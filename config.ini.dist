@@ -1,0 +1,64 @@
+[site]
+# site url of the ckan installation
+# alternatives are the ckan test and abnahme instance of opendata.swiss
+siteurl = https://ckan.opendata.swiss
+
+[tmpdir]
+# put a custom path here where you want to receive your output
+tmppath =
+
+[linkchecker]
+# chose name of the csv file to store the raw linkchecker results
+csvfile = linkchecker.csv
+
+[shaclchecker]
+# chose name of the csv file to store the raw shaclchecker results
+csvfile = shaclchecker.csv
+
+# provide the path of the frequency vocabulary [http://purl.org/cld/freq](http://purl.org/cld/freq)
+# it is currently provided as a file, to avoid downtimes of the vocabulary site and expected in Turtle
+# format
+frequency_file = frequency.ttl
+
+# path to the shacl file that is used for the shacl validation
+# the Shacl file is expected in Turtle format
+shacl_file = ogdch.shacl.ttl
+
+[contacts]
+# file to redirect contact emails per organizations
+# header: pkg_type,organization_slug,contact_email
+# row: geocat,example-org,contact@example.ch
+# pkg_type can be either 'dcat' or 'geocat'
+# organization_slug is the organization slug on opendata.swiss
+csvfile =
+
+[emailsender]
+# admin email and title: all emails go also to the admin
+admin_name =
+admin_email =
+
+# default email receiver, if no dataset contact can be found
+default_name =
+default_email =
+
+# Title and email for sending emails for datasets harvested by geocat
+geocat_name =
+geocat_email =
+
+#bcc  for sending emails
+bcc =
+
+# email server
+smtp_server = localhost
+
+# sender
+sender = no-reply@opendata.swiss
+
+[test]
+# email address where the emails get send with the --test option
+# Example: emails = email1 email2
+emails =
+
+[logging]
+# set the logging level
+level = INFO

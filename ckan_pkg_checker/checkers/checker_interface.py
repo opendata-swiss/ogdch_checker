@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 class CheckerInterface(metaclass=ABCMeta):
     @classmethod
     def __subclasshook__(cls, subclass):
-        return (hasattr(subclass, 'initialize') and
+        return (hasattr(subclass, '__init__') and
                 callable(subclass.initialize) and
                 hasattr(subclass, 'check_package') and
                 callable(subclass.check_package) and
@@ -15,8 +15,8 @@ class CheckerInterface(metaclass=ABCMeta):
                 NotImplemented)
 
     @abstractmethod
-    def initialize(self, *args, **kwargs):
-        """Open a file"""
+    def __init__(self, *args, **kwargs):
+        """Open files and set checker up"""
         raise NotImplementedError
 
     @abstractmethod

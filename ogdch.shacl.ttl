@@ -1,0 +1,93 @@
+@prefix : <http://tbd.data.admin.ch/shacl#> .
+
+@prefix adms: <http://www.w3.org/ns/adms#>.
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+<> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
+
+:FrequencyRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Frequency Restriction" ;
+    rdfs:label "Frequency Restriction" ;
+    sh:property [
+        sh:hasValue <http://purl.org/cld/terms/Frequency> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
+:DatasetShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass dcat:Dataset ;
+  sh:property [
+      sh:path dct:description ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message "Please add a description for your dataset."@en ;
+    ] ;
+  sh:property [
+      sh:path dct:title ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message "Please add a description for your dataset."@en ;
+    ] ;
+  sh:property [
+      sh:path dcat:distribution ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message "This dataset does not have any distributions. Please add a distribution for the dataset."@en ;
+    ] ;
+  sh:property [
+      sh:path dcat:contactPoint ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message "This dataset does not provide a contact point. Please add a contact point for the dataset."@en ;
+    ] ;
+  sh:property [
+      sh:path dcat:contactPoint ;
+      sh:class vcard:Organization ;
+      sh:severity sh:Violation ;
+      sh:message "The contact point needs to be provided as vcard:kind"
+    ] ;
+  sh:property [
+      sh:path dct:publisher ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message "Please provide a publisher for the dataset."@en ;
+    ] ;
+  sh:property [
+        sh:path dct:accrualPeriodicity ;
+        sh:node :FrequencyRestriction ;
+        sh:nodeKind sh:IRI ;
+	    sh:message "The frequency is expected from a controlled vocabulary http://purl.org/cld/freq. The given value could not be found in that vocabulary." ;
+        sh:severity sh:Violation
+    ] ;
+.
+
+:DistributionShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass dcat:Distribution;
+  sh:property [
+      sh:path dcat:accessURL ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message "Please provide an access url for the distribution."@en ;
+    ] ;
+  sh:property [
+      sh:path dcat:accessURL ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Violation ;
+      sh:message "The accessURL must be a URL. Please provide a URL for this property."@en ;
+    ] ;
+.
