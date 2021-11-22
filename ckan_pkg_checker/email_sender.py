@@ -59,6 +59,6 @@ class EmailSender():
                     server.sendmail(send_from, self.email_overwrites, msg.as_string())
                     server.quit()
                     utils.log_and_echo_msg(f"Email {filename} was sent to: {self.email_overwrites} "
-                                           f"would normally be send to: {send_to}\n"
+                                           f"would normally be sent to: {send_to}\n"
                                            f"send from: {send_from}\n"
                                            f"send info: msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}")
