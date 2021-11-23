@@ -1,18 +1,21 @@
 name: Deploy
-on: [workflow_dispatch, push]
+on: [ workflow_dispatch, push ]
 jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Deploy
-          uses: garygrossgarten/github-action-ssh@release
-          with:
-            command: ls -lah ${{ secrets.DEST_PATH }}
-            host: ${{ secrets.SSH_HOST_PRODUCTION }}
-            port: ${{ secrets.SSH_PORT_PRODUCTION }}
-            username: ${{ secrets.SSH_USER }}
-            privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-#          run: |
-#              rsync -a --delete -e "ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT_PRODUCTION }}" -v . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PRODUCTION }}:${{ secrets.DEST_PATH }}
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Deploy
+                uses: garygrossgarten/github-action-ssh@release
+                with:
+                    host: ${{ secrets.SSH_HOST_PRODUCTION }}
+                    port: ${{ secrets.SSH_PORT_PRODUCTION }}
+                    username: ${{ secrets.SSH_USER }}
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                    command: |
+                        cd ${{ secrets.DEST_PATH }}
+                        git fetch origin && git checkout ${{ github.sha }}
+                        python3 -m venv p3venv
+                        source p3venv/bin/activate
+                        pip install -r requirements.txt
