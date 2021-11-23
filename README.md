@@ -123,18 +123,36 @@ to a test address
 python pkg_checker.py -c config.ini -m shacl -b -s -t
 ```
 
-## Tests
+## Tests and linting
 
-To run the tests: 
+We use Github Actions to automatically check the code for style and syntax
+errors, and to run the tests. This is configured in `.github/workflows`.
+
+To do this locally, first install the dev requirements.
 
 ```
 pip install -r dev_requirements.txt
 ```
 
-After the installation you will be able to run the tests and see the current coverage.
+To run the tests and see the current coverage:
 
 ```
 coverage run -m unittest discover
 coverage report
 coverage html
+```
+
+To check the code style and catch syntax errors:
+
+```
+isort --diff --check .
+black --diff --check .
+flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
+```
+
+To fix code style before committing your changes:
+
+```
+isort .
+black .
 ```
