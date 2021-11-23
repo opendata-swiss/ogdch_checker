@@ -28,6 +28,7 @@ GEOCAT = 'geocat'
 DCAT = 'dcat'
 MODE_SHACL = 'shacl'
 MODE_LINK = 'link'
+MODE_PUBLISHER = 'publisher'
 
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(ckan_siteurl, '/dataset/' + pkg_name + '/resource/' + resource_id)  # noqa
@@ -196,8 +197,8 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
                                    "and just the emails\n"
                                    "should be build and send out")
     else:
-        if mode and mode not in [MODE_SHACL, MODE_LINK]:
-            raise click.UsageError(f"--mode can only contain {MODE_SHACL} or {MODE_LINK}")
+        if mode and mode not in [MODE_SHACL, MODE_LINK, MODE_PUBLISHER]:
+            raise click.UsageError(f"--mode can only contain {MODE_SHACL} or {MODE_LINK} or {MODE_PUBLISHER}")
         siteurl = get_config(config, 'site', 'siteurl', required=True)
         check = True
         run = _get_runname(org=org, limit=limit, pkg=pkg, mode=mode)

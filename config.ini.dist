@@ -11,6 +11,10 @@ tmppath =
 # chose name of the csv file to store the raw linkchecker results
 csvfile = linkchecker.csv
 
+[publisherchecker]
+# chose name of the csv file to store the publisherchecker results
+csvfile = publisherchecker.csv
+
 [shaclchecker]
 # chose name of the csv file to store the raw shaclchecker results
 csvfile = shaclchecker.csv

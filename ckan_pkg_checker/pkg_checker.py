@@ -4,7 +4,8 @@ import click
 from ckanapi.errors import NotFound as DatasetNotFoundException
 from ckan_pkg_checker.checkers.link_checker import LinkChecker
 from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
-from ckan_pkg_checker.utils.utils import (log_and_echo_msg, MODE_SHACL, MODE_LINK,
+from ckan_pkg_checker.checkers.publisher_checker import PublisherChecker
+from ckan_pkg_checker.utils.utils import (log_and_echo_msg, MODE_SHACL, MODE_LINK, MODE_PUBLISHER,
                                           set_up_contact_mapping, DCAT, GEOCAT, ContactKey)
 
 log = logging.getLogger(__name__)
@@ -26,6 +27,8 @@ class PackageCheck():
             checker_classes.append(ShaclChecker)
         elif mode == MODE_LINK:
             checker_classes.append(LinkChecker)
+        elif mode == MODE_PUBLISHER:
+            checker_classes.append(PublisherChecker)
         for checker_class in checker_classes:
             checker = checker_class(**kwargs)
             self.active_checkers.append(checker)
