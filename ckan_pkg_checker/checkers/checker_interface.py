@@ -4,15 +4,17 @@ from abc import ABCMeta, abstractmethod
 class CheckerInterface(metaclass=ABCMeta):
     @classmethod
     def __subclasshook__(cls, subclass):
-        return (hasattr(subclass, '__init__') and
-                callable(subclass.initialize) and
-                hasattr(subclass, 'check_package') and
-                callable(subclass.check_package) and
-                hasattr(subclass, 'write_result') and
-                callable(subclass.write_result) and
-                hasattr(subclass, 'finish') and
-                callable(subclass.finish) or
-                NotImplemented)
+        return (
+            hasattr(subclass, "__init__")
+            and callable(subclass.initialize)
+            and hasattr(subclass, "check_package")
+            and callable(subclass.check_package)
+            and hasattr(subclass, "write_result")
+            and callable(subclass.write_result)
+            and hasattr(subclass, "finish")
+            and callable(subclass.finish)
+            or NotImplemented
+        )
 
     @abstractmethod
     def __init__(self, *args, **kwargs):

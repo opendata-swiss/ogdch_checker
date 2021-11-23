@@ -1,0 +1,21 @@
+name: Deploy
+on: [ workflow_dispatch ]
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Deploy
+                uses: garygrossgarten/github-action-ssh@0.6.4
+                with:
+                    host: ${{ secrets.SSH_HOST_PRODUCTION }}
+                    port: ${{ secrets.SSH_PORT_PRODUCTION }}
+                    username: ${{ secrets.SSH_USER }}
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                    command: |
+                        cd ${{ secrets.DEST_PATH }}
+                        git fetch origin && git checkout ${{ github.sha }}
+                        python3 -m venv p3venv
+                        source p3venv/bin/activate
+                        pip install -r requirements.txt
