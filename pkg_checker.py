@@ -14,44 +14,79 @@ log = logging.getLogger(__name__)
 
 
 @click.command()
-@click.option('-l', '--limit', type=int,
-              help='Limit the number of packages to check. '
-                   'Example: --limit 20.')
-@click.option('-p', '--pkg',
-              help='Check only a single package. '
-                   'Example: --pkg vbz-haltestellen.')
-@click.option('-o', '--org',
-              help='Check only a single organization. '
-                   'Example --org bernmobil.')
-@click.option('-m', '--mode', default=MODE_SHACL,
-              help='Mode: LinkChecker (link) or ShaclChecker (shacl) . '
-                   'Example --m link. Default is ShaclChecker')
-@click.option('-c', '--configpath',
-              help='Path to the configuration file. '
-                   'Example --config config/development.ini'
-                   'The checker must always be run with a '
-                   'configuration file.')
-@click.option('-b', '--build/--no-build', default=False,
-              help='Build the mails in the mails directory. '
-                   'Example --build.'
-                   'By default the build is not performed.')
-@click.option('-s', '--send/--no-send', default=False,
-              help='Send the emails from the mail directory. '
-                   'Example: --send.'
-                   'By default the mails are not send.')
-@click.option('-t', '--test/--no-test', default=False,
-              help='Tests the sending of emails by logging instead of sending'
-                   'Example: --test.')
-@click.option('-r', '--run',
-              help='Run directory name to use for the build '
-                   'and send of mails. '
-                   'Example --run tmpxchgfrti.'
-                   'This assumes the checker has run before and has '
-                   'set up a directory with results '
-                   'of that run. With this option mails can be build and '
-                   'send out from the results of a previous checker run.')
-def check_packages(limit=None, pkg=None, org=None, configpath=None,
-                   build=False, send=False, run=None, test=False, mode=MODE_SHACL):
+@click.option(
+    "-l",
+    "--limit",
+    type=int,
+    help="Limit the number of packages to check. " "Example: --limit 20.",
+)
+@click.option(
+    "-p",
+    "--pkg",
+    help="Check only a single package. " "Example: --pkg vbz-haltestellen.",
+)
+@click.option(
+    "-o", "--org", help="Check only a single organization. " "Example --org bernmobil."
+)
+@click.option(
+    "-m",
+    "--mode",
+    default=MODE_SHACL,
+    help="Mode: LinkChecker (link) or ShaclChecker (shacl) . "
+    "Example --m link. Default is ShaclChecker",
+)
+@click.option(
+    "-c",
+    "--configpath",
+    help="Path to the configuration file. "
+    "Example --config config/development.ini"
+    "The checker must always be run with a "
+    "configuration file.",
+)
+@click.option(
+    "-b",
+    "--build/--no-build",
+    default=False,
+    help="Build the mails in the mails directory. "
+    "Example --build."
+    "By default the build is not performed.",
+)
+@click.option(
+    "-s",
+    "--send/--no-send",
+    default=False,
+    help="Send the emails from the mail directory. "
+    "Example: --send."
+    "By default the mails are not send.",
+)
+@click.option(
+    "-t",
+    "--test/--no-test",
+    default=False,
+    help="Tests the sending of emails by logging instead of sending" "Example: --test.",
+)
+@click.option(
+    "-r",
+    "--run",
+    help="Run directory name to use for the build "
+    "and send of mails. "
+    "Example --run tmpxchgfrti."
+    "This assumes the checker has run before and has "
+    "set up a directory with results "
+    "of that run. With this option mails can be build and "
+    "send out from the results of a previous checker run.",
+)
+def check_packages(
+    limit=None,
+    pkg=None,
+    org=None,
+    configpath=None,
+    build=False,
+    send=False,
+    run=None,
+    test=False,
+    mode=MODE_SHACL,
+):
     """Checks data packages of a opendata.swiss
     ---------------------------------------
 
@@ -78,29 +113,34 @@ def check_packages(limit=None, pkg=None, org=None, configpath=None,
         build=build,
         send=send,
         test=test,
-        mode=mode)
+        mode=mode,
+    )
 
     if runparms.check:
-        check = PackageCheck(config=runparms.config,
-                             siteurl=runparms.siteurl,
-                             rundir=runparms.rundir,
-                             mode=runparms.mode,
-                             limit=runparms.limit,
-                             pkg=runparms.pkg,
-                             org=runparms.org)
+        check = PackageCheck(
+            config=runparms.config,
+            siteurl=runparms.siteurl,
+            rundir=runparms.rundir,
+            mode=runparms.mode,
+            limit=runparms.limit,
+            pkg=runparms.pkg,
+            org=runparms.org,
+        )
         check.run()
     if runparms.build:
-        builder = EmailBuilder(rundir=runparms.rundir,
-                               mode=runparms.mode,
-                               config=runparms.config)
+        builder = EmailBuilder(
+            rundir=runparms.rundir, mode=runparms.mode, config=runparms.config
+        )
         builder.build()
     if runparms.send:
-        sender = EmailSender(rundir=runparms.rundir,
-                             config=runparms.config,
-                             test=runparms.test,
-                             mode=runparms.mode)
+        sender = EmailSender(
+            rundir=runparms.rundir,
+            config=runparms.config,
+            test=runparms.test,
+            mode=runparms.mode,
+        )
         sender.send()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     check_packages()
