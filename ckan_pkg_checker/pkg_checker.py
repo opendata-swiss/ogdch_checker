@@ -1,11 +1,14 @@
-import ckanapi
 import logging
+
+import ckanapi
 import click
 from ckanapi.errors import NotFound as DatasetNotFoundException
+
 from ckan_pkg_checker.checkers.link_checker import LinkChecker
 from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
-from ckan_pkg_checker.utils.utils import (log_and_echo_msg, MODE_SHACL, MODE_LINK,
-                                          set_up_contact_mapping, DCAT, GEOCAT, ContactKey)
+from ckan_pkg_checker.utils.utils import (DCAT, GEOCAT, MODE_LINK, MODE_SHACL,
+                                          ContactKey, log_and_echo_msg,
+                                          set_up_contact_mapping)
 
 log = logging.getLogger(__name__)
 

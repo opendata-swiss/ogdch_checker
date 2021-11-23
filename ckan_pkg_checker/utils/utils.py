@@ -1,16 +1,18 @@
-import csv
-import sys
-import click
-import logging
 import configparser
-from rdflib import Graph
-from datetime import datetime
+import csv
+import logging
+import sys
 from collections import namedtuple
-from urllib.parse import urljoin
-from configparser import NoSectionError, NoOptionError
-from urllib.error import HTTPError, URLError
+from configparser import NoOptionError, NoSectionError
+from datetime import datetime
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urljoin
+
+import click
 from jinja2 import Environment, PackageLoader, select_autoescape
+from rdflib import Graph
+
 env = Environment(
     loader=PackageLoader('ckan_pkg_checker', 'email_templates'),
     autoescape=select_autoescape(['html', 'xml'])

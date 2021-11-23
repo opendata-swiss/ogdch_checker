@@ -1,13 +1,14 @@
 """
 Script to start the Worklogdb Application
 """
-import click
 import logging
 
-from ckan_pkg_checker.pkg_checker import PackageCheck
+import click
+
 from ckan_pkg_checker.email_builder import EmailBuilder
 from ckan_pkg_checker.email_sender import EmailSender
-from ckan_pkg_checker.utils.utils import set_runparms, MODE_SHACL
+from ckan_pkg_checker.pkg_checker import PackageCheck
+from ckan_pkg_checker.utils.utils import MODE_SHACL, set_runparms
 
 log = logging.getLogger(__name__)
 

@@ -1,11 +1,12 @@
 import csv
 import logging
 from collections import namedtuple
-from ckan_pkg_checker.utils import utils
-from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
-import click
+
 from pyshacl import validate
-from rdflib.namespace import RDF, NamespaceManager, Namespace, SKOS
+from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
+
+from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
+from ckan_pkg_checker.utils import utils
 
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
 DCT = Namespace("http://purl.org/dc/terms/")

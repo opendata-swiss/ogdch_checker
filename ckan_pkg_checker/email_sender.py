@@ -1,8 +1,9 @@
-import os
 import logging
+import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
 from ckan_pkg_checker.utils import utils
 
 log = logging.getLogger(__name__)

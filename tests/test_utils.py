@@ -2,7 +2,9 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
+
 from ckan_pkg_checker.utils import utils
+
 
 class TestResourceCheckMethods(unittest.TestCase):
     def setUp(self):

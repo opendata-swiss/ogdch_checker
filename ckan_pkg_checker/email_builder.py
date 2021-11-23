@@ -1,6 +1,7 @@
 import csv
-import os
 import logging
+import os
+
 from ckan_pkg_checker.utils import utils
 
 log = logging.getLogger(__name__)

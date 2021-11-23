@@ -1,10 +1,11 @@
-import requests
 import logging
 
+import requests
 from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.exceptions import (InsecurePlatformWarning,
+                                                  InsecureRequestWarning)
 from requests.packages.urllib3.util.retry import Retry
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from requests.packages.urllib3.exceptions import InsecurePlatformWarning
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 requests.packages.urllib3.disable_warnings(InsecurePlatformWarning)
 

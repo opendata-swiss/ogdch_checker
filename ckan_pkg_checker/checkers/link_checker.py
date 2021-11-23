@@ -1,11 +1,13 @@
 import csv
-import click
+import logging
 from collections import namedtuple
-from ckan_pkg_checker.utils import utils
+
+import click
+
 import ckan_pkg_checker.utils.request_utils as request_utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
+from ckan_pkg_checker.utils import utils
 
-import logging
 log = logging.getLogger(__name__)
 
 CheckResult = namedtuple('CheckResult', ['resource_id', 'item', 'msg', 'test_title'])
