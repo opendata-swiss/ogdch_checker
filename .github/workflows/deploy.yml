@@ -6,6 +6,11 @@ jobs:
         steps:
         - name: Checkout
           uses: actions/checkout@v2
+        - name: Install private key for server
+          run: |
+              which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+              eval $(ssh-agent -s)
+              echo ${{ secrets.SSH_PRIVATE_KEY }} | tr -d '\r' | ssh-add -
         - name: Deploy
           run: |
-              rsync -a --delete -e "ssh -o StrictHostKeyChecking=no -p ${SSH_PORT_PRODUCTION}" -v . ${SSH_USER}@${SSH_HOST_PRODUCTION}:${DEST_PATH}
+              rsync -a --delete -e "ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT_PRODUCTION }}" -v . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PRODUCTION }}:${{ secrets.DEST_PATH }}
