@@ -16,8 +16,12 @@ class EmailBuilder:
         self.csvfile = utils.get_csvdir(rundir) / csvfile
         self.maildir = utils.get_maildir(rundir)
         self.default_contact = utils.Contact(
-            name=utils.get_config(config, "emailbuilder", "default_name", required=True),
-            email=utils.get_config(config, "emailbuilder", "default_email", required=True),
+            name=utils.get_config(
+                config, "emailbuilder", "default_name", required=True
+            ),
+            email=utils.get_config(
+                config, "emailbuilder", "default_email", required=True
+            ),
         )
 
     def build(self):

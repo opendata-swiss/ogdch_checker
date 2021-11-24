@@ -18,7 +18,9 @@ class EmailSender:
         )
         self.cc = utils.get_config(config, "emailsender", "cc", required=True)
         bcc = utils.get_config(config, "emailsender", "bcc", required=True)
-        geocat_admin = utils.get_config(config, "emailsender", "geocat_admin", required=True)
+        geocat_admin = utils.get_config(
+            config, "emailsender", "geocat_admin", required=True
+        )
         self.add_as_receivers_for_dcat = [self.cc, bcc]
         self.add_as_receivers_for_geocat = [self.cc, bcc, geocat_admin]
         self.test = test
