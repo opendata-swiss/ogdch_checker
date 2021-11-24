@@ -15,9 +15,13 @@ class EmailBuilder:
             csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
         self.csvfile = utils.get_csvdir(rundir) / csvfile
         self.maildir = utils.get_maildir(rundir)
-        self.admin = self.default_contact = utils.Contact(
-            name=utils.get_config(config, "emailsender", "admin_name", required=True),
-            email=utils.get_config(config, "emailsender", "admin_email", required=True),
+        self.default_contact = utils.Contact(
+            name=utils.get_config(
+                config, "emailbuilder", "default_name", required=True
+            ),
+            email=utils.get_config(
+                config, "emailbuilder", "default_email", required=True
+            ),
         )
 
     def build(self):
@@ -29,8 +33,8 @@ class EmailBuilder:
 
     def _process_line(self, row):
         contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]
-        if self.admin.email not in [contact.email for contact in contacts]:
-            contacts.append(self.admin)
+        if self.default_contact.email not in [contact.email for contact in contacts]:
+            contacts.append(self.default_contact)
         for contact in contacts:
             pkg_type = row["pkg_type"]
             mailfile = os.path.join(

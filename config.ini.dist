@@ -32,21 +32,18 @@ shacl_file = ogdch.shacl.ttl
 # organization_slug is the organization slug on opendata.swiss
 csvfile =
 
-[emailsender]
-# admin email and title: all emails go also to the admin
-admin_name =
-admin_email =
-
+[emailbuilder]
 # default email receiver, if no dataset contact can be found
 default_name =
 default_email =
 
-# Title and email for sending emails for datasets harvested by geocat
-geocat_name =
-geocat_email =
-
-#bcc  for sending emails
+[emailsender]
+# add emails for cc and bcc
+cc =
 bcc =
+
+# add geocat email as additional receiver for geocat packages
+geocat_admin =
 
 # email server
 smtp_server = localhost

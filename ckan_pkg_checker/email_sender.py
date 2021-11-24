@@ -16,17 +16,13 @@ class EmailSender:
         self.smtp_server = utils.get_config(
             config, "emailsender", "smtp_server", required=True
         )
-        self.bcc = utils.get_config(config, "emailsender", "bcc", fallback=None)
-        self.admin = self.default_contact = utils.Contact(
-            name=utils.get_config(config, "emailsender", "admin_name", required=True),
-            email=utils.get_config(config, "emailsender", "admin_email", required=True),
+        self.cc = utils.get_config(config, "emailsender", "cc", required=True)
+        bcc = utils.get_config(config, "emailsender", "bcc", required=True)
+        geocat_admin = utils.get_config(
+            config, "emailsender", "geocat_admin", required=True
         )
-        self.geocat_admin = utils.Contact(
-            name=utils.get_config(config, "emailsender", "geocat_name", required=True),
-            email=utils.get_config(
-                config, "emailsender", "geocat_email", required=True
-            ),
-        )
+        self.add_as_receivers_for_dcat = [self.cc, bcc]
+        self.add_as_receivers_for_geocat = [self.cc, bcc, geocat_admin]
         self.test = test
         if self.test:
             self.email_overwrites = utils.get_config(
@@ -48,13 +44,13 @@ class EmailSender:
                 send_from = self.sender
 
                 msg["To"] = contact_email
-                send_to = [self.admin.email]
+                msg["Cc"] = self.cc
+
+                send_to = [contact_email]
                 if contact_type == utils.GEOCAT:
-                    send_to.append(self.geocat_admin.email)
-                send_to.append(contact_email)
-                if self.bcc:
-                    msg["Bcc"] = self.bcc
-                    send_to.append(self.bcc)
+                    send_to.extend(self.add_as_receivers_for_geocat)
+                else:
+                    send_to.extend(self.add_as_receivers_for_dcat)
 
                 msg.attach(text)
                 server = smtplib.SMTP(self.smtp_server)
