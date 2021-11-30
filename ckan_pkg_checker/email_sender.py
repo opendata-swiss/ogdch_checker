@@ -30,7 +30,7 @@ class EmailSender:
                 config, "test", "emails", required=True
             ).split(" ")
 
-    def send(self, mode):
+    def send(self):
         log.info("sending emails")
         for filename in os.listdir(self.maildir):
             contact_type, contact_email = utils.process_msg_file_name(filename)
