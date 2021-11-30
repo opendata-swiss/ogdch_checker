@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import pandas as pd
 
 from ckan_pkg_checker.utils import utils
 
@@ -9,11 +10,12 @@ log = logging.getLogger(__name__)
 
 class EmailBuilder:
     def __init__(self, rundir, mode, config):
+        runpath = utils.get_csvdir(rundir)
         if mode == utils.MODE_SHACL:
-            csvfile = utils.get_config(config, "shaclchecker", "csvfile", required=True)
+            csvfilename = utils.get_config(config, "shaclchecker", "csvfile", required=True)
         elif mode == utils.MODE_LINK:
-            csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
-        self.csvfile = utils.get_csvdir(rundir) / csvfile
+            csvfilename = utils.get_config(config, "linkchecker", "csvfile", required=True)
+        self.csvfilepath = runpath / csvfilename
         self.maildir = utils.get_maildir(rundir)
         self.default_contact = utils.Contact(
             name=utils.get_config(
@@ -23,10 +25,13 @@ class EmailBuilder:
                 config, "emailbuilder", "default_email", required=True
             ),
         )
+        statfilename = utils.get_config(config, "shaclchecker", "statfile", required=False)
+        self.statfilepath = runpath / statfilename
 
     def build(self):
         log.info("building emails")
-        with open(self.csvfile, "r") as readfile:
+        self._build_stats()
+        with open(self.csvfilepath, "r") as readfile:
             reader = csv.DictReader(readfile)
             for row in reader:
                 self._process_line(row)
@@ -50,3 +55,16 @@ class EmailBuilder:
             msg += utils.build_msg_per_error(row)
             with open(mailfile, "a") as writemail:
                 writemail.write(msg)
+
+    def _build_stats(self):
+        mailfile = os.path.join(
+            self.maildir, 'statistics' + "#" + self.default_contact.email + ".html"
+        )
+        with open(mailfile, "a") as writemail:
+            df = pd.read_csv(self.statfilepath)
+            stats = df.to_dict()
+            msg = utils.build_stat_msg(
+                receiver_name=self.default_contact.name,
+                stats=stats,
+            )
+            writemail.write(msg)
