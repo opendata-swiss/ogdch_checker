@@ -43,7 +43,7 @@ GEOCAT = "geocat"
 DCAT = "dcat"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
-EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erron&eacute;es / Metadati mancanti / Incorrect metadata"
+EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erron&eacute;es / Metadati errati / Incorrect metadata"
 EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erron&eacute;es / URL errati / Incorrect URLs"
 
 
