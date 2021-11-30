@@ -23,13 +23,14 @@ class EmailSender:
         )
         self.add_as_receivers_for_dcat = [self.cc, bcc]
         self.add_as_receivers_for_geocat = [self.cc, bcc, geocat_admin]
+        self.email_subject = utils.get_email_subject(mode=mode)
         self.test = test
         if self.test:
             self.email_overwrites = utils.get_config(
                 config, "test", "emails", required=True
             ).split(" ")
 
-    def send(self):
+    def send(self, mode):
         log.info("sending emails")
         for filename in os.listdir(self.maildir):
             contact_type, contact_email = utils.process_msg_file_name(filename)
@@ -38,7 +39,7 @@ class EmailSender:
                 text = MIMEText(readfile.read(), "html", "utf-8")
                 msg = MIMEMultipart("alternative")
 
-                msg["Subject"] = utils.get_email_subject()
+                msg["Subject"] = self.email_subject
 
                 msg["From"] = self.sender
                 send_from = self.sender
