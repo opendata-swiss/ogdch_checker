@@ -1,4 +1,4 @@
-<p>Hello {{ context.receiver_name | e}}</p>
+<p>Hello {{ context.receiver_name | e }}</p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
 [DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
@@ -18,7 +18,7 @@
 [FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
 <br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
 {% elif context.checker_type == context.checker_type_shacl %}
-[FR] - Les champs suivants de vos jeux de données sur opendata.swiss ne répondent pas aux exigences de la DCAT-AP CH.
+[FR] - Les champs suivants de vos jeux de donn&egrave;es sur opendata.swiss ne r&egrave;pondent pas aux exigences de la DCAT-AP CH.
 <br>Veuillez compléter les informations correspondantes.
 {% endif %}
 {% if context.pkg_type == context.pkg_type_geocat %}
