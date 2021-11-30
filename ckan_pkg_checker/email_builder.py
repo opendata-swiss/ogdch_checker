@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import pandas as pd
 
 from ckan_pkg_checker.utils import utils
 
@@ -13,6 +14,8 @@ class EmailBuilder:
             csvfile = utils.get_config(config, "shaclchecker", "csvfile", required=True)
         elif mode == utils.MODE_LINK:
             csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
+
+        import pdb; pdb.set_trace()
         self.csvfile = utils.get_csvdir(rundir) / csvfile
         self.maildir = utils.get_maildir(rundir)
         self.default_contact = utils.Contact(
@@ -23,9 +26,10 @@ class EmailBuilder:
                 config, "emailbuilder", "default_email", required=True
             ),
         )
+        self.statfilename = utils.get_config(config, "shaclchecker", "statfile", required=False)
 
     def build(self):
-        log.info("building emails")
+        utils.log_and_echo_msg("building emails")
         with open(self.csvfile, "r") as readfile:
             reader = csv.DictReader(readfile)
             for row in reader:
@@ -50,3 +54,16 @@ class EmailBuilder:
             msg += utils.build_msg_per_error(row)
             with open(mailfile, "a") as writemail:
                 writemail.write(msg)
+
+    def _build_stats(self):
+        mailfile = os.path.join(
+            self.maildir, 'statistics' + "#" + self.default_contact.email + ".html"
+        )
+        with open(mailfile, "a") as writemail:
+            df = pd.read_csv(self.statfilename)
+            stats = df.to_dict()
+            msg = utils.build_stat_msg(
+                receiver_name=self.default_contact.name,
+                stats=stats,
+            )
+            writemail.write(msg)

@@ -14,6 +14,7 @@ csvfile = linkchecker.csv
 [shaclchecker]
 # chose name of the csv file to store the raw shaclchecker results
 csvfile = shaclchecker.csv
+statfile = shaclstatistics.csv
 
 # provide the path of the frequency vocabulary [http://purl.org/cld/freq](http://purl.org/cld/freq)
 # it is currently provided as a file, to avoid downtimes of the vocabulary site and expected in Turtle
@@ -36,6 +37,7 @@ csvfile =
 # default email receiver, if no dataset contact can be found
 default_name =
 default_email =
+
 
 [emailsender]
 # add emails for cc and bcc

@@ -1,6 +1,7 @@
 import csv
 import logging
 from collections import namedtuple
+import pandas as pd
 
 from pyshacl import validate
 from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
@@ -47,23 +48,26 @@ class ShaclChecker(CheckerInterface):
     def __init__(self, rundir, config, siteurl):
         """Initialize the validation checker"""
         self.siteurl = siteurl
+        self.csvfilename = utils.get_csvdir(rundir) / utils.get_config(
+            config, "shaclchecker", "csvfile", required=True
+        )
+        self.statfilename = utils.get_csvdir(rundir) / utils.get_config(
+            config, "shaclchecker", "statfile", required=True
+        )
         shaclfile = utils.get_config(
             config, "shaclchecker", "shacl_file", required=True
-        )
-        csvfile = utils.get_csvdir(rundir) / utils.get_config(
-            config, "shaclchecker", "csvfile", required=True
         )
         frequency_file = utils.get_config(
             config, "shaclchecker", "frequency_file", required=True
         )
-        self._prepare_csv_file(csvfile)
+        self._prepare_csv_file()
         self.shacl_graph = utils.parse_rdf_graph_from_url(file=shaclfile)
         self.ont_graph = utils.parse_rdf_graph_from_url(file=frequency_file)
         for k, v in namespaces.items():
             self.shacl_graph.bind(k, v)
         self.shacl_graph.namespace_manager = NamespaceManager(self.shacl_graph)
 
-    def _prepare_csv_file(self, csvfile):
+    def _prepare_csv_file(self):
         self.csv_fieldnames = [
             "contact_email",
             "contact_name",
@@ -80,7 +84,7 @@ class ShaclChecker(CheckerInterface):
             "checker_type",
             "template",
         ]
-        self.csvfile = open(csvfile, "w")
+        self.csvfile = open(self.csvfilename, "w")
         self.csvwriter = csv.DictWriter(self.csvfile, fieldnames=self.csv_fieldnames)
         self.csvwriter.writeheader()
 
@@ -176,6 +180,20 @@ class ShaclChecker(CheckerInterface):
     def finish(self):
         """Close the file"""
         self.csvfile.close()
+        self._statistics()
+
+    def _statistics(self):
+        df = pd.read_csv(self.csvfilename)
+        df_filtered = df.filter(['property', 'value', 'error_msg'])
+        dg = df_filtered.groupby(['error_msg']).size().reset_index().rename(columns={0: 'count'})
+        dg = dg.set_index('error_msg')
+        msg_dict = dg.to_dict().get('count')
+        statfile = open(self.statfilename, "w")
+        statwriter = csv.DictWriter(statfile, fieldnames=['message', 'count'])
+        statwriter.writeheader()
+        for message in self.shacl_graph.objects(predicate=SHACL.message):
+            msg = str(message)
+            statwriter.writerow({'message': msg, 'count': msg_dict.get(msg, 0)})
 
     def __repr__(self):
         return "Shacl Checker"

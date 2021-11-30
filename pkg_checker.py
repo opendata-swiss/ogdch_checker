@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 @click.option(
     "-m",
     "--mode",
-    default=MODE_SHACL,
+    default=False,
     help="Mode: LinkChecker (link) or ShaclChecker (shacl) . "
     "Example --m link. Default is ShaclChecker",
 )

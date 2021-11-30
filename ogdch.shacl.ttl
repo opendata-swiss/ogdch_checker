@@ -40,7 +40,7 @@
       sh:minCount 1 ;
       sh:nodeKind sh:Literal ;
       sh:severity sh:Violation ;
-      sh:message "Please add a description for your dataset."@en ;
+      sh:message "Please add a title for your dataset."@en ;
     ] ;
   sh:property [
       sh:path dcat:distribution ;

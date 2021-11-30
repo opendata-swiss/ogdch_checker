@@ -70,6 +70,17 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
     return html
 
 
+def build_stat_msg(receiver_name, stats):
+    stat_template = env.get_template("statistics.html")
+    html = stat_template.render(
+        context={
+            "receiver_name": receiver_name,
+            "stats": stats,
+        }
+    )
+    return html
+
+
 def build_msg_per_error(row):
     error_template = env.get_template(row["template"])
     html = error_template.render(context={"row": row})
@@ -187,10 +198,11 @@ def parse_rdf_graph_from_url(url=None, file=None):
         try:
             graph = Graph().parse(url)
         except (HTTPError, URLError) as e:
-            log_and_echo_msg(f"Request Error {e} occured for {url}")
+            log_and_echo_msg(f"Request Error {e} occured for {url}", error=True)
         except Exception as e:
             log_and_echo_msg(
-                f"Exception {e} of type {type(e).__name__} occured at {url}"
+                f"Exception {e} of type {type(e).__name__} occured at {url}",
+                error=True
             )
     if not graph and file:
         try:
@@ -211,7 +223,7 @@ def log_and_echo_msg(msg, error=False):
     click.echo(f"{msg}")
 
 
-def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
+def _read_config(configpath):
     config = configparser.ConfigParser()
     config.read(configpath)
     if not config.sections():
@@ -220,32 +232,47 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
             f"sure that the fill exists and contains a configuration such as provided"
             f"in 'config.ini.dist'"
         )
+    return config
+
+
+def _check_runparms(org, limit, pkg, run, build, send, mode, test):
     nr_scope_options = len([opt for opt in [limit, pkg, org] if opt])
     if len([opt for opt in [limit, pkg, org] if opt]) > 1:
         raise click.UsageError(
             "Only one of the options --org, --limit, " "--pkg can be used."
         )
-    check = False
-    if run:
-        if nr_scope_options or mode:
-            raise click.UsageError(
-                "--rundir can only be used with "
-                "--build and --send:\n"
-                "it implies that the check has "
-                "already been performed "
-                "and just the emails\n"
-                "should be build and send out"
-            )
-    else:
-        if mode and mode not in [MODE_SHACL, MODE_LINK]:
-            raise click.UsageError(
-                f"--mode can only contain {MODE_SHACL} or {MODE_LINK}"
-            )
-        siteurl = get_config(config, "site", "siteurl", required=True)
-        check = True
-        run = _get_runname(org=org, limit=limit, pkg=pkg, mode=mode)
+    if run and (nr_scope_options or mode):
+        raise click.UsageError(
+            "--rundir can only be used with "
+            "--build and --send:\n"
+            "it implies that the check has "
+            "already been performed "
+            "and just the emails\n"
+            "should be build and send out"
+        )
+    if mode and mode not in [MODE_SHACL, MODE_LINK]:
+        raise click.UsageError(
+            f"--mode can only contain {MODE_SHACL} or {MODE_LINK}"
+        )
+    if nr_scope_options and not run:
+        raise click.UsageError(
+            f"--mode must be set to either {MODE_SHACL} or {MODE_LINK} for a checker run"
+        )
+
+
+def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
+    config = _read_config(configpath)
+    _check_runparms(org, limit, pkg, run, build, send, mode, test)
     tmpdir = Path(get_config(config, "tmpdir", "tmppath", required=True))
-    rundir = _make_dirs(tmpdir=tmpdir, runname=run)
+    if run:
+        check = False
+        import pdb; pdb.set_trace()
+        mode = _get_mode_from_runname(run)
+        rundir = tmpdir / run
+    else:
+        check = True
+        rundir = _make_dirs(tmpdir=tmpdir)
+    siteurl = get_config(config, "site", "siteurl", required=True)
     runparms = RunParms(
         siteurl=siteurl,
         org=org,
@@ -297,17 +324,17 @@ def _setup_loggers(logdir, loglevel):
     logging.getLogger("").addHandler(errlog)
 
 
-def _make_dirs(tmpdir, runname):
+def _make_dirs(tmpdir):
+    runname = _get_runname(org=org, limit=limit, pkg=pkg, mode=mode)
     rundir = tmpdir / runname
     try:
         rundir.mkdir()
     except Exception as e:
-        click.echo(
+        raise click.UsageError(
             f"An Error {e} occured:\n"
             f"The specified tmp directory {rundir} does not exist.\n"
             f"Please set it up and run again."
         )
-        sys.exit()
     maildir = get_maildir(rundir)
     maildir.mkdir()
     logdir = get_logdir(rundir)
@@ -318,8 +345,7 @@ def _make_dirs(tmpdir, runname):
 
 
 def _get_runname(org, pkg, mode, limit):
-    name_parts = []
-    name_parts.append(datetime.now().strftime("%Y-%m-%d-%H%M"))
+    name_parts = [datetime.now().strftime("%Y-%m-%d-%H%M")]
     if mode:
         name_parts.append(f"{mode}")
     if org:
@@ -330,3 +356,14 @@ def _get_runname(org, pkg, mode, limit):
         name_parts.append(f"limit-{limit}")
     runname = "-".join(name_parts)
     return runname
+
+
+def _get_mode_from_runname(run):
+    if run.find(f'-{MODE_LINK}'):
+        return MODE_LINK
+    elif run.find(f'-{MODE_SHACL}'):
+        return MODE_SHACL
+    else:
+        raise click.UsageError(f"Expected to find mode in runname {run}")
+
+

@@ -1,0 +1,14 @@
+<p>Hello {{ context.receiver_name | e}}</p>
+<p>Results of checkerrun</p>
+<table>
+  <tr>
+    <th>Error message</th>
+    <th>Count>
+  </tr>
+  {% for item in stats %}
+  <tr>
+    <td>{{ item.error_msg }}</td>
+    <td>{{ item.count }}</td>
+  </tr>
+{% endfor %}
+</table>
