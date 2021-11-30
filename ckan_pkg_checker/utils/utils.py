@@ -43,6 +43,8 @@ GEOCAT = "geocat"
 DCAT = "dcat"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
+EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erron&eacute;es / Metadati errati / Incorrect metadata"
+EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erron&eacute;es / URL errati / Incorrect URLs"
 
 
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
@@ -89,8 +91,11 @@ def get_field_in_one_language(multi_language_field, backup):
         return backup
 
 
-def get_email_subject():
-    return "opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker"  # noqa
+def get_email_subject(mode):
+    if mode == MODE_SHACL:
+        return EMAIL_SUBJECT_SHACL
+    if mode == MODE_LINK:
+        return EMAIL_SUBJECT_LINK
 
 
 def get_pkg_contacts(pkg_contact_points):

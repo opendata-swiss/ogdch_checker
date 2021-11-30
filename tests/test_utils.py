@@ -118,8 +118,8 @@ class TestResourceCheckMethods(unittest.TestCase):
         self.assertEqual(f"{timestamp}-shacl-org-orgname", runname)
 
     def test__get_email_subject(self):
-        email_subject = utils.get_email_subject()
-        expected_email_subject = "opendata.swiss : Automatische Kontrolle der Quellen / Controle automatique des ressources / Controllo automatico delle risorse / automatic ressource checker"
+        email_subject = utils.get_email_subject(mode=utils.MODE_SHACL)
+        expected_email_subject = utils.EMAIL_SUBJECT_SHACL
         self.assertEqual(email_subject, expected_email_subject)
 
     def test__process_msg_file_name(self):
