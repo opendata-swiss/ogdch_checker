@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+
 import pandas as pd
 
 from ckan_pkg_checker.utils import utils
