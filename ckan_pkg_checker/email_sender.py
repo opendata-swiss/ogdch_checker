@@ -38,10 +38,10 @@ class EmailSender:
             with open(path, "rb") as readfile:
                 text = MIMEText(readfile.read(), "html", "utf-8")
                 msg = MIMEMultipart("alternative")
-
-                msg["Subject"] = self.email_subject
                 if contact_type == utils.STATISTICS:
-                    msg["Subject"] = "[Summary] " + msg["Subject"]
+                    msg["Subject"] = utils.EMAIL_SUBJECT_STATISTICS
+                else:
+                    msg["Subject"] = self.email_subject
 
                 msg["From"] = self.sender
                 send_from = self.sender
