@@ -75,11 +75,20 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
 
 def build_statistics_email(receiver_name, mode, statistics):
     stat_template = env.get_template("statistics.html")
+    display_checks = []
+    display_errors = []
+    index = 0
+    for message, count in statistics.get('count').items():
+        index += 1
+        display_checks.append({'check_nr': index, 'message': message})
+        if count > 0:
+            display_errors.append({'check_nr': index, 'count': count})
     html = stat_template.render(
         context={
             "receiver_name": receiver_name,
             "mode": mode,
-            "statistics": statistics.get('count'),
+            "checks": display_checks,
+            "errors": display_errors,
         }
     )
     return html
