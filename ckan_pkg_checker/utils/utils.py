@@ -345,10 +345,8 @@ def _get_runname(org, pkg, mode, limit):
 
 
 def _get_mode_from_runname(runname):
-    mode = [part for part in runname.split('-') if part in modes]
+    mode = [part for part in runname.split("-") if part in modes]
     if mode:
         return mode[0]
     else:
-        raise click.UsageError(
-            f"Mode can not be detected from {runname}."
-        )
+        raise click.UsageError(f"Mode can not be detected from {runname}.")
