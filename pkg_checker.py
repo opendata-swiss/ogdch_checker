@@ -31,9 +31,9 @@ log = logging.getLogger(__name__)
 @click.option(
     "-m",
     "--mode",
-    default=MODE_SHACL,
+    default=None,
     help="Mode: LinkChecker (link) or ShaclChecker (shacl) . "
-    "Example --m link. Default is ShaclChecker",
+    "Example --m link.",
 )
 @click.option(
     "-c",
@@ -129,7 +129,9 @@ def check_packages(
         check.run()
     if runparms.build:
         builder = EmailBuilder(
-            rundir=runparms.rundir, mode=runparms.mode, config=runparms.config
+            rundir=runparms.rundir,
+            mode=runparms.mode,
+            config=runparms.config
         )
         builder.build()
     if runparms.send:

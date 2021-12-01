@@ -43,6 +43,7 @@ GEOCAT = "geocat"
 DCAT = "dcat"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
+modes = [MODE_LINK, MODE_SHACL]
 EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erron&eacute;es / Metadati errati / Incorrect metadata"
 EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erron&eacute;es / URL errati / Incorrect URLs"
 
@@ -246,11 +247,17 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
             raise click.UsageError(
                 f"--mode can only contain {MODE_SHACL} or {MODE_LINK}"
             )
-        siteurl = get_config(config, "site", "siteurl", required=True)
+
+    tmpdir = Path(get_config(config, "tmpdir", "tmppath", required=True))
+    siteurl = get_config(config, "site", "siteurl", required=True)
+    if run:
+        mode = _get_mode_from_runname(run)
+        check = False
+        rundir = tmpdir / run
+    else:
         check = True
         run = _get_runname(org=org, limit=limit, pkg=pkg, mode=mode)
-    tmpdir = Path(get_config(config, "tmpdir", "tmppath", required=True))
-    rundir = _make_dirs(tmpdir=tmpdir, runname=run)
+        rundir = _make_dirs(tmpdir=tmpdir, runname=run)
     runparms = RunParms(
         siteurl=siteurl,
         org=org,
@@ -335,3 +342,13 @@ def _get_runname(org, pkg, mode, limit):
         name_parts.append(f"limit-{limit}")
     runname = "-".join(name_parts)
     return runname
+
+
+def _get_mode_from_runname(runname):
+    mode = [part for part in runname.split('-') if part in modes]
+    if mode:
+        return mode[0]
+    else:
+        raise click.UsageError(
+            f"Mode can not be detected from {runname}."
+        )
