@@ -79,11 +79,11 @@ def build_statistics_email(receiver_name, mode, statistics):
     display_checks = []
     display_errors = []
     index = 0
-    for message, count in statistics.get('count').items():
+    for message, count in statistics.get("count").items():
         index += 1
-        display_checks.append({'check_nr': index, 'message': message})
+        display_checks.append({"check_nr": index, "message": message})
         if count > 0:
-            display_errors.append({'check_nr': index, 'count': count})
+            display_errors.append({"check_nr": index, "count": count})
     html = stat_template.render(
         context={
             "receiver_name": receiver_name,
