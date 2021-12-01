@@ -18,21 +18,21 @@ log = logging.getLogger(__name__)
     "-l",
     "--limit",
     type=int,
-    help="Limit the number of packages to check. " "Example: --limit 20.",
+    help="Limit the number of packages to check. Example: --limit 20.",
 )
 @click.option(
     "-p",
     "--pkg",
-    help="Check only a single package. " "Example: --pkg vbz-haltestellen.",
+    help="Check only a single package. Example: --pkg vbz-haltestellen.",
 )
 @click.option(
-    "-o", "--org", help="Check only a single organization. " "Example --org bernmobil."
+    "-o", "--org", help="Check only a single organization. Example --org bernmobil."
 )
 @click.option(
     "-m",
     "--mode",
     default=None,
-    help="Mode: LinkChecker (link) or ShaclChecker (shacl) . " "Example --m link.",
+    help="Mode: LinkChecker (link) or ShaclChecker (shacl). Example --m link.",
 )
 @click.option(
     "-c",

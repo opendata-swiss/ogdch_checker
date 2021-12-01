@@ -41,6 +41,7 @@ RunParms = namedtuple(
 FieldNamesMsgFile = ["contact_email", "contact_name", "pkg_type", "checker_type", "msg"]
 GEOCAT = "geocat"
 DCAT = "dcat"
+STATISTICS = "statistics"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
 modes = [MODE_LINK, MODE_SHACL]
@@ -68,6 +69,27 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
             "pkg_type_geocat": GEOCAT,
             "checker_type_shacl": MODE_SHACL,
             "checker_type_link": MODE_LINK,
+        }
+    )
+    return html
+
+
+def build_statistics_email(receiver_name, mode, statistics):
+    stat_template = env.get_template("statistics.html")
+    display_checks = []
+    display_errors = []
+    index = 0
+    for message, count in statistics.get("count").items():
+        index += 1
+        display_checks.append({"check_nr": index, "message": message})
+        if count > 0:
+            display_errors.append({"check_nr": index, "count": count})
+    html = stat_template.render(
+        context={
+            "receiver_name": receiver_name,
+            "mode": mode,
+            "checks": display_checks,
+            "errors": display_errors,
         }
     )
     return html

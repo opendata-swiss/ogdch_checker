@@ -1,0 +1,23 @@
+<p>Hello {{ context.receiver_name | e}}</p>
+<p>This is a summary of the results of the {{ context.mode }} shecker run</p>
+<p>These checks have been done: each check is represented by its error message:</p>
+<ul>
+  {% for check in context.checks %}
+  <li>
+    [{{ check.check_nr }}] {{ check.message }}
+  </li>
+  {% endfor %}
+</ul>
+<p>On the checks above the following errors have occured:</p>
+<table>
+  <tr>
+    <th>Message</th>
+    <th>Count</th>
+  </tr>
+  {% for error in context.errors %}
+  <tr>
+    <td>[{{ error.check_nr }}]</td>
+    <td>{{ error.count }}</td>
+  </tr>
+{% endfor %}
+</table>

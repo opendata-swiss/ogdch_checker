@@ -40,6 +40,8 @@ class EmailSender:
                 msg = MIMEMultipart("alternative")
 
                 msg["Subject"] = self.email_subject
+                if contact_type == utils.STATISTICS:
+                    msg["Subject"] = "[Summary] " + msg["Subject"]
 
                 msg["From"] = self.sender
                 send_from = self.sender
