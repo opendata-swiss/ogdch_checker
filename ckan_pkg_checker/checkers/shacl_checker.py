@@ -186,7 +186,7 @@ class ShaclChecker(CheckerInterface):
         df = pd.read_csv(self.csvfilename)
         df_filtered = df.filter(["property", "value", "error_msg"])
         dg = (
-            df_filtered.groupby(["error_msg"])
+            df_filtered.groupby(["property", "error_msg"])
             .size()
             .reset_index()
             .rename(columns={0: "count"})
@@ -194,8 +194,9 @@ class ShaclChecker(CheckerInterface):
         dg = dg.set_index("error_msg")
         msg_dict = dg.to_dict().get("count")
         statfile = open(self.statfilename, "w")
-        statwriter = csv.DictWriter(statfile, fieldnames=["message", "count"])
+        statwriter = csv.DictWriter(statfile, fieldnames=["property", "message", "count"])
         statwriter.writeheader()
+        import pdb; pdb.set_trace()
         for message in self.shacl_graph.objects(predicate=SHACL.message):
             msg = str(message)
             statwriter.writerow({"message": msg, "count": msg_dict.get(msg, 0)})
