@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 class EmailBuilder:
     def __init__(self, rundir, mode, config):
-        self.mode=mode
+        self.mode = mode
         self.mailpath = utils.get_maildir(rundir)
         runpath = utils.get_csvdir(rundir)
         if mode == utils.MODE_SHACL:
@@ -49,7 +49,9 @@ class EmailBuilder:
             )
             msg = ""
             if not os.path.isfile(mailfile):
-                utils.log_and_echo_msg(f"email for {row['pkg_type']}#{row['contact_email']}")
+                utils.log_and_echo_msg(
+                    f"email for {row['pkg_type']}#{row['contact_email']}"
+                )
                 msg += utils.build_msg_per_contact(
                     receiver_name=contact.name,
                     checker_type=row["checker_type"],
@@ -61,9 +63,7 @@ class EmailBuilder:
 
     def _build_statistics(self):
         filename = utils.STATISTICS + "#" + self.default_contact.email
-        mailfile = os.path.join(
-            self.mailpath, filename + ".html"
-        )
+        mailfile = os.path.join(self.mailpath, filename + ".html")
         utils.log_and_echo_msg(f"email for {filename}")
         with open(mailfile, "a") as writemail:
             df = pd.read_csv(self.statpath)
