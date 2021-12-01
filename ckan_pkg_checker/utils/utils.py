@@ -45,8 +45,8 @@ STATISTICS = "statistics"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
 modes = [MODE_LINK, MODE_SHACL]
-EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erron&eacute;es / Metadati errati / Incorrect metadata"
-EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erron&eacute;es / URL errati / Incorrect URLs"
+EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erronées / Metadati errati / Incorrect metadata"
+EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erronées / URL errati / Incorrect URLs"
 
 
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
