@@ -41,6 +41,7 @@ RunParms = namedtuple(
 FieldNamesMsgFile = ["contact_email", "contact_name", "pkg_type", "checker_type", "msg"]
 GEOCAT = "geocat"
 DCAT = "dcat"
+STATISTICS = "statistics"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
 modes = [MODE_LINK, MODE_SHACL]

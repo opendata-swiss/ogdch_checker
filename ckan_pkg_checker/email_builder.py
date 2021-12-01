@@ -59,10 +59,11 @@ class EmailBuilder:
                 writemail.write(msg)
 
     def _build_statistics(self):
+        filename = utils.STATISTICS + "#" + self.default_contact.email
         mailfile = os.path.join(
-            self.mailpath, 'statistics' + "#" + self.default_contact.email + ".html"
+            self.mailpath, filename + ".html"
         )
-        utils.log_and_echo_msg(f"email for statistics#{self.default_contact.email}")
+        utils.log_and_echo_msg(f"email for {filename}")
         with open(mailfile, "a") as writemail:
             df = pd.read_csv(self.statpath)
             df = df.set_index("message")
