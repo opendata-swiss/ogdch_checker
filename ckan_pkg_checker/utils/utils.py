@@ -73,6 +73,18 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
     return html
 
 
+def build_statistics_email(receiver_name, mode, statistics):
+    stat_template = env.get_template("statistics.html")
+    html = stat_template.render(
+        context={
+            "receiver_name": receiver_name,
+            "mode": mode,
+            "statistics": statistics.get('count'),
+        }
+    )
+    return html
+
+
 def build_msg_per_error(row):
     error_template = env.get_template(row["template"])
     html = error_template.render(context={"row": row})

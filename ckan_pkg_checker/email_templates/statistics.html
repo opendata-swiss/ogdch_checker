@@ -1,0 +1,26 @@
+<p>Hello {{ context.receiver_name | e}}</p>
+<p>Summary of {{ context.mode | capitalize }} Checkerrun</p>
+<br>
+<p>Validation messages reflecting the checks done:</p>
+<ul>
+  {% for message, count in context.statistics.items() %}
+  <li>
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
+<p>Validation Error statistics:</p>
+<table>
+  <tr>
+    <th>Message</th>
+    <th>Count</th>
+  </tr>
+  {% for message, count in context.statistics.items() %}
+  {% if count != 0 %}
+  <tr>
+    <td>{{ message }}</td>
+    <td>{{ count }}</td>
+  </tr>
+  {% endif %}
+{% endfor %}
+</table>
