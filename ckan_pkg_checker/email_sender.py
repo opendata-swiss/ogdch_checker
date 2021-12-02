@@ -67,7 +67,9 @@ class EmailSender:
                 try:
                     server.sendmail(send_from, receivers, msg.as_string())
                 except Exception as e:
-                    utils.log_and_echo_msg(f"Error {e} occured while sending email {filename}, error=True")
+                    utils.log_and_echo_msg(
+                        f"Error {e} occured while sending email {filename}, error=True"
+                    )
                 else:
                     utils.log_and_echo_msg(
                         f"Email {filename} send from {send_from} to {receivers} intended for {send_to}"
