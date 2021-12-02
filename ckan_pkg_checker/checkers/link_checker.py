@@ -3,8 +3,8 @@ import logging
 from collections import namedtuple
 
 import click
-
 import pandas as pd
+
 import ckan_pkg_checker.utils.request_utils as request_utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import utils
@@ -22,7 +22,6 @@ link_checks = [
     TEST_LANDING_PAGE_URL,
     TEST_DOWNLOAD_URL,
 ]
-
 
 
 class LinkChecker(CheckerInterface):
@@ -72,7 +71,9 @@ class LinkChecker(CheckerInterface):
             for relation in pkg["relations"]:
                 relation_url = relation.get("url")
                 if relation_url:
-                    check_result = self._check_url_status(TEST_RELATION_URL, relation_url)
+                    check_result = self._check_url_status(
+                        TEST_RELATION_URL, relation_url
+                    )
                     if check_result:
                         check_results.append(check_result)
 
@@ -185,7 +186,7 @@ class LinkChecker(CheckerInterface):
         statwriter.writeheader()
         for check in link_checks:
             count = msg_dict.get(check, 0)
-            statwriter.writerow({"message":check, "count": count})
+            statwriter.writerow({"message": check, "count": count})
 
     def __repr__(self):
         return "Link Checker"
