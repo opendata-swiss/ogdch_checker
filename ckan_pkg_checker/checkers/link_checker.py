@@ -4,6 +4,7 @@ from collections import namedtuple
 
 import click
 
+import pandas as pd
 import ckan_pkg_checker.utils.request_utils as request_utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import utils
@@ -11,6 +12,17 @@ from ckan_pkg_checker.utils import utils
 log = logging.getLogger(__name__)
 
 CheckResult = namedtuple("CheckResult", ["resource_id", "item", "msg", "test_title"])
+TEST_ACCESS_URL = "dcat:accessURL"
+TEST_RELATION_URL = "dct:relation"
+TEST_LANDING_PAGE_URL = "dcat:landingPage"
+TEST_DOWNLOAD_URL = "dcat:downloadURL"
+link_checks = [
+    TEST_ACCESS_URL,
+    TEST_RELATION_URL,
+    TEST_LANDING_PAGE_URL,
+    TEST_DOWNLOAD_URL,
+]
+
 
 
 class LinkChecker(CheckerInterface):
@@ -18,12 +30,16 @@ class LinkChecker(CheckerInterface):
         """Initialize the link checker"""
         self.url_result_cache = {}
         self.siteurl = siteurl
-        csvfile = utils.get_csvdir(rundir) / utils.get_config(
-            config, "linkchecker", "csvfile"
+        runpath = utils.get_csvdir(rundir)
+        self.csvfilepath = runpath / utils.get_config(
+            config, "linkchecker", "csvfile", required=True
         )
-        self._prepare_csv_file(csvfile)
+        self.statfilepath = runpath / utils.get_config(
+            config, "linkchecker", "statfile", required=True
+        )
+        self._prepare_csv_file()
 
-    def _prepare_csv_file(self, csvfile):
+    def _prepare_csv_file(self):
         self.csv_fieldnames = [
             "contact_email",
             "contact_name",
@@ -38,7 +54,7 @@ class LinkChecker(CheckerInterface):
             "checker_type",
             "template",
         ]
-        self.csvfile = open(csvfile, "w")
+        self.csvfile = open(self.csvfilepath, "w")
         self.csvwriter = csv.DictWriter(self.csvfile, fieldnames=self.csv_fieldnames)
         self.csvwriter.writeheader()
 
@@ -48,7 +64,7 @@ class LinkChecker(CheckerInterface):
         check_results = []
         landing_page = pkg.get("url")
         if landing_page:
-            check_result = self._check_url_status("dcat:landingPage", landing_page)
+            check_result = self._check_url_status(TEST_LANDING_PAGE_URL, landing_page)
             if check_result:
                 check_results.append(check_result)
 
@@ -56,7 +72,7 @@ class LinkChecker(CheckerInterface):
             for relation in pkg["relations"]:
                 relation_url = relation.get("url")
                 if relation_url:
-                    check_result = self._check_url_status("dct:relation", relation_url)
+                    check_result = self._check_url_status(TEST_RELATION_URL, relation_url)
                     if check_result:
                         check_results.append(check_result)
 
@@ -72,6 +88,7 @@ class LinkChecker(CheckerInterface):
 
     def finish(self):
         self.csvfile.close()
+        self._statistics()
 
     def _check_resource(self, pkg, resource):
         """Check one resource"""
@@ -84,13 +101,13 @@ class LinkChecker(CheckerInterface):
             pass
         if access_url:
             check_result = self._check_url_status(
-                "dcat:accessURL", access_url, resource["id"]
+                TEST_ACCESS_URL, access_url, resource["id"]
             )
             if check_result:
                 resource_results.append(check_result)
         if download_url and download_url != access_url:
             check_result = self._check_url_status(
-                "dcat:downloadURL", download_url, resource["id"]
+                TEST_DOWNLOAD_URL, download_url, resource["id"]
             )
             if check_result:
                 resource_results.append(check_result)
@@ -150,6 +167,25 @@ class LinkChecker(CheckerInterface):
                     "template": "linkchecker_error.html",
                 }
             )
+
+    def _statistics(self):
+        df = pd.read_csv(self.csvfilepath)
+        df_filtered = df.filter(["test_title"])
+        df_filtered.rename(columns={"test_title": "message"}, inplace=True)
+        dg = (
+            df_filtered.groupby(["message"])
+            .size()
+            .reset_index()
+            .rename(columns={0: "count"})
+        )
+        dg = dg.set_index("message")
+        msg_dict = dg.to_dict().get("count")
+        statfile = open(self.statfilepath, "w")
+        statwriter = csv.DictWriter(statfile, fieldnames=["message", "count"])
+        statwriter.writeheader()
+        for check in link_checks:
+            count = msg_dict.get(check, 0)
+            statwriter.writerow({"message":check, "count": count})
 
     def __repr__(self):
         return "Link Checker"
