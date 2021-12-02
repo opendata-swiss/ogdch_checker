@@ -33,6 +33,7 @@ class EmailSender:
     def send(self):
         log.info("sending emails")
         for filename in os.listdir(self.maildir):
+            utils.log_and_echo_msg(f"processing {filename}")
             contact_type, contact_email = utils.process_msg_file_name(filename)
             path = os.path.join(self.maildir, filename)
             with open(path, "rb") as readfile:
@@ -56,21 +57,22 @@ class EmailSender:
                     send_to.extend(self.add_as_receivers_for_dcat)
 
                 msg.attach(text)
+
+                if self.test:
+                    receivers = self.email_overwrites
+                else:
+                    receivers = send_to
+
                 server = smtplib.SMTP(self.smtp_server)
-                if not self.test:
-                    server.sendmail(send_from, send_to, msg.as_string())
-                    server.quit()
+                try:
+                    server.sendmail(send_from, receivers, msg.as_string())
+                except Exception as e:
                     utils.log_and_echo_msg(
-                        f"Email {filename} was sent to: {send_to} \n"
-                        f"send from: {send_from}\n"
-                        f"send info: msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}"
+                        f"Error {e} occured while sending email {filename}, error=True"
                     )
                 else:
-                    server.sendmail(send_from, self.email_overwrites, msg.as_string())
-                    server.quit()
                     utils.log_and_echo_msg(
-                        f"Email {filename} was sent to: {self.email_overwrites} "
-                        f"would normally be sent to: {send_to}\n"
-                        f"send from: {send_from}\n"
-                        f"send info: msg['Bcc']: {msg['Bcc']}, msg['To']: {msg['To']}"
+                        f"Email {filename} send from {send_from} to {receivers} intended for {send_to}"
                     )
+                finally:
+                    server.quit()
