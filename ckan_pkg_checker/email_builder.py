@@ -15,12 +15,19 @@ class EmailBuilder:
         self.mailpath = utils.get_maildir(rundir)
         runpath = utils.get_csvdir(rundir)
         if mode == utils.MODE_SHACL:
-            csvfile = utils.get_config(config, "shaclchecker", "csvfile", required=True)
+            self.csvpath = runpath / utils.get_config(
+                config, "shaclchecker", "csvfile", required=True
+            )
+            self.statfile = runpath / utils.get_config(
+                config, "shaclchecker", "statfile", required=True
+            )
         elif mode == utils.MODE_LINK:
-            csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
-        self.csvpath = runpath / csvfile
-        statfile = utils.get_config(config, "shaclchecker", "statfile", required=False)
-        self.statpath = runpath / statfile
+            self.csvpath = runpath / utils.get_config(
+                config, "linkchecker", "csvfile", required=True
+            )
+            self.statpath = runpath / utils.get_config(
+                config, "linkchecker", "statfile", required=True
+            )
         self.default_contact = utils.Contact(
             name=utils.get_config(
                 config, "emailbuilder", "default_name", required=True
@@ -36,7 +43,8 @@ class EmailBuilder:
             reader = csv.DictReader(readfile)
             for row in reader:
                 self._process_line(row)
-        self._build_statistics()
+        if self.statpath:
+            self._build_statistics()
 
     def _process_line(self, row):
         contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]

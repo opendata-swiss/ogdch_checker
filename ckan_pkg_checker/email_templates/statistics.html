@@ -1,3 +1,10 @@
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 5px;
+  border-collapse: collapse;
+}
+</style>
 <p>Hello {{ context.receiver_name | e}}</p>
 <p>This is a summary of the results of the {{ context.mode }} shecker run</p>
 <p>Checks done:</p>
@@ -12,7 +19,7 @@
 <table>
   <tr>
     <th>Check Number</th>
-    <th>Number of Errors</th>
+    <th>Error Count</th>
   </tr>
   {% for error in context.errors %}
   <tr>

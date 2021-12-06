@@ -47,7 +47,8 @@ MODE_LINK = "link"
 modes = [MODE_LINK, MODE_SHACL]
 EMAIL_SUBJECT_SHACL = "opendata.swiss : Fehlerhafte Metadaten / Métadonnées erronées / Metadati errati / Incorrect metadata"
 EMAIL_SUBJECT_LINK = "opendata.swiss : opendata.swiss: Fehlerhafte URLs / URL erronées / URL errati / Incorrect URLs"
-EMAIL_SUBJECT_STATISTICS = "opendata.swiss : Shacl Checker Validation Results"
+EMAIL_SUBJECT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Validation Results"
+EMAIL_SUBJECT_STATISTICS_LINK = "opendata.swiss : Link Checker Validation Results"
 
 
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
@@ -120,6 +121,13 @@ def get_email_subject(mode):
         return EMAIL_SUBJECT_SHACL
     if mode == MODE_LINK:
         return EMAIL_SUBJECT_LINK
+
+
+def get_email_subject_statistics(mode):
+    if mode == MODE_SHACL:
+        return EMAIL_SUBJECT_STATISTICS_SHACL
+    if mode == MODE_LINK:
+        return EMAIL_SUBJECT_STATISTICS_LINK
 
 
 def get_pkg_contacts(pkg_contact_points):
