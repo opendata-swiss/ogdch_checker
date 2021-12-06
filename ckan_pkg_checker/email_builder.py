@@ -15,20 +15,15 @@ class EmailBuilder:
         self.mailpath = utils.get_maildir(rundir)
         runpath = utils.get_csvdir(rundir)
         if mode == utils.MODE_SHACL:
-            csvfile = utils.get_config(config, "shaclchecker", "csvfile", required=True)
-        elif mode == utils.MODE_LINK:
-            csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
-        self.csvpath = runpath / csvfile
-        if mode == utils.MODE_SHACL:
-            statfile = utils.get_config(
-                config, "shaclchecker", "statfile", required=False
+            self.csvpath = runpath / utils.get_config(config, "shaclchecker", "csvfile", required=True)
+            self.statfile = runpath / utils.get_config(
+                config, "shaclchecker", "statfile", required=True
             )
         elif mode == utils.MODE_LINK:
-            statfile = utils.get_config(
-                config, "linkchecker", "statfile", required=False
+            self.csvpath = runpath / utils.get_config(config, "linkchecker", "csvfile", required=True)
+            self.statpath = runpath / utils.get_config(
+                config, "linkchecker", "statfile", required=True
             )
-        if statfile:
-            self.statpath = runpath / statfile
         self.default_contact = utils.Contact(
             name=utils.get_config(
                 config, "emailbuilder", "default_name", required=True
