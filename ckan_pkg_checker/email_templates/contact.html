@@ -1,8 +1,8 @@
 <p>Hello {{ context.receiver_name | e }}</p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
-[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende Quellen zuzugreifen.
-<br>Bitte kontrollieren Sie, ob diese Quellen noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
+[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende URLs zuzugreifen.
+<br>Bitte kontrollieren Sie, ob diese URLs noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
 {% elif context.checker_type == context.checker_type_shacl %}
 [DE] - Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH.
 <br>Bitte erg&auml;nzen Sie die entsprechenden Angaben.
@@ -15,8 +15,8 @@
 </p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
-[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux ressources suivantes.
-<br>Merci de v&eacute;rifier si ces ressources sont toujours disponibles et de les corriger si n&eacute;cessaire.
+[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux URL suivantes.
+<br>Merci de v&eacute;rifier si ces URL sont toujours disponibles et de les corriger si n&eacute;cessaire.
 {% elif context.checker_type == context.checker_type_shacl %}
 [FR] - Les champs suivants de vos jeux de donn&egrave;es sur opendata.swiss ne r&egrave;pondent pas aux exigences de la DCAT-AP CH.
 <br>Veuillez compléter les informations correspondantes.
@@ -29,8 +29,8 @@
 </p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
-[IT] - Abbiamo riscontrato un problema nel tentativo di accedere alle risorse seguenti.
-<br>La preghiamo di verificare se le risorse sono ancora disponibili e, se necessario, correggerle.
+[IT] - Abbiamo riscontrato un problema nel tentativo di accedere agli URL seguenti.
+<br>La preghiamo di verificare se gli URL sono ancora disponibili e, se necessario, correggerle.
 {% elif context.checker_type == context.checker_type_shacl %}
 [IT] I seguenti campi dei Suoi dataset pubblicati su opendata.swiss non soddisfano i requisiti del profilo DCAT-AP CH.
 <br>La preghiamo di completarli con le informazioni corrispondenti.
@@ -43,8 +43,8 @@
 </p>
 <p>
 {% if context.checker_type == context.checker_type_link %}
-[EN] - While accessing the following resources, we found some unexpected behaviour.
-<br>Please check if those resources are still available.
+[EN] - While accessing the following URLs, we found some unexpected behaviour.
+<br>Please check if those URLs are still available.
 {% elif context.checker_type == context.checker_type_shacl %}
 [EN] - The following fields of your datasets on opendata.swiss do not meet the requirements of DCAT-AP CH.
 <br>Please complete the corresponding information.
