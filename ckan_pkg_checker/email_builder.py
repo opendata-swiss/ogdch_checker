@@ -20,9 +20,13 @@ class EmailBuilder:
             csvfile = utils.get_config(config, "linkchecker", "csvfile", required=True)
         self.csvpath = runpath / csvfile
         if mode == utils.MODE_SHACL:
-            statfile = utils.get_config(config, "shaclchecker", "statfile", required=False)
+            statfile = utils.get_config(
+                config, "shaclchecker", "statfile", required=False
+            )
         elif mode == utils.MODE_LINK:
-            statfile = utils.get_config(config, "linkchecker", "statfile", required=False)
+            statfile = utils.get_config(
+                config, "linkchecker", "statfile", required=False
+            )
         if statfile:
             self.statpath = runpath / statfile
         self.default_contact = utils.Contact(
