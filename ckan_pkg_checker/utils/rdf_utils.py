@@ -62,6 +62,7 @@ def parse_rdf_graph_from_url(url=None, file=None, bind=False):
             log_and_echo_msg(
                 f"Exception {e} of type {type(e).__name__} occured at {url}"
             )
+            return
     if not graph and file:
         try:
             graph = Graph().parse(file)
@@ -69,27 +70,25 @@ def parse_rdf_graph_from_url(url=None, file=None, bind=False):
             log_and_echo_msg(
                 f"Exception {e} of type {type(e).__name__} occured at {url}"
             )
-    if bind:
-        graph = bind_namespaces(graph)
+            return
+    if graph and bind:
+        for k, v in namespaces.items():
+            graph.bind(k, v)
+        graph.namespace_manager = NamespaceManager(graph)
     return graph
 
 
 def build_reduced_graph_from_package(pkg):
     graph = Graph()
     dataset_ref = BNode()
-    graph = bind_namespaces(graph)
+    for k, v in namespaces.items():
+        graph.bind(k, v)
+    graph.namespace_manager = NamespaceManager(graph)
     graph.add((dataset_ref, RDF.type, DCAT.Dataset))
     frequency = pkg.get("accrual_periodicity")
     if frequency:
         graph.add((dataset_ref, DCT.accrualPeriodicity, URIRef(frequency)))
     return graph
-
-
-def bind_namespaces(g):
-    for k, v in namespaces.items():
-        g.bind(k, v)
-    g.namespace_manager = NamespaceManager(g)
-    return g
 
 
 def get_shacl_results(dataset_graph, shacl_graph, ont_graph):

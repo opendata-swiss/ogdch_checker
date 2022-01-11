@@ -70,9 +70,6 @@ class ShaclChecker(CheckerInterface):
         pkg_type = pkg.get("pkg_type", utils.DCAT)
 
         dataset_export_graph = rdf_utils.parse_rdf_graph_from_url(pkg["rdf"], bind=True)
-        if self.shacl_import_graph:
-            dataset_import_graph = rdf_utils.build_reduced_graph_from_package(pkg)
-
         if not dataset_export_graph:
             utils.log_and_echo_msg(
                 f"rdf graph for dataset {pkg.get('name')} could not be serialized.",
