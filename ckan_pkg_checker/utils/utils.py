@@ -6,12 +6,10 @@ from collections import namedtuple
 from configparser import NoOptionError, NoSectionError
 from datetime import datetime
 from pathlib import Path
-from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 
 import click
 from jinja2 import Environment, PackageLoader, select_autoescape
-from rdflib import Graph
 
 env = Environment(
     loader=PackageLoader("ckan_pkg_checker", "email_templates"),
@@ -209,36 +207,6 @@ def set_up_contact_mapping(config):
                 "'contacts.csv' file configured, but file has " "not the correct format"
             )
     return contact_dict
-
-
-def get_object_from_graph(graph, subject, predicate):
-    objects = []
-    for item in graph.objects(subject=subject, predicate=predicate):
-        objects.append(item)
-    if objects:
-        return objects[0]
-    return None
-
-
-def parse_rdf_graph_from_url(url=None, file=None):
-    graph = None
-    if url:
-        try:
-            graph = Graph().parse(url)
-        except (HTTPError, URLError) as e:
-            log_and_echo_msg(f"Request Error {e} occured for {url}")
-        except Exception as e:
-            log_and_echo_msg(
-                f"Exception {e} of type {type(e).__name__} occured at {url}"
-            )
-    if not graph and file:
-        try:
-            graph = Graph().parse(file)
-        except Exception as e:
-            log_and_echo_msg(
-                f"Exception {e} of type {type(e).__name__} occured at {url}"
-            )
-    return graph
 
 
 def log_and_echo_msg(msg, error=False):

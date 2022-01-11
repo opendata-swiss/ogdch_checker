@@ -89,5 +89,4 @@
       sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
       sh:message "The accessURL must be a URL. Please provide a URL for this property."@en ;
-    ] ;
-.
+    ] .

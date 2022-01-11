@@ -21,9 +21,12 @@ statfile = shaclstatistics.csv
 # format
 frequency_file = frequency.ttl
 
-# path to the shacl file that is used for the shacl validation
-# the Shacl file is expected in Turtle format
-shacl_file = ogdch.shacl.ttl
+# path to the shacl file that is used for the shacl validation of export rdf Graph
+# the Shacl files are expected in Turtle format
+shacl_export_file = ogdch.shacl.export.ttl
+
+# path to the shacl file that is used for extra validation of import data
+shacl_import_file = ogdch.shacl.import.ttl
 
 [contacts]
 # file to redirect contact emails per organizations
