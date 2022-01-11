@@ -32,8 +32,12 @@ class ShaclChecker(CheckerInterface):
             config, "shaclchecker", "frequency_file", required=True
         )
         self._prepare_csv_file()
-        self.shacl_export_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclexportfile, bind=True)
-        self.shacl_import_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclimportfile, bind=True)
+        self.shacl_export_graph = rdf_utils.parse_rdf_graph_from_url(
+            file=shaclexportfile, bind=True
+        )
+        self.shacl_import_graph = rdf_utils.parse_rdf_graph_from_url(
+            file=shaclimportfile, bind=True
+        )
         self.ont_graph = rdf_utils.parse_rdf_graph_from_url(file=frequency_file)
 
     def _prepare_csv_file(self):
@@ -70,21 +74,32 @@ class ShaclChecker(CheckerInterface):
             dataset_import_graph = rdf_utils.build_reduced_graph_form_package(pkg)
 
         if not dataset_export_graph:
-            utils.log_and_echo_msg(f"rdf graph for dataset {pkg.get('name')} could not be serialized.", error=True)
+            utils.log_and_echo_msg(
+                f"rdf graph for dataset {pkg.get('name')} could not be serialized.",
+                error=True,
+            )
             return
 
-        checker_results = rdf_utils.get_shacl_results(dataset_export_graph, self.shacl_export_graph, self.ont_graph)
+        checker_results = rdf_utils.get_shacl_results(
+            dataset_export_graph, self.shacl_export_graph, self.ont_graph
+        )
         if not checker_results:
             utils.log_and_echo_msg(f"--> Dataset Export {pkg.get('name')} conforms")
         else:
-            utils.log_and_echo_msg(f"--> Dataset Export {pkg.get('name')} does not conform")
+            utils.log_and_echo_msg(
+                f"--> Dataset Export {pkg.get('name')} does not conform"
+            )
         if self.shacl_import_graph:
             dataset_import_graph = rdf_utils.build_reduced_graph_form_package(pkg)
-            import_results = rdf_utils.get_shacl_results(dataset_import_graph, self.shacl_import_graph, self.ont_graph)
+            import_results = rdf_utils.get_shacl_results(
+                dataset_import_graph, self.shacl_import_graph, self.ont_graph
+            )
             if not import_results:
                 utils.log_and_echo_msg(f"--> Dataset Import {pkg.get('name')} conforms")
             else:
-                utils.log_and_echo_msg(f"--> Dataset Import {pkg.get('name')} does not conforms")
+                utils.log_and_echo_msg(
+                    f"--> Dataset Import {pkg.get('name')} does not conforms"
+                )
                 checker_results.extend(import_results)
 
         checker_results = list(set(checker_results))
@@ -135,7 +150,9 @@ class ShaclChecker(CheckerInterface):
         statfile = open(self.statfilename, "w")
         statwriter = csv.DictWriter(statfile, fieldnames=["message", "count"])
         statwriter.writeheader()
-        for message in self.shacl_export_graph.objects(predicate=rdf_utils.SHACL.message):
+        for message in self.shacl_export_graph.objects(
+            predicate=rdf_utils.SHACL.message
+        ):
             msg = str(message)
             statwriter.writerow({"message": msg, "count": msg_dict.get(msg, 0)})
 

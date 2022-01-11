@@ -79,9 +79,9 @@ def build_reduced_graph_form_package(pkg):
     dataset_ref = BNode()
     graph = bind_namespaces(graph)
     graph.add((dataset_ref, RDF.type, DCAT.Dataset))
-    frequency = pkg.get('accrual_periodicity')
+    frequency = pkg.get("accrual_periodicity")
     if frequency:
-       graph.add((dataset_ref, DCT.accrualPeriodicity, URIRef(frequency)))
+        graph.add((dataset_ref, DCT.accrualPeriodicity, URIRef(frequency)))
     return graph
 
 
@@ -101,7 +101,7 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
         return []
     checker_results = []
     for validation_item in results_graph.subjects(
-            predicate=RDF.type, object=SHACL.ValidationResult
+        predicate=RDF.type, object=SHACL.ValidationResult
     ):
         property_ref = get_object_from_graph(
             graph=results_graph,
