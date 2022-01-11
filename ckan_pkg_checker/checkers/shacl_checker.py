@@ -26,7 +26,7 @@ class ShaclChecker(CheckerInterface):
             config, "shaclchecker", "shacl_export_file", required=True
         )
         shaclimportfile = utils.get_config(
-            config, "shaclchecker", "shacl_import_file", required=True
+            config, "shaclchecker", "shacl_import_file", required=False
         )
         frequency_file = utils.get_config(
             config, "shaclchecker", "frequency_file", required=True
@@ -98,7 +98,7 @@ class ShaclChecker(CheckerInterface):
                 utils.log_and_echo_msg(f"--> Dataset Import {pkg.get('name')} conforms")
             else:
                 utils.log_and_echo_msg(
-                    f"--> Dataset Import {pkg.get('name')} does not conforms"
+                    f"--> Dataset Import {pkg.get('name')} does not conform"
                 )
                 checker_results.extend(import_results)
 

@@ -74,7 +74,7 @@ def parse_rdf_graph_from_url(url=None, file=None, bind=False):
     return graph
 
 
-def build_reduced_graph_form_package(pkg):
+def build_reduced_graph_from_package(pkg):
     graph = Graph()
     dataset_ref = BNode()
     graph = bind_namespaces(graph)

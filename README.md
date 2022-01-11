@@ -62,19 +62,21 @@ The checker mode can be chosen:
 
 #### ShaclChecker
 
-See https://www.w3.org/TR/shacl/ for documentation on Shacl.
-The shacl checker checks the datasets against a shacl graph that is 
-specified in the `[shaclchecker]` section
+The validation of datasets uses [Shacl](https://www.w3.org/TR/shacl/) as a method and relies on
+[pyshacl](https://github.com/RDFLib/pySHACL) as a tool.
+From the dataset rdf export is derived via the extension ckanext-dcat as 
+`<dataset-url>.rdf` Since this rdf export of the dataset is a cleaned version of the dataset 
+some dataset properties that have been imported are already cleaned up in there and can not be
+checked this way. Therefore a second rdf graph is currently build up and checked to validate properties 
+where the import differes from what is rendered in the official rdf version of the dataset.
 
-It makes use of pyshacl: see here for a documentation: https://github.com/RDFLib/pySHACL
+Configuration Values: (as specified in the `[shaclchecker]` section of the configuration file)
 
-Currently the shacl checker runs in two steps: 
-
-- a `shacl_export_file` can be set in the configuration that will check the datasets rdf Graph
-- since this Graph contains the dataset in a cleaned up form it does not reflect enough on what has been imported for the dataset, therefore an extra import check can be added by adding `shacl_import_file` in the configuration.
-- the import graph is currently build as a reduced graph from the dataset as it is stored in ckan by the function `build_reduced_graph_form_package` but in the future the import graph might be stored or retrieved in another way.
-- check result from dataset import and export are merged so that results that are double will be removed.
-
+- `shacl_export_file` (required): shacl file to test the official rdf version of the dataset against
+- `shacl_import_file` (optional): shacl file for extra tests on properties that differ on the imported dataset
+- `csvfile` (required): filename for the file that stores the checker results as csv file
+- `statfile`(required): filename for the file that stores the checker results statistics
+- `frequency_file`(required): Turtle file that contains the check against the frequency vocabulary. This file is the `ònt_graph` that is needed for the pyshacl function `validate`
 
 ### Email Receivers
 

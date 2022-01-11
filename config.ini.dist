@@ -25,7 +25,7 @@ frequency_file = frequency.ttl
 # the Shacl files are expected in Turtle format
 shacl_export_file = ogdch.shacl.export.ttl
 
-# path to the shacl file that is used for extra vaildation of import data
+# path to the shacl file that is used for extra validation of import data
 shacl_import_file = ogdch.shacl.import.ttl
 
 [contacts]
