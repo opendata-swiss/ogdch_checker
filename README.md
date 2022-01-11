@@ -64,7 +64,7 @@ The checker mode can be chosen:
 
 The validation of datasets uses [Shacl](https://www.w3.org/TR/shacl/) as a method and relies on
 [pyshacl](https://github.com/RDFLib/pySHACL) as a tool.
-From the dataset rdf export is derived via the extension ckanext-dcat as 
+From the dataset the rdf export is derived via the extension ckanext-dcat as 
 `<dataset-url>.rdf` Since this rdf export of the dataset is a cleaned version of the dataset 
 some dataset properties that have been imported are already cleaned up in there and can not be
 checked this way. Therefore a second rdf graph is currently build up and checked to validate properties 
