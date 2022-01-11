@@ -68,6 +68,14 @@ specified in the `[shaclchecker]` section
 
 It makes use of pyshacl: see here for a documentation: https://github.com/RDFLib/pySHACL
 
+Currently the shacl checker runs in two steps: 
+
+- a `shacl_export_file` can be set in the configuration that will check the datasets rdf Graph
+- since this Graph contains the dataset in a cleaned up form it does not reflect enough on what has been imported for the dataset, therefore an extra import check can be added by adding `shacl_import_file` in the configuration.
+- the import graph is currently build as a reduced graph from the dataset as it is stored in ckan by the function `build_reduced_graph_form_package` but in the future the import graph might be stored or retrieved in another way.
+- check result from dataset import and export are merged so that results that are double will be removed.
+
+
 ### Email Receivers
 
 The checkers can be set to send out emails about the datasets, that failed the checks with the option `--send`.

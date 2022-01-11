@@ -3,41 +3,10 @@ import logging
 from collections import namedtuple
 
 import pandas as pd
-from pyshacl import validate
-from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import utils
-
-SHACL = Namespace("http://www.w3.org/ns/shacl#")
-DCT = Namespace("http://purl.org/dc/terms/")
-DCAT = Namespace("http://www.w3.org/ns/dcat#")
-VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
-SCHEMA = Namespace("http://schema.org/")
-ADMS = Namespace("http://www.w3.org/ns/adms#")
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-TIME = Namespace("http://www.w3.org/2006/time")
-LOCN = Namespace("http://www.w3.org/ns/locn#")
-GSP = Namespace("http://www.opengis.net/ont/geosparql#")
-OWL = Namespace("http://www.w3.org/2002/07/owl#")
-SPDX = Namespace("http://spdx.org/rdf/terms#")
-XML = Namespace("http://www.w3.org/2001/XMLSchema")
-
-namespaces = {
-    "dct": DCT,
-    "dcat": DCAT,
-    "adms": ADMS,
-    "vcard": VCARD,
-    "foaf": FOAF,
-    "schema": SCHEMA,
-    "time": TIME,
-    "skos": SKOS,
-    "locn": LOCN,
-    "gsp": GSP,
-    "owl": OWL,
-    "xml": XML,
-    "sh": SHACL,
-}
+from ckan_pkg_checker.utils import rdf_utils
 
 log = logging.getLogger(__name__)
 
@@ -54,18 +23,19 @@ class ShaclChecker(CheckerInterface):
         self.statfilename = utils.get_csvdir(rundir) / utils.get_config(
             config, "shaclchecker", "statfile", required=True
         )
-        shaclfile = utils.get_config(
-            config, "shaclchecker", "shacl_file", required=True
+        shaclexportfile = utils.get_config(
+            config, "shaclchecker", "shacl_export_file", required=True
+        )
+        shaclimportfile = utils.get_config(
+            config, "shaclchecker", "shacl_import_file", required=True
         )
         frequency_file = utils.get_config(
             config, "shaclchecker", "frequency_file", required=True
         )
         self._prepare_csv_file()
-        self.shacl_graph = utils.parse_rdf_graph_from_url(file=shaclfile)
-        self.ont_graph = utils.parse_rdf_graph_from_url(file=frequency_file)
-        for k, v in namespaces.items():
-            self.shacl_graph.bind(k, v)
-        self.shacl_graph.namespace_manager = NamespaceManager(self.shacl_graph)
+        self.shacl_export_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclexportfile, bind=True)
+        self.shacl_import_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclimportfile, bind=True)
+        self.ont_graph = rdf_utils.parse_rdf_graph_from_url(file=frequency_file)
 
     def _prepare_csv_file(self):
         self.csv_fieldnames = [
@@ -90,67 +60,37 @@ class ShaclChecker(CheckerInterface):
 
     def check_package(self, pkg):
         """Check one data package"""
+
+        # get content from the pkg
         pkg["rdf"] = self.siteurl + "/dataset/" + pkg["name"] + ".rdf"
         pkg["ttl"] = self.siteurl + "/dataset/" + pkg["name"] + ".ttl"
         pkg_type = pkg.get("pkg_type", utils.DCAT)
-        dataset_graph = utils.parse_rdf_graph_from_url(pkg["rdf"])
-        if not dataset_graph:
+
+        dataset_export_graph = rdf_utils.parse_rdf_graph_from_url(pkg["rdf"], bind=True)
+        if self.shacl_import_graph:
+            dataset_import_graph = rdf_utils.build_reduced_graph_form_package(pkg)
+
+        if not dataset_export_graph:
+            utils.log_and_echo_msg(f"rdf graph for dataset {pkg.get('name')} could not be serialized.", error=True)
             return
-        for k, v in namespaces.items():
-            dataset_graph.bind(k, v)
-        dataset_graph.namespace_manager = NamespaceManager(dataset_graph)
-        validation_results = validate(
-            dataset_graph, shacl_graph=self.shacl_graph, ont_graph=self.ont_graph
-        )
-        conforms, results_graph, results_text = validation_results
-        if conforms:
-            utils.log_and_echo_msg(f"--> Dataset {pkg.get('name')} conforms")
-        if not conforms:
-            for k, v in namespaces.items():
-                results_graph.bind(k, v)
-            results_graph.namespace_manager = NamespaceManager(results_graph)
-            checker_results = []
-            for validation_item in results_graph.subjects(
-                predicate=RDF.type, object=SHACL.ValidationResult
-            ):
-                property_ref = utils.get_object_from_graph(
-                    graph=results_graph,
-                    subject=validation_item,
-                    predicate=SHACL.resultPath,
-                )
-                if property_ref:
-                    property = property_ref.n3(results_graph.namespace_manager)
-                    node = utils.get_object_from_graph(
-                        graph=results_graph,
-                        subject=validation_item,
-                        predicate=SHACL.focusNode,
-                    )
-                    value = utils.get_object_from_graph(
-                        graph=dataset_graph, subject=node, predicate=property_ref
-                    )
-                    msg = utils.get_object_from_graph(
-                        graph=results_graph,
-                        subject=validation_item,
-                        predicate=SHACL.resultMessage,
-                    )
-                    if msg:
-                        msg = msg.toPython()
-                    shacl_result = ShaclResult(
-                        node=node,
-                        property=property,
-                        value=value,
-                        msg=msg,
-                    )
-                    utils.log_and_echo_msg(
-                        f"--> Dataset {pkg.get('name')} ShaclError {shacl_result}"
-                    )
-                    checker_results.append(shacl_result)
-                else:
-                    utils.log_and_echo_msg(
-                        f"shacl result without property ref detected at {pkg.get('name')}: {results_text}"
-                    )
-            for shacl_result in checker_results:
-                self.write_result(pkg, pkg_type, shacl_result)
+
+        checker_results = rdf_utils.get_shacl_results(dataset_export_graph, self.shacl_export_graph, self.ont_graph)
+        if not checker_results:
+            utils.log_and_echo_msg(f"--> Dataset Export {pkg.get('name')} conforms")
+        else:
+            utils.log_and_echo_msg(f"--> Dataset Export {pkg.get('name')} does not conform")
+        if self.shacl_import_graph:
+            dataset_import_graph = rdf_utils.build_reduced_graph_form_package(pkg)
+            import_results = rdf_utils.get_shacl_results(dataset_import_graph, self.shacl_import_graph, self.ont_graph)
+            if not import_results:
+                utils.log_and_echo_msg(f"--> Dataset Import {pkg.get('name')} conforms")
+            else:
+                utils.log_and_echo_msg(f"--> Dataset Import {pkg.get('name')} does not conforms")
+                checker_results.extend(import_results)
+
+        checker_results = list(set(checker_results))
+        for shacl_result in checker_results:
+            self.write_result(pkg, pkg_type, shacl_result)
 
     def write_result(self, pkg, pkg_type, shacl_result):
         contacts = utils.get_pkg_contacts(pkg.get("contact_points"))
@@ -196,7 +136,7 @@ class ShaclChecker(CheckerInterface):
         statfile = open(self.statfilename, "w")
         statwriter = csv.DictWriter(statfile, fieldnames=["message", "count"])
         statwriter.writeheader()
-        for message in self.shacl_graph.objects(predicate=SHACL.message):
+        for message in self.shacl_export_graph.objects(predicate=rdf_utils.SHACL.message):
             msg = str(message)
             statwriter.writerow({"message": msg, "count": msg_dict.get(msg, 0)})
 
