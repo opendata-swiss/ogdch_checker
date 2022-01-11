@@ -18,7 +18,7 @@ class EmailBuilder:
             self.csvpath = runpath / utils.get_config(
                 config, "shaclchecker", "csvfile", required=True
             )
-            self.statfile = runpath / utils.get_config(
+            self.statpath = runpath / utils.get_config(
                 config, "shaclchecker", "statfile", required=True
             )
         elif mode == utils.MODE_LINK:
