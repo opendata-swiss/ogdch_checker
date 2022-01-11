@@ -5,8 +5,7 @@ from collections import namedtuple
 import pandas as pd
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
-from ckan_pkg_checker.utils import utils
-from ckan_pkg_checker.utils import rdf_utils
+from ckan_pkg_checker.utils import rdf_utils, utils
 
 log = logging.getLogger(__name__)
 

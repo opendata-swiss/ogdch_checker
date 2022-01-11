@@ -1,8 +1,10 @@
 from collections import namedtuple
-from rdflib import Graph, BNode, URIRef
-from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 from urllib.error import HTTPError, URLError
+
 from pyshacl import validate
+from rdflib import BNode, Graph, URIRef
+from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
+
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
