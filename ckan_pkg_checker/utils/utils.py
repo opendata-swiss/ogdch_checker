@@ -51,6 +51,16 @@ EMAIL_SUBJECT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Validation Resu
 EMAIL_SUBJECT_STATISTICS_LINK = "opendata.swiss : Link Checker Validation Results"
 
 
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    log.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+
+sys.excepthook = handle_exception
+
+
 def get_ckan_resource_url(ckan_siteurl, pkg_name, resource_id):
     return urljoin(
         ckan_siteurl, "/dataset/" + pkg_name + "/resource/" + resource_id
@@ -211,7 +221,6 @@ def set_up_contact_mapping(config):
 
 def log_and_echo_msg(msg, error=False):
     if error:
-        msg = f"\nERROR: {msg}\n"
         log.error(msg)
     else:
         log.info(msg)
@@ -301,13 +310,6 @@ def _setup_loggers(logdir, loglevel):
         level=loglevel,
         filemode="a+",
     )
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d\n%(message)s"
-    )
-    errlog = logging.FileHandler(logdir / "package-checker.errors.log")
-    errlog.setFormatter(formatter)
-    errlog.setLevel(logging.ERROR)
-    logging.getLogger("").addHandler(errlog)
 
 
 def _make_dirs(tmpdir, runname):
