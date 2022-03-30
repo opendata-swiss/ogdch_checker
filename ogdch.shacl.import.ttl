@@ -19,7 +19,7 @@
     rdfs:comment "Frequency Restriction" ;
     rdfs:label "Frequency Restriction" ;
     sh:property [
-        sh:hasValue <http://purl.org/cld/terms/Frequency> ;
+        sh:hasValue <http://publications.europa.eu/resource/authority/frequency> ;
         sh:minCount 1 ;
         sh:nodeKind sh:IRI ;
         sh:path skos:inScheme ;
@@ -32,7 +32,7 @@
         sh:path dct:accrualPeriodicity ;
         sh:node :FrequencyRestriction ;
         sh:nodeKind sh:IRI ;
-	    sh:message "The frequency is expected from a controlled vocabulary http://purl.org/cld/freq. The given value could not be found in that vocabulary." ;
+	    sh:message "The frequency is expected from a controlled vocabulary http://publications.europa.eu/resource/authority/frequency. The given value could not be found in that vocabulary." ;
         sh:severity sh:Violation
     ] ;
 .
