@@ -5,15 +5,7 @@ import click
 
 from ckan_pkg_checker.checkers.link_checker import LinkChecker
 from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
-from ckan_pkg_checker.utils.utils import (
-    DCAT,
-    GEOCAT,
-    MODE_LINK,
-    MODE_SHACL,
-    ContactKey,
-    log_and_echo_msg,
-    set_up_contact_mapping,
-)
+from ckan_pkg_checker.utils import utils
 
 log = logging.getLogger(__name__)
 
@@ -22,45 +14,53 @@ class PackageCheck:
     def __init__(self, config, siteurl, rundir, mode, limit, pkg, org):
         self.siteurl = siteurl
         self.ogdremote = ckanapi.RemoteCKAN(self.siteurl)
+        self.dcat_harvesters = self._get_dcat_harvester_dict()
         self.pkgs = self._get_packages(limit=limit, pkg=pkg, org=org)
         self.pkgs_count = len(self.pkgs)
         self.geocat_pkg_ids = self._get_geocat_package_ids()
-        self.contact_dict = set_up_contact_mapping(config)
+        self.contact_dict = utils.set_up_contact_mapping(config)
         self.active_checkers = []
         checker_classes = []
         kwargs = {"rundir": rundir, "config": config, "siteurl": siteurl}
-        if mode == MODE_SHACL:
+        if mode == utils.MODE_SHACL:
             checker_classes.append(ShaclChecker)
-        elif mode == MODE_LINK:
+        elif mode == utils.MODE_LINK:
             checker_classes.append(LinkChecker)
         for checker_class in checker_classes:
             checker = checker_class(**kwargs)
             self.active_checkers.append(checker)
-        log_and_echo_msg(f"--> {self.pkgs_count} datasets to process")
+        utils.log_and_echo_msg(f"--> {self.pkgs_count} datasets to process")
 
     def run(self):
         for idx, id in enumerate(self.pkgs):
-            log_and_echo_msg(f"({idx + 1}/{self.pkgs_count}) DATASET {id}")
+            utils.log_and_echo_msg(f"({idx + 1}/{self.pkgs_count}) DATASET {id}")
             try:
-                pkg = self.ogdremote.action.package_show(id=id)
+                result = self.ogdremote.action.package_search(
+                    fq=f"name:({id})", include_private=True
+                )
+                if not result.get("results"):
+                    utils.log_and_echo_msg(f"No dataset found for id: {id}")
+                    continue
+                pkg = result.get("results")[0]
                 self._enrich_package(pkg)
                 if pkg["type"] == "dataset":
                     for checker in self.active_checkers:
                         checker.check_package(pkg)
             except ckanapi.errors.NotFound:
-                log_and_echo_msg(f"No dataset found for id: {id}")
+                utils.log_and_echo_msg(f"No dataset found for id: {id}")
             except ckanapi.errors.CKANAPIError:
-                log_and_echo_msg(f"CKAN Api Error for Dataset: {id}")
+                utils.log_and_echo_msg(f"CKAN Api Error for Dataset: {id}")
         for checker in self.active_checkers:
             checker.finish()
 
     def _enrich_package(self, pkg):
         if pkg["name"] in self.geocat_pkg_ids:
-            pkg["pkg_type"] = GEOCAT
+            pkg["pkg_type"] = utils.GEOCAT
         else:
-            pkg["pkg_type"] = DCAT
+            pkg["pkg_type"] = utils.DCAT
+        pkg["source_url"] = utils.get_harvest_source_url(pkg, self.dcat_harvesters)
         if pkg.get("organization"):
-            contact_key = ContactKey(
+            contact_key = utils.ContactKey(
                 organization=pkg["organization"].get("name"), pkg_type=pkg["pkg_type"]
             )
             if contact_key in self.contact_dict:
@@ -75,6 +75,17 @@ class PackageCheck:
             return self._get_organization_package_ids(org=org)
         else:
             return self._get_all_package_ids(limit)
+
+    def _get_dcat_harvester_dict(self):
+        try:
+            harvesters = self.ogdremote.action.harvest_source_list()
+            harvester_dict = {}
+            for harvester in harvesters:
+                if harvester.get("type") == "dcat_ch_rdf":
+                    harvester_dict[harvester["id"]] = harvester.get("url")
+            return harvester_dict
+        except Exception as e:
+            log.exception(f"getting harvesters failed: {e}")
 
     def _get_all_package_ids(self, limit=None):
         pkg_ids = []
@@ -117,7 +128,7 @@ class PackageCheck:
                     result_count = result["count"]
                 pkg_ids.extend([pkg[target] for pkg in result["results"]])
             except ckanapi.errors.NotFound:
-                log_and_echo_msg(f"No datasets found for search with fq: {fq}")
+                utils.log_and_echo_msg(f"No datasets found for search with fq: {fq}")
             except ckanapi.errors.CKANAPIError:
-                log_and_echo_msg(f"CKAN Api Error for Dataset Search: {fq}")
+                utils.log_and_echo_msg(f"CKAN Api Error for Dataset Search: {fq}")
         return pkg_ids

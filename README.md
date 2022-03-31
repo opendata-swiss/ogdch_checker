@@ -64,16 +64,18 @@ The checker mode can be chosen:
 
 The validation of datasets uses [Shacl](https://www.w3.org/TR/shacl/) as a method and relies on
 [pyshacl](https://github.com/RDFLib/pySHACL) as a tool.
-From the dataset the rdf export is derived via the extension ckanext-dcat as 
-`<dataset-url>.rdf` Since this rdf export of the dataset is a cleaned version of the dataset 
-some dataset properties that have been imported are already cleaned up in there and can not be
-checked this way. Therefore a second rdf graph is currently build up and checked to validate properties 
-where the import differes from what is rendered in the official rdf version of the dataset.
+
+An rdf version of the dataset is necessary to perform that check. If possible the rdf import
+of the dataset is considered: for dataset that are harvested via dcat, the dataset is 
+derived directly from the rdf harvest source by using the harvest source url.
+
+For all other dataset the rdf version of the dataset on the ckan instance is used.
+The rdf version of the dataset is derived via the extension ckanext-dcat as 
+`<dataset-url>.rdf`.
 
 Configuration Values: (as specified in the `[shaclchecker]` section of the configuration file)
 
-- `shacl_export_file` (required): shacl file to test the official rdf version of the dataset against
-- `shacl_import_file` (optional): shacl file for extra tests on properties that differ on the imported dataset
+- `shacl_file` (required): shacl file that is used to validate the datasets
 - `csvfile` (required): filename for the file that stores the checker results as csv file
 - `statfile`(required): filename for the file that stores the checker results statistics
 - `frequency_file`(required): Turtle file that contains the check against the frequency vocabulary. This file is the `ònt_graph` that is needed for the pyshacl function `validate`

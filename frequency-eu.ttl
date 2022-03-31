@@ -1,0 +1,254 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix ns0: <http://publications.europa.eu/ontology/authority/> .
+
+<http://publications.europa.eu/resource/authority/frequency/OTHER>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs with another type of regularity (for instance, every leap year)."@en ;
+  skos:prefLabel "other"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs once a week."@en ;
+  skos:prefLabel "weekly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/weekly> .
+
+<http://publications.europa.eu/resource/authority/frequency>
+  a skos:ConceptScheme, owl:Ontology ;
+  rdfs:label "Frequency"@en ;
+  owl:imports <http://publications.europa.eu/ontology/euvoc> ;
+  rdfs:comment "Frequency"^^rdfs:Literal ;
+  owl:versionInfo "20190619-0" ;
+  skos:prefLabel "Frequency"@en ;
+  dc:identifier "http://publications.europa.eu/resource/authority/frequency" ;
+  skosxl:prefLabel [ ] ;
+  ns0:prefLabel "Frequency"@en ;
+  ns0:table.id "frequency" ;
+  ns0:table.version.number "20190619-0" ;
+  owl:versionIRI <http://publications.europa.eu/resource/authority/frequency/20190619-0> .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs once a year."@en ;
+  skos:prefLabel "annual"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/annual> .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_2>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs twice a year."@en ;
+  skos:prefLabel "semiannual"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/semiannual> .
+
+<http://publications.europa.eu/resource/authority/frequency/ANNUAL_3>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs three times a year."@en ;
+  skos:prefLabel "three times a year"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/threeTimesAYear> .
+
+<http://publications.europa.eu/resource/authority/frequency/BIENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every two years."@en ;
+  skos:prefLabel "biennial"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/biennial> .
+
+<http://publications.europa.eu/resource/authority/frequency/BIMONTHLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every two months."@en ;
+  skos:prefLabel "bimonthly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/bimonthly> .
+
+<http://publications.europa.eu/resource/authority/frequency/BIWEEKLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every two weeks."@en ;
+  skos:prefLabel "biweekly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/biweekly> .
+
+<http://publications.europa.eu/resource/authority/frequency/CONT>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The item is updated more frequent than daily."@en ;
+  skos:prefLabel "continuous"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/continuous> .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs once a day."@en ;
+  skos:prefLabel "daily"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/daily> .
+
+<http://publications.europa.eu/resource/authority/frequency/DAILY_2>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs twice a day."@en ;
+  skos:prefLabel "twice a day"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/IRREG>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs at uneven intervals."@en ;
+  skos:prefLabel "irregular"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/irregular> .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs once a month."@en ;
+  skos:prefLabel "monthly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/monthly> .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_2>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs twice a month."@en ;
+  skos:prefLabel "semimonthly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/semimonthly> .
+
+<http://publications.europa.eu/resource/authority/frequency/MONTHLY_3>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs three times a month."@en ;
+  skos:prefLabel "three times a month"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/threeTimesAMonth> .
+
+<http://publications.europa.eu/resource/authority/frequency/NEVER>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The item is never updated."@en ;
+  skos:prefLabel "never"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/OP_DATPRO>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:prefLabel "Provisional data"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/QUARTERLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every three months."@en ;
+  skos:prefLabel "quarterly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/quarterly> .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every three years."@en ;
+  skos:prefLabel "triennial"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/triennial> .
+
+<http://publications.europa.eu/resource/authority/frequency/UNKNOWN>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs with unknown regularity."@en ;
+  skos:prefLabel "unknown"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/completelyIrregular> .
+
+<http://publications.europa.eu/resource/authority/frequency/UPDATE_CONT>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event repeats without interruption."@en ;
+  skos:prefLabel "continuously updated"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_2>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs twice a week."@en ;
+  skos:prefLabel "semiweekly"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/semiweekly> .
+
+<http://publications.europa.eu/resource/authority/frequency/WEEKLY_3>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs three times a week."@en ;
+  skos:prefLabel "three times a week"@en ;
+  skos:exactMatch <http://purl.org/cld/freq/threeTimesAWeek> .
+
+<http://publications.europa.eu/resource/authority/frequency/QUINQUENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every five years."@en ;
+  skos:prefLabel "quinquennial"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/DECENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every ten years."@en ;
+  skos:prefLabel "decennial"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/HOURLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every hour."@en ;
+  skos:prefLabel "hourly"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/QUADRENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every four years."@en ;
+  skos:prefLabel "quadrennial"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/BIHOURLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every two hours."@en ;
+  skos:prefLabel "bihourly"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIHOURLY>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every three hours."@en ;
+  skos:prefLabel "trihourly"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/BIDECENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every twenty years."@en ;
+  skos:prefLabel "bidecennial"@en .
+
+<http://publications.europa.eu/resource/authority/frequency/TRIDECENNIAL>
+  a skos:Concept ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/frequency> ;
+  skos:definition "The event occurs every thirty years."@en ;
+  skos:prefLabel "tridecennial"@en .

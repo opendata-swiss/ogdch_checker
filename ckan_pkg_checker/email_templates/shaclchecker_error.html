@@ -2,12 +2,10 @@
 <p>
 Dataset: <a href='{{ context.row.dataset_url }}'>{{ context.row.dataset_title }}</a>
 <br>A Validation Error occured
-{% if context.row.node %}
-at: <a href='{{ context.row.node }}'>{{ context.row.node }}: </a>
-{% endif %}
 Property: '{{ context.row.property }}.'
-{{ context.row.error_msg | e }}
 {% if context.row.value %}
 Value received: '{{ context.row.value }}'
 {% endif %}
+<br>
+{{ context.row.error_msg | e }}
 </p>

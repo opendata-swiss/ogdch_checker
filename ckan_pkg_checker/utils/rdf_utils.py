@@ -2,7 +2,7 @@ from collections import namedtuple
 from urllib.error import HTTPError, URLError
 
 from pyshacl import validate
-from rdflib import BNode, Graph, URIRef
+from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
@@ -78,19 +78,6 @@ def parse_rdf_graph_from_url(url=None, file=None, bind=False):
     return graph
 
 
-def build_reduced_graph_from_package(pkg):
-    graph = Graph()
-    dataset_ref = BNode()
-    for k, v in namespaces.items():
-        graph.bind(k, v)
-    graph.namespace_manager = NamespaceManager(graph)
-    graph.add((dataset_ref, RDF.type, DCAT.Dataset))
-    frequency = pkg.get("accrual_periodicity")
-    if frequency:
-        graph.add((dataset_ref, DCT.accrualPeriodicity, URIRef(frequency)))
-    return graph
-
-
 def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
     validation_results = validate(
         dataset_graph, shacl_graph=shacl_graph, ont_graph=ont_graph
@@ -132,3 +119,26 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
             )
             checker_results.append(shacl_result)
     return checker_results
+
+
+def get_dataset_graph_from_source(source_url, identifier):
+    try:
+        source = Graph().parse(source_url, format="application/rdf+xml")
+    except Exception as e:
+        log_and_echo_msg(
+            f"Exception {e} happened for source_url {source_url} and {identifier}"
+        )
+        return None
+    for k, v in namespaces.items():
+        source.bind(k, v)
+    source.namespace_manager = NamespaceManager(source)
+    dataset = Graph()
+    for k, v in namespaces.items():
+        dataset.bind(k, v)
+    dataset.namespace_manager = NamespaceManager(dataset)
+    for subj in source.subjects(predicate=DCT.identifier, object=Literal(identifier)):
+        for pred, obj in source.predicate_objects(subject=subj):
+            dataset.add((subj, pred, obj))
+            for subpred, subobj in source.predicate_objects(subject=obj):
+                dataset.add((obj, subpred, subobj))
+    return dataset

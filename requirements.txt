@@ -2,7 +2,7 @@ aniso8601==9.0.1
 certifi==2020.4.5.1
 chardet==3.0.4
 ckanapi==4.3
-click==7.1.1
+click==8.0.2
 docopt==0.6.2
 Flask==1.1.2
 Flask-RESTful==0.3.8

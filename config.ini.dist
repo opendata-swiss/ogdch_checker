@@ -19,14 +19,11 @@ statfile = shaclstatistics.csv
 # provide the path of the frequency vocabulary [http://purl.org/cld/freq](http://purl.org/cld/freq)
 # it is currently provided as a file, to avoid downtimes of the vocabulary site and expected in Turtle
 # format
-frequency_file = frequency.ttl
+frequency_file = frequency-eu.ttl
 
-# path to the shacl file that is used for the shacl validation of export rdf Graph
+# path to the shacl file that is used for the shacl validation of metadata
 # the Shacl files are expected in Turtle format
-shacl_export_file = ogdch.shacl.export.ttl
-
-# path to the shacl file that is used for extra validation of import data
-shacl_import_file = ogdch.shacl.import.ttl
+shacl_file = ogdch.shacl.ttl
 
 [contacts]
 # file to redirect contact emails per organizations
