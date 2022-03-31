@@ -1,0 +1,137 @@
+@prefix : <http://tbd.data.admin.ch/shacl#> .
+
+@prefix adms: <http://www.w3.org/ns/adms#>.
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+<> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
+
+:FrequencyRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Frequency Restriction" ;
+    rdfs:label "Frequency Restriction" ;
+    sh:property [
+        sh:hasValue <http://publications.europa.eu/resource/authority/frequency> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
+:DatasetShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass dcat:Dataset ;
+  sh:property [
+      sh:path dct:description ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message """Please add a description for your dataset.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-description-dcat
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:title ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message "Please add a title for your dataset."@en ;
+      sh:message """Please add a title for your dataset.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-title-dcat
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:distribution ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """This dataset does not have any distributions. Please add a distribution for the dataset.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-dcat
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:contactPoint ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """This dataset does not provide a contact point. Please add a contact point for the dataset.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:contactPoint ;
+      sh:class vcard:Organization ;
+      sh:severity sh:Violation ;
+      sh:message """The contact point needs to be provided as vcard:kind.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:publisher ;
+      sh:class foaf:Organization ;
+      sh:severity sh:Violation ;
+      sh:message """The publisher needs to be provided as foaf:Organization.
+        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:publisher ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide a publisher for the dataset.
+        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:publisher ;
+      sh:maxCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide only one publisher for the dataset.
+        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
+        for Details on this change."""@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:landingPage ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Violation ;
+      sh:message """The landing page needs to be provided as IRI.
+        For Details see
+        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:accrualPeriodicity ;
+      sh:node :FrequencyRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Violation ;
+      sh:message """The frequency is expected from a controlled vocabulary
+        http://publications.europa.eu/resource/authority/frequency.
+        The vocabulary http://purl.org/cld/freq has been deprecated. Please change the value. For Details see
+        https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
+        """@en ;
+  ] .
+
+:DistributionShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass dcat:Distribution;
+  sh:property [
+      sh:path dcat:accessURL ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide an access url for the distribution. See
+         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
+         """@en ;
+    ] ;
+  sh:property [
+      sh:path dcat:accessURL ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Violation ;
+      sh:message """The accessURL must be a URL. Please provide a URL for this property.See
+         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
+         """@en ;
+    ] .
