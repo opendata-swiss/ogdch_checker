@@ -227,6 +227,24 @@ def log_and_echo_msg(msg, error=False):
     click.echo(f"{msg}")
 
 
+def get_pkg_dcat_serialization_url(siteurl, name):
+    return siteurl + "/dataset/" + name + ".rdf"
+
+
+def get_harvest_source_url(pkg, dcat_harvesters):
+    harvester_source_id = [
+        item["value"]
+        for item in pkg.get("extras", [])
+        if item["key"] == "harvest_source_id"
+    ]
+    if not harvester_source_id:
+        return None
+    harvest_source_url = dcat_harvesters.get(harvester_source_id[0])
+    if not harvest_source_url:
+        return None
+    return harvest_source_url
+
+
 def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
     config = configparser.ConfigParser()
     config.read(configpath)
