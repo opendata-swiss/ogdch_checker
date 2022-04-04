@@ -42,6 +42,7 @@ class ShaclChecker(CheckerInterface):
             "node",
             "property",
             "value",
+            "severity",
             "error_msg",
             "pkg_type",
             "checker_type",
@@ -59,6 +60,9 @@ class ShaclChecker(CheckerInterface):
             dataset_graph = rdf_utils.get_dataset_graph_from_source(
                 pkg["source_url"], pkg["identifier"]
             )
+            utils.log_and_echo_msg(
+                f"--> rdf graph for Dataset{pkg.get('name')} taken from harvest source"
+            )
         if not dataset_graph:
             pkg_dcat_serilization_url = utils.get_pkg_dcat_serialization_url(
                 self.siteurl, pkg["name"]
@@ -66,9 +70,12 @@ class ShaclChecker(CheckerInterface):
             dataset_graph = rdf_utils.parse_rdf_graph_from_url(
                 pkg_dcat_serilization_url, bind=True
             )
+            utils.log_and_echo_msg(
+                f"--> rdf graph for Dataset{pkg.get('name')} taken from platform"
+            )
         if not dataset_graph:
             utils.log_and_echo_msg(
-                f"rdf graph for dataset {pkg.get('name')} could not be serialized.",
+                f"--> rdf graph for dataset {pkg.get('name')} could not be serialized.",
                 error=True,
             )
             return
@@ -100,6 +107,7 @@ class ShaclChecker(CheckerInterface):
                     "node": shacl_result.node,
                     "property": shacl_result.property,
                     "value": shacl_result.value,
+                    "severity": shacl_result.severity,
                     "error_msg": shacl_result.msg,
                     "pkg_type": pkg_type,
                     "checker_type": utils.MODE_SHACL,
