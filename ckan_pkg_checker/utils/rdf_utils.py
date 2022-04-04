@@ -1,4 +1,5 @@
 from collections import namedtuple
+from string import Template
 from urllib.error import HTTPError, URLError
 
 from pyshacl import validate
@@ -39,7 +40,9 @@ namespaces = {
     "rdf": RDF,
 }
 
-ShaclResult = namedtuple("ShaclResult", ["property", "value", "msg", "node"])
+ShaclResult = namedtuple(
+    "ShaclResult", ["property", "value", "msg", "node", "severity"]
+)
 
 
 def get_object_from_graph(graph, subject, predicate):
@@ -104,6 +107,19 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
             value = get_object_from_graph(
                 graph=dataset_graph, subject=node, predicate=property_ref
             )
+            if type(value) == BNode:
+                try:
+                    for p, o in dataset_graph.predicate_objects(subject=value):
+                        p_qname = dataset_graph.compute_qname(p)
+                        value = f"{p_qname[0]}:{p_qname[2]} {o}"
+                except Exception:
+                    pass
+            severity = get_object_from_graph(
+                graph=results_graph,
+                subject=validation_item,
+                predicate=SHACL.resultSeverity,
+            )
+            severity = results_graph.compute_qname(severity)[2]
             msg = get_object_from_graph(
                 graph=results_graph,
                 subject=validation_item,
@@ -116,6 +132,7 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
                 property=property,
                 value=value,
                 msg=msg,
+                severity=severity,
             )
             checker_results.append(shacl_result)
     return checker_results
@@ -136,9 +153,11 @@ def get_dataset_graph_from_source(source_url, identifier):
     for k, v in namespaces.items():
         dataset.bind(k, v)
     dataset.namespace_manager = NamespaceManager(dataset)
-    for subj in source.subjects(predicate=DCT.identifier, object=Literal(identifier)):
-        for pred, obj in source.predicate_objects(subject=subj):
-            dataset.add((subj, pred, obj))
+    for dataset_ref in source.subjects(
+        predicate=DCT.identifier, object=Literal(identifier)
+    ):
+        for pred, obj in source.predicate_objects(subject=dataset_ref):
+            dataset.add((dataset_ref, pred, obj))
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
     return dataset
