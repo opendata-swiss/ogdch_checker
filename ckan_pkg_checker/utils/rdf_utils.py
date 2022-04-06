@@ -112,7 +112,11 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
                     for p, o in dataset_graph.predicate_objects(subject=value):
                         p_qname = dataset_graph.compute_qname(p)
                         value = f"{p_qname[0]}:{p_qname[2]} {o}"
-                except Exception:
+                except Exception as e:
+                    log_and_echo_msg(
+                        f"""Exception {e} of type {type(e).__name__} 
+                        BNode value could not be determined for {property}"""
+                    )
                     pass
             severity = get_object_from_graph(
                 graph=results_graph,
