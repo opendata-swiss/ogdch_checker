@@ -1,7 +1,7 @@
 <p>-----</p>
 <p>
 Dataset: <a href='{{ context.row.dataset_url }}'>{{ context.row.dataset_title }}</a>
-<br>A Validation Error occured
+<br>A Validation {{context.row.severity}} occured at
 Property: '{{ context.row.property }}.'
 {% if context.row.value %}
 Value received: '{{ context.row.value }}'
