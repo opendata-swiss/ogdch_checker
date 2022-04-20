@@ -65,9 +65,15 @@
   ] ;
   sh:property [
       sh:path dcat:contactPoint ;
-      sh:class vcard:Organization ;
+      sh:or
+        ([
+            sh:class vcard:Organization ;
+        ]
+        [
+            sh:class vcard:Individual ;
+        ]) ;
       sh:severity sh:Violation ;
-      sh:message """The contact point needs to be provided as vcard:kind.
+      sh:message """The contact point needs to be provided as vcard:Organization or vcard:Individual.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
