@@ -2,12 +2,13 @@ import configparser
 import csv
 import logging
 import sys
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 from configparser import NoOptionError, NoSectionError
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
 
+import ckanapi
 import click
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -190,7 +191,69 @@ def get_config(config, section, option, required=False, fallback=None):
     return value
 
 
-def set_up_contact_mapping(config):
+def _get_organization_list(ogdremote):
+    try:
+        return ogdremote.action.organization_list()
+    except ckanapi.errors.NotFound:
+        log_and_echo_msg(f"No organization found for id: {id}")
+    except ckanapi.errors.CKANAPIError:
+        log_and_echo_msg(f"CKAN Api Error for Organization: {id}")
+    return []
+
+
+def _get_organization_admin_userids(ogdremote, organization_name):
+    try:
+        result = ogdremote.action.member_list(
+            id=organization_name, object_type="user", capacity="admin"
+        )
+        return [member[0] for member in result]
+    except ckanapi.errors.NotFound:
+        log_and_echo_msg(f"No organization found for id: {organization_name}")
+    except ckanapi.errors.CKANAPIError:
+        log_and_echo_msg(f"CKAN Api Error for Organization: {organization_name}")
+
+
+def _get_organization_admin_emails(ogdremote, userids):
+    useremails = []
+    for userid in userids:
+        try:
+            result = ogdremote.action.user_show(id=userid)
+            email = result.get("email")
+            if email:
+                useremails.append(email)
+        except ckanapi.errors.NotFound:
+            log_and_echo_msg(f"No organization found for id: {userid}")
+        except ckanapi.errors.CKANAPIError:
+            log_and_echo_msg(f"CKAN Api Error for Organization: {userid}")
+    return useremails
+
+
+def set_up_contact_mapping(config, ogdremote):
+    organization_names = _get_organization_list(ogdremote)
+    contact_dict = _get_contacts_from_file(config)
+    for organization_name in organization_names:
+        dcat_contact_key = ContactKey(organization_name, DCAT)
+        if dcat_contact_key in contact_dict:
+            continue
+        organization_admin_userids = _get_organization_admin_userids(
+            ogdremote,
+            organization_name,
+        )
+        if not organization_admin_userids:
+            continue
+        organization_admin_emails = _get_organization_admin_emails(
+            ogdremote,
+            organization_admin_userids,
+        )
+        if not organization_admin_emails:
+            continue
+        contact_dict[dcat_contact_key] = organization_admin_emails
+    for entry, value in contact_dict:
+        log_and_echo_msg(f"{entry} is emailed to: {value}")
+    return contact_dict
+
+
+def _get_contacts_from_file(config):
     contact_file = get_config(config, "contacts", "csvfile", fallback=None)
     contact_dict = {}
     if contact_file:
@@ -207,7 +270,10 @@ def set_up_contact_mapping(config):
                     contact_key = ContactKey(
                         organization=row["organization_slug"], pkg_type=row["pkg_type"]
                     )
-                    contact_dict[contact_key] = row["contact_email"]
+                    if contact_key in contact_dict:
+                        contact_dict[contact_key].append(row["contact_email"])
+                        continue
+                    contact_dict[contact_key] = [row["contact_email"]]
         except FileNotFoundError:
             raise click.UsageError(
                 "'contacts.csv' file configured, but file was not found."
@@ -217,6 +283,12 @@ def set_up_contact_mapping(config):
                 "'contacts.csv' file configured, but file has " "not the correct format"
             )
     return contact_dict
+
+
+def get_pkg_metadata_contacts(send_to, contact_points):
+    if send_to:
+        return [Contact(email, email) for email in send_to]
+    return get_pkg_contacts(contact_points)
 
 
 def log_and_echo_msg(msg, error=False):
