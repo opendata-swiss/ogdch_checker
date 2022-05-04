@@ -7,3 +7,4 @@ p3venv
 tmp/*
 *.csv
 *.sh
+.env
