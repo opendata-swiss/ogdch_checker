@@ -102,9 +102,6 @@ class ShaclChecker(CheckerInterface):
         utils.log_and_echo_msg(
             f"contacts for {pkg['name']}, pkg_type of {organization} are: {contacts}"
         )
-        utils.log_and_echo_msg(
-            f"contacts for {pkg['name']}, pkg_type of {organization} are: {contacts}"
-        )
         for contact in contacts:
             self.csvwriter.writerow(
                 {
