@@ -4,6 +4,7 @@ Script to start the Worklogdb Application
 import logging
 
 import click
+from dotenv import dotenv_values, load_dotenv
 
 from ckan_pkg_checker.email_builder import EmailBuilder
 from ckan_pkg_checker.email_sender import EmailSender
@@ -103,6 +104,9 @@ def check_packages(
     You can just send emails when you run the command with --run and --send.
     This assumes a previous check run has been taken place.
     """
+    load_dotenv()
+    config = dotenv_values(".env")
+    apikey = config.get("CKAN_API_KEY")
     runparms = set_runparms(
         org=org,
         limit=limit,
@@ -119,6 +123,7 @@ def check_packages(
         check = PackageCheck(
             config=runparms.config,
             siteurl=runparms.siteurl,
+            apikey=apikey,
             rundir=runparms.rundir,
             mode=runparms.mode,
             limit=runparms.limit,

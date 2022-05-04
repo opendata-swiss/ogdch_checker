@@ -11,14 +11,14 @@ log = logging.getLogger(__name__)
 
 
 class PackageCheck:
-    def __init__(self, config, siteurl, rundir, mode, limit, pkg, org):
+    def __init__(self, config, siteurl, apikey, rundir, mode, limit, pkg, org):
         self.siteurl = siteurl
-        self.ogdremote = ckanapi.RemoteCKAN(self.siteurl)
+        self.ogdremote = ckanapi.RemoteCKAN(self.siteurl, apikey=apikey)
         self.dcat_harvesters = self._get_dcat_harvester_dict()
         self.pkgs = self._get_packages(limit=limit, pkg=pkg, org=org)
         self.pkgs_count = len(self.pkgs)
         self.geocat_pkg_ids = self._get_geocat_package_ids()
-        self.contact_dict = utils.set_up_contact_mapping(config)
+        self.contact_dict = utils.set_up_contact_mapping(config, self.ogdremote)
         self.active_checkers = []
         checker_classes = []
         kwargs = {"rundir": rundir, "config": config, "siteurl": siteurl}
@@ -64,9 +64,8 @@ class PackageCheck:
                 organization=pkg["organization"].get("name"), pkg_type=pkg["pkg_type"]
             )
             if contact_key in self.contact_dict:
-                email = self.contact_dict.get(contact_key)
-                pkg["send_to"] = email
-                click.echo(email)
+                send_to_emails = self.contact_dict.get(contact_key)
+                pkg["send_to"] = send_to_emails
 
     def _get_packages(self, limit=None, pkg=None, org=None):
         if pkg:

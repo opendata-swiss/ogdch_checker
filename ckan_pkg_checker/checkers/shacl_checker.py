@@ -92,15 +92,21 @@ class ShaclChecker(CheckerInterface):
             self.write_result(pkg, pkg_type, shacl_result)
 
     def write_result(self, pkg, pkg_type, shacl_result):
-        contacts = utils.get_pkg_contacts(pkg.get("contact_points"))
+        contacts = utils.get_pkg_metadata_contacts(
+            pkg.get("send_to"),
+            pkg.get("contact_points"),
+        )
         title = utils.get_field_in_one_language(pkg["title"], pkg["name"])
         dataset_url = utils.get_ckan_dataset_url(self.siteurl, pkg["name"])
         organization = pkg.get("organization").get("name")
+        utils.log_and_echo_msg(
+            f"contacts for {pkg['name']}, pkg_type of {organization} are: {contacts}"
+        )
         for contact in contacts:
             self.csvwriter.writerow(
                 {
-                    "contact_email": pkg.get("send_to", contact.email),
-                    "contact_name": pkg.get("send_to", contact.name),
+                    "contact_email": contact.email,
+                    "contact_name": contact.name,
                     "organization_name": organization,
                     "dataset_title": title,
                     "dataset_url": dataset_url,
