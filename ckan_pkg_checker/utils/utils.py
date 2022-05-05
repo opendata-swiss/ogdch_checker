@@ -248,7 +248,7 @@ def set_up_contact_mapping(config, ogdremote):
         if not organization_admin_emails:
             continue
         contact_dict[dcat_contact_key] = organization_admin_emails
-    for entry, value in contact_dict:
+    for entry, value in contact_dict.items():
         log_and_echo_msg(f"{entry} is emailed to: {value}")
     return contact_dict
 
