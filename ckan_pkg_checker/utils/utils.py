@@ -1,17 +1,17 @@
 import configparser
 import csv
 import logging
-import sys
 import os
+import sys
 from collections import defaultdict, namedtuple
 from configparser import NoOptionError, NoSectionError
 from datetime import datetime
 from pathlib import Path
-from dotenv import dotenv_values, load_dotenv
 from urllib.parse import urljoin
 
 import ckanapi
 import click
+from dotenv import dotenv_values, load_dotenv
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 env = Environment(
@@ -251,7 +251,7 @@ def set_up_contact_mapping(config, ogdremote):
         if not organization_admin_emails:
             continue
         contact_dict[dcat_contact_key] = organization_admin_emails
-    for entry, value in contact_dict:
+    for entry, value in contact_dict.items():
         log_and_echo_msg(f"{entry} is emailed to: {value}")
     return contact_dict
 
