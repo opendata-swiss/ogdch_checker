@@ -88,20 +88,23 @@ class ShaclChecker(CheckerInterface):
         else:
             utils.log_and_echo_msg(f"--> Dataset {pkg.get('name')} does not conform")
         checker_results = list(set(checker_results))
-        for shacl_result in checker_results:
-            self.write_result(pkg, pkg_type, shacl_result)
 
-    def write_result(self, pkg, pkg_type, shacl_result):
+        if not checker_results:
+            return
         contacts = utils.get_pkg_metadata_contacts(
             pkg.get("send_to"),
             pkg.get("contact_points"),
         )
+        utils.log_and_echo_msg(
+            f"contacts for {pkg['name']}, {pkg_type} of {pkg['organization'].get('name')} are: {contacts}"
+        )
+        for shacl_result in checker_results:
+            self.write_result(pkg, pkg_type, shacl_result, contacts)
+
+    def write_result(self, pkg, pkg_type, shacl_result, contacts):
         title = utils.get_field_in_one_language(pkg["title"], pkg["name"])
         dataset_url = utils.get_ckan_dataset_url(self.siteurl, pkg["name"])
         organization = pkg.get("organization").get("name")
-        utils.log_and_echo_msg(
-            f"contacts for {pkg['name']}, pkg_type of {organization} are: {contacts}"
-        )
         for contact in contacts:
             self.csvwriter.writerow(
                 {

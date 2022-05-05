@@ -84,8 +84,17 @@ class LinkChecker(CheckerInterface):
             resource_results = self._check_resource(pkg, resource)
             if resource_results:
                 check_results.extend(resource_results)
+        if not check_results:
+            return
+        contacts = utils.get_pkg_metadata_contacts(
+            pkg.get("send_to"),
+            pkg.get("contact_points"),
+        )
+        utils.log_and_echo_msg(
+            f"contacts for {pkg['name']}, {pkg_type} of {pkg['organization'].get('name')} are: {contacts}"
+        )
         for check_result in check_results:
-            self.write_result(pkg, pkg_type, check_result)
+            self.write_result(pkg, pkg_type, check_result, contacts)
 
     def finish(self):
         self.csvfile.close()
@@ -141,11 +150,7 @@ class LinkChecker(CheckerInterface):
             )
             return check_result
 
-    def write_result(self, pkg, pkg_type, check_result):
-        contacts = utils.get_pkg_metadata_contacts(
-            pkg.get("send_to"),
-            pkg.get("contact_points"),
-        )
+    def write_result(self, pkg, pkg_type, check_result, contacts):
         title = utils.get_field_in_one_language(pkg["title"], pkg["name"])
         dataset_url = utils.get_ckan_dataset_url(self.siteurl, pkg["name"])
         organization = pkg.get("organization").get("name")
@@ -154,9 +159,6 @@ class LinkChecker(CheckerInterface):
             resource_url = utils.get_ckan_resource_url(
                 self.siteurl, pkg["name"], check_result.resource_id
             )
-        utils.log_and_echo_msg(
-            f"contacts for {pkg['name']}, pkg_type of {organization} are: {contacts}"
-        )
         for contact in contacts:
             self.csvwriter.writerow(
                 {
