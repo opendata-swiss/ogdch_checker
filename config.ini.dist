@@ -3,6 +3,10 @@
 # alternatives are the ckan test and abnahme instance of opendata.swiss
 siteurl = https://ckan.opendata.swiss
 
+[env]
+# Path to .env file
+envpath =
+
 [tmpdir]
 # put a custom path here where you want to receive your output
 tmppath =
