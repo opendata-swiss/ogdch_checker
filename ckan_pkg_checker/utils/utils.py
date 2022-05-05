@@ -1,6 +1,7 @@
 import configparser
 import csv
 import logging
+import os
 import sys
 from collections import defaultdict, namedtuple
 from configparser import NoOptionError, NoSectionError
@@ -10,6 +11,7 @@ from urllib.parse import urljoin
 
 import ckanapi
 import click
+from dotenv import dotenv_values, load_dotenv
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 env = Environment(
@@ -28,6 +30,7 @@ RunParms = namedtuple(
         "pkg",
         "limit",
         "config",
+        "apikey",
         "tmpdir",
         "rundir",
         "mode",
@@ -248,7 +251,7 @@ def set_up_contact_mapping(config, ogdremote):
         if not organization_admin_emails:
             continue
         contact_dict[dcat_contact_key] = organization_admin_emails
-    for entry, value in contact_dict:
+    for entry, value in contact_dict.items():
         log_and_echo_msg(f"{entry} is emailed to: {value}")
     return contact_dict
 
@@ -350,6 +353,9 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
 
     tmpdir = Path(get_config(config, "tmpdir", "tmppath", required=True))
     siteurl = get_config(config, "site", "siteurl", required=True)
+    envpath = get_config(config, "env", "envpath", required=True)
+    load_dotenv(dotenv_path=envpath)
+    apikey = os.environ.get("CKAN_API_KEY")
     if run:
         mode = _get_mode_from_runname(run)
         check = False
@@ -364,6 +370,7 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
         pkg=pkg,
         limit=limit,
         config=config,
+        apikey=apikey,
         tmpdir=tmpdir,
         rundir=rundir,
         mode=mode,
