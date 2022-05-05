@@ -88,9 +88,6 @@ class ShaclChecker(CheckerInterface):
         else:
             utils.log_and_echo_msg(f"--> Dataset {pkg.get('name')} does not conform")
         checker_results = list(set(checker_results))
-        for shacl_result in checker_results:
-            self.write_result(pkg, pkg_type, shacl_result)
-
         if not checker_results:
             return
         contacts = utils.get_pkg_metadata_contacts(
