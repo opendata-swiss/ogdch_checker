@@ -15,8 +15,8 @@
     Als Hilfestellung finden Sie bei den Fehlermeldungen einen Link zur entsprechenden Handbuchseite.
 
     {% endif %}
-
-    <br>
+</p>
+<p>
     {% if context.pkg_type == context.pkg_type_geocat %}
 
     Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu
@@ -28,8 +28,8 @@
     Gesch&auml;ftsstelle OGD.
 
     {% endif %}
-
-    <br>
+</p>
+<p><small>
     Sie erhalten diese
     {% if context.checker_type == context.checker_type_link %}
     Mail,
@@ -39,7 +39,8 @@
     da Sie bei uns als Benutzerin oder Benutzer mit Administratorrechten auf
     opendata.swiss registriert sind, oder Ihre Adresse bei uns als Kontakt f&uuml;r das
     Validierungsmail hinterlegt wurde.
-</p>
+</small></p>
+<p>******************************************</p>
 <p>[FR] Bonjour {{ context.receiver_name | e }},</p>
 <p>
     {% if context.checker_type == context.checker_type_link %}
@@ -59,7 +60,8 @@
 
     {% endif %}
 
-    <br>
+</p>
+<p>
     {% if context.pkg_type == context.pkg_type_geocat %}
 
     Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a
@@ -72,7 +74,8 @@
 
     {% endif %}
 
-    <br>
+</p>
+<p><small>
     Vous recevez ce courriel
     {% if context.checker_type == context.checker_type_shacl %}
     de validation
@@ -80,7 +83,8 @@
     parce que vous &ecirc;tes enregistr&eacute; chez nous en tant qu&#39;utilisateur
     avec des droits d&#39;administrateur sur opendata.swiss ou parce que votre adresse a &eacute;t&eacute; enregistr&eacute;e
     chez nous comme contact pour le courriel de validation.
-</p>
+</small></p>
+<p>******************************************</p>
 <p>[IT] Buongiorno {{ context.receiver_name | e }},</p>
 <p>
     {% if context.checker_type == context.checker_type_link %}
@@ -100,8 +104,8 @@
     la pagina del manuale di utilizzo relativa al problema.
 
     {% endif %}
-
-    <br>
+</p>
+<p>
     {% if context.pkg_type == context.pkg_type_geocat %}
 
     I geometadati devono essere attualizzati in <a
@@ -113,8 +117,8 @@
     <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
 
     {% endif %}
-
-    <br>
+</p>
+<p><small>
     Ha ricevuto questa email
     {% if context.checker_type == context.checker_type_shacl %}
     di controllo
@@ -124,7 +128,8 @@
     stato indicato come indirizzo di contatto per le mail di controllo.
 
     Ha ricevuto questa email perché è registrato/a su opendata.swiss come utente con diritti di amministratore oppure perché il Suo indirizzo email è stato indicato come indirizzo di contatto per le mail di controllo.
-</p>
+</small></p>
+<p>******************************************</p>
 <p>[EN] Hello {{ context.receiver_name | e }},</p>
 <p>
     {% if context.checker_type == context.checker_type_link %}
@@ -134,7 +139,8 @@
     Please check if those URLs are still available.
 
     {% elif context.checker_type == context.checker_type_shacl %}
-
+</p>
+<p>
     You are receiving the automatic validation
     mail from opendata.swiss because subsequent fields of
     your datasets on opendata.swiss do not comply with the DCAT-AP CH standard.
@@ -144,8 +150,8 @@
     the respective manual page.
 
     {% endif %}
-
-    <br>
+</p>
+<p>
     {% if context.pkg_type == context.pkg_type_geocat %}
 
     Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
@@ -155,13 +161,12 @@
     If you have any questions, please contact the OGD office at <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
 
     {% endif %}
-
-    <br>
+</p>
+<p><small>
     You receive this
     {% if context.checker_type == context.checker_type_shacl %}
-    validation 
+    validation
     {% endif %}
     mail because you are registered as a user with administrator rights on
     opendata.swiss, or because your address has been set up as a contact for the validation mail.
-
-</p>
+</small></p>
