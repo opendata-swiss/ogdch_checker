@@ -30,7 +30,13 @@
     {% endif %}
 
     <br>
-    Sie erhalten diese Validierungsmail, da Sie bei uns als Benutzerin oder Benutzer mit Administratorrechten auf
+    Sie erhalten diese
+    {% if context.checker_type == context.checker_type_link %}
+    Mail,
+    {% elif context.checker_type == context.checker_type_shacl %}
+    Validierungsmail,
+    {% endif %}
+    da Sie bei uns als Benutzerin oder Benutzer mit Administratorrechten auf
     opendata.swiss registriert sind, oder Ihre Adresse bei uns als Kontakt f&uuml;r das
     Validierungsmail hinterlegt wurde.
 </p>
@@ -54,11 +60,6 @@
     {% endif %}
 
     <br>
-    Vous recevez ce courriel de validation parce que vous &ecirc;tes enregistr&eacute; chez nous en tant qu&#39;utilisateur
-    avec des droits d&#39;administrateur sur opendata.swiss ou parce que votre adresse a &eacute;t&eacute; enregistr&eacute;e
-    chez nous comme contact pour le courriel de validation.
-
-    <br>
     {% if context.pkg_type == context.pkg_type_geocat %}
 
     Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a
@@ -70,6 +71,15 @@
     href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
 
     {% endif %}
+
+    <br>
+    Vous recevez ce courriel
+    {% if context.checker_type == context.checker_type_shacl %}
+    de validation
+    {% endif %}
+    parce que vous &ecirc;tes enregistr&eacute; chez nous en tant qu&#39;utilisateur
+    avec des droits d&#39;administrateur sur opendata.swiss ou parce que votre adresse a &eacute;t&eacute; enregistr&eacute;e
+    chez nous comme contact pour le courriel de validation.
 </p>
 <p>[IT] Buongiorno {{ context.receiver_name | e }},</p>
 <p>
@@ -105,9 +115,15 @@
     {% endif %}
 
     <br>
-    Ha ricevuto questa email di controllo perch&eacute; &egrave; registrato/a su opendata.swiss come
+    Ha ricevuto questa email
+    {% if context.checker_type == context.checker_type_shacl %}
+    di controllo
+    {% endif %}
+    perch&eacute; &egrave; registrato/a su opendata.swiss come
     utente con diritti di amministratore oppure perch&eacute; il Suo indirizzo email &egrave;
     stato indicato come indirizzo di contatto per le mail di controllo.
+
+    Ha ricevuto questa email perché è registrato/a su opendata.swiss come utente con diritti di amministratore oppure perché il Suo indirizzo email è stato indicato come indirizzo di contatto per le mail di controllo.
 </p>
 <p>[EN] Hello {{ context.receiver_name | e }},</p>
 <p>
@@ -119,7 +135,8 @@
 
     {% elif context.checker_type == context.checker_type_shacl %}
 
-    You are receiving the automatic validation mail from opendata.swiss because subsequent fields of
+    You are receiving the automatic validation
+    mail from opendata.swiss because subsequent fields of
     your datasets on opendata.swiss do not comply with the DCAT-AP CH standard.
     Please adjust the corresponding data and help us to improve the quality of our metadata.
     <br>
@@ -140,7 +157,11 @@
     {% endif %}
 
     <br>
-    You receive this validation mail because you are registered as a user with administrator rights on
+    You receive this
+    {% if context.checker_type == context.checker_type_shacl %}
+    validation 
+    {% endif %}
+    mail because you are registered as a user with administrator rights on
     opendata.swiss, or because your address has been set up as a contact for the validation mail.
 
 </p>
