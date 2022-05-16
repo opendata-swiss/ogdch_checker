@@ -8,9 +8,9 @@
 
     {% elif context.checker_type == context.checker_type_shacl %}
 
-    Sie erhalten das automatische Validierungsmail von opendata.swiss, da nachfolgende Felder Ihrer Datensätze auf
+    Sie erhalten das automatische Validierungsmail von opendata.swiss, da nachfolgende Felder Ihrer Datens&auml;tze auf
     opendata.swiss nicht dem Standard DCAT-AP CH entsprechen. Bitte passen Sie die entsprechenden Angaben an und
-    helfen Sie uns, die Qualität unserer Metadaten zu verbessern.
+    helfen Sie uns, die Qualit&auml;t unserer Metadaten zu verbessern.
     <br>
     Als Hilfestellung finden Sie bei den Fehlermeldungen einen Link zur entsprechenden Handbuchseite.
 
@@ -31,7 +31,7 @@
 
     <br>
     Sie erhalten diese Validierungsmail, da Sie bei uns als Benutzerin oder Benutzer mit Administratorrechten auf
-    opendata.swiss registriert sind, oder Ihre Adresse bei uns als Kontakt für das
+    opendata.swiss registriert sind, oder Ihre Adresse bei uns als Kontakt f&uuml;r das
     Validierungsmail hinterlegt wurde.
 </p>
 <p>[FR] Bonjour {{ context.receiver_name | e }},</p>
@@ -44,18 +44,18 @@
 
     {% elif context.checker_type == context.checker_type_shacl %}
 
-    Vous recevez ce courriel de validation automatique d'opendata.swiss, car les champs suivants de vos
-    jeux de données sur opendata.swiss ne correspondent pas au standard DCAT-AP CH. Veuillez adapter les
-    champs correspondants et nous aider ainsi à améliorer la qualité de nos métadonnées.
+    Vous recevez ce courriel de validation automatique d&#39;opendata.swiss, car les champs suivants de vos
+    jeux de donn&eacute;es sur opendata.swiss ne correspondent pas au standard DCAT-AP CH. Veuillez adapter les
+    champs correspondants et nous aider ainsi à am&eacute;liorer la qualit&eacute; de nos m&eacute;tadonn&eacute;es.
     <br>
-    Vous trouverez des informations complémentaires dans les messages d'erreur sous le lien vers
+    Vous trouverez des informations compl&eacute;mentaires dans les messages d&#39;erreur sous le lien vers
     la page correspondante du manuel.
 
     {% endif %}
 
     <br>
-    Vous recevez ce courriel de validation parce que vous êtes enregistré chez nous en tant qu'utilisateur
-    avec des droits d'administrateur sur opendata.swiss ou parce que votre adresse a été enregistrée
+    Vous recevez ce courriel de validation parce que vous &ecirc;tes enregistr&eacute; chez nous en tant qu&#39;utilisateur
+    avec des droits d&#39;administrateur sur opendata.swiss ou parce que votre adresse a &eacute;t&eacute; enregistr&eacute;e
     chez nous comme contact pour le courriel de validation.
 
     <br>
@@ -81,7 +81,7 @@
 
     {% elif context.checker_type == context.checker_type_shacl %}
 
-    la presente email è stata inviata automaticamente da opendata.swiss poiché alcuni campi dei
+    la presente email &egrave; stata inviata automaticamente da opendata.swiss poiché alcuni campi dei
     dataset che ha caricato su opendata.swiss non corrispondono allo standard DCAT-AP CH. La preghiamo
     quindi di correggere le informazioni in questione per contribuire a migliorare
     la qualità dei nostri metadati.
@@ -99,13 +99,14 @@
 
     {% else %}
 
-    In caso di domande, contatti la Segreteria OGD scrivendo all&#39;indirizzo <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
+    In caso di domande, contatti la Segreteria OGD scrivendo all&#39;indirizzo
+    <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
 
     {% endif %}
 
     <br>
-    Ha ricevuto questa email di controllo perché è registrato/a su opendata.swiss come
-    utente con diritti di amministratore oppure perché il Suo indirizzo email è
+    Ha ricevuto questa email di controllo perch&eacute; &egrave; registrato/a su opendata.swiss come
+    utente con diritti di amministratore oppure perch&eacute; il Suo indirizzo email &egrave;
     stato indicato come indirizzo di contatto per le mail di controllo.
 </p>
 <p>[EN] Hello {{ context.receiver_name | e }},</p>
