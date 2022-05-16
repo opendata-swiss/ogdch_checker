@@ -1,57 +1,99 @@
 <p>Hello {{ context.receiver_name | e }}</p>
 <p>
-{% if context.checker_type == context.checker_type_link %}
-[DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende URLs zuzugreifen.
-<br>Bitte kontrollieren Sie, ob diese URLs noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
-{% elif context.checker_type == context.checker_type_shacl %}
-[DE] - Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH.
-<br>Bitte erg&auml;nzen Sie die entsprechenden Angaben.
-{% endif %}
-{% if context.pkg_type == context.pkg_type_geocat %}
-<br>Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu aktualisieren.
-{% else %}
-<br>Bei Fragen wenden Sie sich bitte unter <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a> an die Gesch&auml;ftsstelle OGD.
-{% endif %}
+    {% if context.checker_type == context.checker_type_link %}
+
+    [DE] - Wir haben ein Problem festgestellt beim Versuch, auf folgende URLs zuzugreifen.
+    <br>Bitte kontrollieren Sie, ob diese URLs noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
+
+    {% elif context.checker_type == context.checker_type_shacl %}
+
+    [DE] - Nachfolgende Felder Ihrer Datasets auf opendata.swiss entsprechen nicht den Anforderungen von DCAT-AP CH.
+    <br>Bitte erg&auml;nzen Sie die entsprechenden Angaben.
+
+    {% endif %}
+
+    {% if context.pkg_type == context.pkg_type_geocat %}
+
+    <br>Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu
+    aktualisieren.
+
+    {% else %}
+
+    <br>Bei Fragen wenden Sie sich bitte unter <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a> an die
+    Gesch&auml;ftsstelle OGD.
+
+    {% endif %}
 </p>
 <p>
-{% if context.checker_type == context.checker_type_link %}
-[FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux URL suivantes.
-<br>Merci de v&eacute;rifier si ces URL sont toujours disponibles et de les corriger si n&eacute;cessaire.
-{% elif context.checker_type == context.checker_type_shacl %}
-[FR] - Les champs suivants de vos jeux de donn&egrave;es sur opendata.swiss ne r&egrave;pondent pas aux exigences de la DCAT-AP CH.
-<br>Veuillez compléter les informations correspondantes.
-{% endif %}
-{% if context.pkg_type == context.pkg_type_geocat %}
-<br>Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
-{% else %}
-<br>Si vous avez des questions, veuillez contacter le secr&eacute;tariat OGD &agrave; l'adresse <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
-{% endif %}
+    {% if context.checker_type == context.checker_type_link %}
+
+    [FR] - Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux URL suivantes.
+    <br>Merci de v&eacute;rifier si ces URL sont toujours disponibles et de les corriger si n&eacute;cessaire.
+
+    {% elif context.checker_type == context.checker_type_shacl %}
+
+    [FR] - Les champs suivants de vos jeux de donn&egrave;es sur opendata.swiss ne r&egrave;pondent pas aux exigences de
+    la DCAT-AP CH.
+    <br>Veuillez compléter les informations correspondantes.
+
+    {% endif %}
+    {% if context.pkg_type == context.pkg_type_geocat %}
+
+    <br>Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a
+        href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
+
+    {% else %}
+
+    <br>Si vous avez des questions, veuillez contacter le secr&eacute;tariat OGD &agrave; l'adresse <a
+        href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
+
+    {% endif %}
 </p>
 <p>
-{% if context.checker_type == context.checker_type_link %}
-[IT] - Abbiamo riscontrato un problema nel tentativo di accedere agli URL seguenti.
-<br>La preghiamo di verificare se gli URL sono ancora disponibili e, se necessario, correggerle.
-{% elif context.checker_type == context.checker_type_shacl %}
-[IT] I seguenti campi dei Suoi dataset pubblicati su opendata.swiss non soddisfano i requisiti del profilo DCAT-AP CH.
-<br>La preghiamo di completarli con le informazioni corrispondenti.
-{% endif %}
-{% if context.pkg_type == context.pkg_type_geocat %}
-<br>I geometadati devono essere attualizzati in <a href='https://www.geocat.ch/geonetwork/srv/ita/catalog.search#/home'>geocat.ch</a>.
-{% else %}
-<br>In caso di domande contattare la Segreteria OGD all&#39;indirizzo <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
-{% endif %}
+    {% if context.checker_type == context.checker_type_link %}
+
+    [IT] - Abbiamo riscontrato un problema nel tentativo di accedere agli URL seguenti.
+    <br>La preghiamo di verificare se gli URL sono ancora disponibili e, se necessario, correggerle.
+
+    {% elif context.checker_type == context.checker_type_shacl %}
+
+    [IT] I seguenti campi dei Suoi dataset pubblicati su opendata.swiss non soddisfano i requisiti del profilo DCAT-AP
+    CH.
+    <br>La preghiamo di completarli con le informazioni corrispondenti.
+
+    {% endif %}
+
+    {% if context.pkg_type == context.pkg_type_geocat %}
+
+    <br>I geometadati devono essere attualizzati in <a
+        href='https://www.geocat.ch/geonetwork/srv/ita/catalog.search#/home'>geocat.ch</a>.
+
+    {% else %}
+
+    <br>In caso di domande contattare la Segreteria OGD all&#39;indirizzo <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
+
+    {% endif %}
 </p>
 <p>
-{% if context.checker_type == context.checker_type_link %}
-[EN] - While accessing the following URLs, we found some unexpected behaviour.
-<br>Please check if those URLs are still available.
-{% elif context.checker_type == context.checker_type_shacl %}
-[EN] - The following fields of your datasets on opendata.swiss do not meet the requirements of DCAT-AP CH.
-<br>Please complete the corresponding information.
-{% endif %}
-{% if context.pkg_type == context.pkg_type_geocat %}
-<br>Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
-{% else %}
-<br>If you have any questions, please contact the OGD office at <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
-{% endif %}
+    {% if context.checker_type == context.checker_type_link %}
+
+    [EN] - While accessing the following URLs, we found some unexpected behaviour.
+    <br>Please check if those URLs are still available.
+
+    {% elif context.checker_type == context.checker_type_shacl %}
+
+    [EN] - The following fields of your datasets on opendata.swiss do not meet the requirements of DCAT-AP CH.
+    <br>Please complete the corresponding information.
+
+    {% endif %}
+
+    {% if context.pkg_type == context.pkg_type_geocat %}
+
+    <br>Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
+
+    {% else %}
+
+    <br>If you have any questions, please contact the OGD office at <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
+
+    {% endif %}
 </p>
