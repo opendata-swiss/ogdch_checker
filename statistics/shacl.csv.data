@@ -37,4 +37,14 @@ Monat,Fehlertyp,Fehleranzahl
 2022/04,dct:accrualPeriodicity type,1430
 2022/04,dcat:accessURL missing,10
 2022/04,dcat:accessURL type,5344
-
+2022/05,dct:description missing,1046
+2022/05,dct:title missing,0
+2022/05,dcat:distribution missing,11
+2022/05,dcat:contactPoint missing,4
+2022/05,dcat:contactPoint type,0
+2022/05,dct:publisher type,1245
+2022/05,dct:publisher missing,0
+2022/05,dcat:landingPage type,1245
+2022/05,dct:accrualPeriodicity type,496
+2022/05,dcat:accessURL missing,10
+2022/05,dcat:accessURL type,4363
