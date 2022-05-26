@@ -194,9 +194,19 @@ def get_config(config, section, option, required=False, fallback=None):
     return value
 
 
+def _get_parent_organization_dict(organizatons):
+    parents = {org.get('name'): [parent.get('name') for parent in org.get('groups')] for org in organizatons}
+    return parents
+
+
 def _get_organization_list(ogdremote):
     try:
-        return ogdremote.action.organization_list()
+        organizations = ogdremote.action.organization_list(
+            all_fields=True,
+            include_groups=True,
+            include_dataset_count=False
+        )
+        return _get_parent_organization_dict(organizations)
     except ckanapi.errors.NotFound:
         log_and_echo_msg(f"No organization found for id: {id}")
     except ckanapi.errors.CKANAPIError:
@@ -232,9 +242,9 @@ def _get_organization_admin_emails(ogdremote, userids):
 
 
 def set_up_contact_mapping(config, ogdremote):
-    organization_names = _get_organization_list(ogdremote)
+    organization_with_parents = _get_organization_list(ogdremote)
     contact_dict = _get_contacts_from_file(config)
-    for organization_name in organization_names:
+    for organization_name in organization_with_parents:
         dcat_contact_key = ContactKey(organization_name, DCAT)
         if dcat_contact_key in contact_dict:
             continue
@@ -242,6 +252,11 @@ def set_up_contact_mapping(config, ogdremote):
             ogdremote,
             organization_name,
         )
+        if not organization_admin_userids and organization_with_parents[organization_name]:
+            organization_admin_userids = _get_organization_admin_userids(
+                ogdremote,
+                organization_with_parents[organization_name][0],
+            )
         if not organization_admin_userids:
             continue
         organization_admin_emails = _get_organization_admin_emails(
@@ -258,7 +273,7 @@ def set_up_contact_mapping(config, ogdremote):
 
 def _get_contacts_from_file(config):
     contact_file = get_config(config, "contacts", "csvfile", fallback=None)
-    contact_dict = {}
+    contact_dict = defaultdict(list)
     if contact_file:
         try:
             with open(contact_file, "r") as csvfile:
@@ -267,16 +282,14 @@ def _get_contacts_from_file(config):
                     if (
                         not row.get("organization_slug")
                         or not row.get("pkg_type")
-                        or not row.get("contact_email")
+                        or not row.get("contact_emails")
                     ):
                         continue
                     contact_key = ContactKey(
                         organization=row["organization_slug"], pkg_type=row["pkg_type"]
                     )
-                    if contact_key in contact_dict:
-                        contact_dict[contact_key].append(row["contact_email"])
-                        continue
-                    contact_dict[contact_key] = [row["contact_email"]]
+                    emails = row["contact_emails"].split(' ')
+                    contact_dict[contact_key].extend(emails)
         except FileNotFoundError:
             raise click.UsageError(
                 "'contacts.csv' file configured, but file was not found."

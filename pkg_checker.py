@@ -114,7 +114,7 @@ def check_packages(
         test=test,
         mode=mode,
     )
-
+    print(runparms.apikey)
     if runparms.check:
         check = PackageCheck(
             config=runparms.config,
