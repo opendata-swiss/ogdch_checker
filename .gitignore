@@ -5,6 +5,6 @@ htmlcov/*
 p3venv
 *.ini
 tmp/*
-*.csv
+contacts.csv
 *.sh
 .env

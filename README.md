@@ -135,6 +135,10 @@ to a test address
 python pkg_checker.py -c config.ini -m shacl -b -s -t
 ```
 
+### Statistics Visualization
+
+For how produce plots for Shacl and Linkchecker Statistics, see [here](statistics/README.md) 
+
 ## Tests and linting
 
 We use Github Actions to automatically check the code for style and syntax
