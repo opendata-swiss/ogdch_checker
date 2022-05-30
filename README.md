@@ -87,8 +87,8 @@ The emails go to the contacts mentioned in the packages and additionally some ad
 In case the contact for the metadata of an organization differs from the contact given in the packages, this can be specified in a csv file with the following fields:
 
 ```
-pkg_type,organization_slug,contact_email
-geocat,example-org,example-contact-email@gmail.com
+pkg_type,organization_slug,contact_emails
+geocat,example-org,example-contact1-email@gmail.com example-contact2-email@gmail.com
 dcat,other-example-org,other-contact-email@org.ch
 ```
 
@@ -96,8 +96,20 @@ These fields are to be filled as follows:
 
 - `pkg_type`: `geocat` for datasets that are harvested from https://geocat.ch, `dcat` for all other datasets
 - `organization_slug`: slug of the organization on https://opendata.swiss
-- `contact_email`: metadata contact for that organization: an email of a peron or organization that can change the metadata of datasets of that organization
+- `contact_emails`: metadata contacts for that organization: an email of a person of the organization that can change the metadata of datasets of that organization: more than one email can be added; separate emails by a blank
   
+The emails for geocat datasets will be send to:
+
+1. the contacts on the list if there are any
+2. in case no contacts are on the list the contact-point specified in the dataset will be taken
+
+The emails for dcat datasets will be send to:
+
+1. the contacts on the list if there are any
+2. in case no contacts are on the list the organization-admins will be taken as contacts
+3. in case no organisation-admins are available the parent organization organization admins will be taken
+4. in case there are still no contacts the contact-points specified in the dataset will be taken
+
 ## Install 
 
 ```
