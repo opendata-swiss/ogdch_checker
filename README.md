@@ -103,7 +103,7 @@ The emails for geocat datasets will be send to:
 1. the contacts on the list if there are any
 2. in case no contacts are on the list the contact-point specified in the dataset will be taken
 
-The emails for geocat datasets will be send to:
+The emails for dcat datasets will be send to:
 
 1. the contacts on the list if there are any
 2. in case no contacts are on the list the organization-admins will be taken as contacts
