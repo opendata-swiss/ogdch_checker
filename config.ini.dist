@@ -50,6 +50,9 @@ bcc =
 # add geocat email as additional receiver for geocat packages
 geocat_admin =
 
+# add dcat admin email as fallback receiver for dcat packages
+dcat_admin = opendata@bfs.admin.ch
+
 # email server
 smtp_server = localhost
 
