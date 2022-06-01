@@ -108,7 +108,7 @@ The emails for dcat datasets will be send to:
 1. the contacts on the list if there are any
 2. in case no contacts are on the list the organization-admins will be taken as contacts
 3. in case no organisation-admins are available the parent organization organization admins will be taken
-4. in case there are still no contacts the contact-points specified in the dataset will be taken
+4. in case there are still no contacts the dcat_admin email will be taken from the config file
 
 ## Install 
 

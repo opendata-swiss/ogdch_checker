@@ -245,6 +245,7 @@ def _get_organization_admin_emails(ogdremote, userids):
 def set_up_contact_mapping(config, ogdremote):
     organization_with_parents = _get_organization_list(ogdremote)
     contact_dict = _get_contacts_from_file(config)
+    dcat_admin_email = get_config(config, "emailsender", "dcat_admin", required=True)
     for organization_name in organization_with_parents:
         dcat_contact_key = ContactKey(organization_name, DCAT)
         if dcat_contact_key in contact_dict:
@@ -261,15 +262,14 @@ def set_up_contact_mapping(config, ogdremote):
                 ogdremote,
                 organization_with_parents[organization_name][0],
             )
-        if not organization_admin_userids:
+        if organization_admin_userids:
+            organization_admin_emails = _get_organization_admin_emails(
+                ogdremote,
+                organization_admin_userids,
+            )
+            contact_dict[dcat_contact_key] = organization_admin_emails
             continue
-        organization_admin_emails = _get_organization_admin_emails(
-            ogdremote,
-            organization_admin_userids,
-        )
-        if not organization_admin_emails:
-            continue
-        contact_dict[dcat_contact_key] = organization_admin_emails
+        contact_dict[dcat_contact_key] = [dcat_admin_email]
     for entry, value in contact_dict.items():
         log_and_echo_msg(f"{entry} is emailed to: {value}")
     return contact_dict
