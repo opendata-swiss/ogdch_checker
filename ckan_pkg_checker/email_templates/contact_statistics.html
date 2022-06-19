@@ -1,0 +1,26 @@
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 5px;
+  border-collapse: collapse;
+}
+</style>
+<p>Hello {{ context.receiver_name | e}}</p>
+<p>This is a summary of the results of the {{ context.mode }} shecker run per organization.</p>
+<p>Emails have been sent to the following contacts:</p>
+<table>
+  <tr>
+    <th>Organization Name</th>
+    <th>Package Type</th>
+    <th>Contact emails</th>
+    <th>Error Count</th>
+  </tr>
+  {% for result in context.rows %}
+  <tr>
+    <td>{{ result.organization_name }}</td>
+    <td>{{ result.pkg_type }}</td>
+    <td>{{ result.contact_emails }}</td>
+    <td>{{ result.error_count }}</td>
+  </tr>
+  {% endfor %}
+</table>

@@ -36,6 +36,9 @@ class LinkChecker(CheckerInterface):
         self.statfilepath = runpath / utils.get_config(
             config, "linkchecker", "statfile", required=True
         )
+        self.contactsstats_filename = utils.get_csvdir(rundir) / utils.get_config(
+            config, "contacts", "statsfile", required=True
+        )
         self._prepare_csv_file()
 
     def _prepare_csv_file(self):
@@ -99,6 +102,11 @@ class LinkChecker(CheckerInterface):
     def finish(self):
         self.csvfile.close()
         self._statistics()
+        utils.contacts_statistics(
+            checker_result_path=self.csvfilepath,
+            contactsstats_filename=self.contactsstats_filename,
+            checker_error_fieldname="error_message",
+        )
 
     def _check_resource(self, pkg, resource):
         """Check one resource"""

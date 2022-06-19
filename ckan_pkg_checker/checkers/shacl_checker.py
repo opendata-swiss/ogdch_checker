@@ -22,6 +22,9 @@ class ShaclChecker(CheckerInterface):
         self.statfilename = utils.get_csvdir(rundir) / utils.get_config(
             config, "shaclchecker", "statfile", required=True
         )
+        self.contactsstats_filename = utils.get_csvdir(rundir) / utils.get_config(
+            config, "contacts", "statsfile", required=True
+        )
         shaclfile = utils.get_config(
             config, "shaclchecker", "shacl_file", required=True
         )
@@ -127,6 +130,11 @@ class ShaclChecker(CheckerInterface):
         """Close the file"""
         self.csvfile.close()
         self._statistics()
+        utils.contacts_statistics(
+            checker_result_path=self.csvfilename,
+            contactsstats_filename=self.contactsstats_filename,
+            checker_error_fieldname="error_msg",
+        )
 
     def _statistics(self):
         df = pd.read_csv(self.csvfilename)
