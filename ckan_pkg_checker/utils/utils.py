@@ -11,6 +11,7 @@ from urllib.parse import urljoin
 
 import ckanapi
 import click
+import pandas as pd
 from dotenv import dotenv_values, load_dotenv
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -44,6 +45,7 @@ FieldNamesMsgFile = ["contact_email", "contact_name", "pkg_type", "checker_type"
 GEOCAT = "geocat"
 DCAT = "dcat"
 STATISTICS = "statistics"
+CONTACTS_STATISTICS = "contacts-statistics"
 MODE_SHACL = "shacl"
 MODE_LINK = "link"
 modes = [MODE_LINK, MODE_SHACL]
@@ -106,6 +108,28 @@ def build_statistics_email(receiver_name, mode, statistics):
             "mode": mode,
             "checks": display_checks,
             "errors": display_errors,
+        }
+    )
+    return html
+
+
+def build_contacts_statistics_email(receiver_name, mode, df_statistics):
+    stat_template = env.get_template("contact_statistics.html")
+    organization_results = list()
+    for _, row in df_statistics.iterrows():
+        organization_results.append(
+            {
+                "organization_name": row["organization_name"],
+                "pkg_type": row["pkg_type"],
+                "contact_emails": row["contact_emails"],
+                "error_count": row["error_count"],
+            }
+        )
+    html = stat_template.render(
+        context={
+            "receiver_name": receiver_name,
+            "mode": mode,
+            "rows": organization_results,
         }
     )
     return html
@@ -467,3 +491,43 @@ def _get_mode_from_runname(runname):
         return mode[0]
     else:
         raise click.UsageError(f"Mode can not be detected from {runname}.")
+
+
+def contacts_statistics(
+    checker_result_path, checker_error_fieldname, contactsstats_filename
+):
+    df = pd.read_csv(checker_result_path)
+    dg_contacts = (
+        df.filter(["contact_email", "pkg_type", "organization_name"])
+        .groupby(["organization_name", "pkg_type"])
+        .apply(_list_contact_emails)
+    )
+    dg_contacts.name = "contacts"
+    dg_errors = (
+        df.filter([checker_error_fieldname, "pkg_type", "organization_name"])
+        .groupby(["organization_name", "pkg_type"])
+        .count()
+    )
+    df_result = dg_errors.join(dg_contacts)
+    statfile = open(contactsstats_filename, "w")
+    statwriter = csv.DictWriter(
+        statfile,
+        fieldnames=["organization_name", "pkg_type", "error_count", "contact_emails"],
+    )
+    statwriter.writeheader()
+    for index, row in df_result.iterrows():
+        statwriter.writerow(
+            {
+                "organization_name": index[0],
+                "pkg_type": index[1],
+                "error_count": row[checker_error_fieldname],
+                "contact_emails": row["contacts"],
+            }
+        )
+
+
+def _list_contact_emails(df):
+    contacts = df["contact_email"].to_list()
+    contacts_unique = list(set(contacts))
+    contacts_unique_formatted = " ".join(contacts_unique)
+    return contacts_unique_formatted

@@ -28,6 +28,9 @@ class EmailBuilder:
             self.statpath = runpath / utils.get_config(
                 config, "linkchecker", "statfile", required=True
             )
+        self.contactsstats_path = runpath / utils.get_config(
+            config, "contacts", "statsfile", required=True
+        )
         self.default_contact = utils.Contact(
             name=utils.get_config(
                 config, "emailbuilder", "default_name", required=True
@@ -45,6 +48,8 @@ class EmailBuilder:
                 self._process_line(row)
         if self.statpath:
             self._build_statistics()
+        if self.contactsstats_path:
+            self._build_contacts_statistics()
 
     def _process_line(self, row):
         contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]
@@ -81,5 +86,18 @@ class EmailBuilder:
                 receiver_name=self.default_contact.name,
                 mode=self.mode,
                 statistics=statistics,
+            )
+            writemail.write(msg)
+
+    def _build_contacts_statistics(self):
+        filename = utils.CONTACTS_STATISTICS + "#" + self.default_contact.email
+        mailfile = os.path.join(self.mailpath, filename + ".html")
+        utils.log_and_echo_msg(f"email for {filename}")
+        with open(mailfile, "a") as writemail:
+            df = pd.read_csv(self.contactsstats_path)
+            msg = utils.build_contacts_statistics_email(
+                receiver_name=self.default_contact.name,
+                mode=self.mode,
+                df_statistics=df,
             )
             writemail.write(msg)

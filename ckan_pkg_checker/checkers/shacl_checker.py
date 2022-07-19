@@ -16,11 +16,15 @@ class ShaclChecker(CheckerInterface):
     def __init__(self, rundir, config, siteurl):
         """Initialize the validation checker"""
         self.siteurl = siteurl
-        self.csvfilename = utils.get_csvdir(rundir) / utils.get_config(
+        runpath = utils.get_csvdir(rundir)
+        self.csvfilename = runpath / utils.get_config(
             config, "shaclchecker", "csvfile", required=True
         )
-        self.statfilename = utils.get_csvdir(rundir) / utils.get_config(
+        self.statfilename = runpath / utils.get_config(
             config, "shaclchecker", "statfile", required=True
+        )
+        self.contactsstats_filename = runpath / utils.get_config(
+            config, "contacts", "statsfile", required=True
         )
         shaclfile = utils.get_config(
             config, "shaclchecker", "shacl_file", required=True
@@ -127,6 +131,11 @@ class ShaclChecker(CheckerInterface):
         """Close the file"""
         self.csvfile.close()
         self._statistics()
+        utils.contacts_statistics(
+            checker_result_path=self.csvfilename,
+            contactsstats_filename=self.contactsstats_filename,
+            checker_error_fieldname="error_msg",
+        )
 
     def _statistics(self):
         df = pd.read_csv(self.csvfilename)
