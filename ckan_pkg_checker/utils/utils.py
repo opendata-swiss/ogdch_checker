@@ -497,13 +497,13 @@ def contacts_statistics(
     checker_result_path, checker_error_fieldname, contactsstats_filename
 ):
     df = pd.read_csv(checker_result_path)
-    df_contacts = df.filter(["contact_email", "pkg_type", "organization_name"])
-    df_errors = df.filter([checker_error_fieldname, "pkg_type", "organization_name"])
-    dg_contacts = df_contacts.groupby(["organization_name", "pkg_type"]).apply(
-        _list_contact_emails
-    )
+    dg_contacts = df.filter(["contact_email", "pkg_type", "organization_name"])\
+                    .groupby(["organization_name", "pkg_type"]).apply(
+                        _list_contact_emails
+                    )
     dg_contacts.name = "contacts"
-    dg_errors = df_errors.groupby(["organization_name", "pkg_type"]).count()
+    dg_errors = df.filter([checker_error_fieldname, "pkg_type", "organization_name"])\
+                  .groupby(["organization_name", "pkg_type"]).count()
     df_result = dg_errors.join(dg_contacts)
     statfile = open(contactsstats_filename, "w")
     statwriter = csv.DictWriter(
