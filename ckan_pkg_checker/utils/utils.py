@@ -55,6 +55,8 @@ EMAIL_SUBJECT_LINK = (
 )
 EMAIL_SUBJECT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Validation Results"
 EMAIL_SUBJECT_STATISTICS_LINK = "opendata.swiss : Link Checker Validation Results"
+EMAIL_SUBJECT_CONTACT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Contacts Summary"
+EMAIL_SUBJECT_CONTACT_STATISTICS_LINK = "opendata.swiss : Link Checker Contacts Summary"
 
 
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -166,6 +168,13 @@ def get_email_subject_statistics(mode):
         return EMAIL_SUBJECT_STATISTICS_SHACL
     if mode == MODE_LINK:
         return EMAIL_SUBJECT_STATISTICS_LINK
+
+
+def get_email_subject_contact_statistics(mode):
+    if mode == MODE_SHACL:
+        return EMAIL_SUBJECT_CONTACT_STATISTICS_SHACL
+    if mode == MODE_LINK:
+        return EMAIL_SUBJECT_CONTACT_STATISTICS_LINK
 
 
 def get_pkg_contacts(pkg_contact_points):
