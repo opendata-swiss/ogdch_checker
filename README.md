@@ -110,6 +110,14 @@ The emails for dcat datasets will be send to:
 3. in case no organisation-admins are available the parent organization organization admins will be taken
 4. in case there are still no contacts the dcat_admin email will be taken from the config file
 
+### Statistics
+
+The checker sends additional emails with some statistics about each run to the default contsct.
+The followings statistics will be emailed:
+
+- a list of checks that have been performed together with the counts of how often the errors occured
+- a list of organizations with the contacts that have been informed together with the counts of errors that have been reported to them
+
 ## Install 
 
 ```
