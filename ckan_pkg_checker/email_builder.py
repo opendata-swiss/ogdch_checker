@@ -28,7 +28,7 @@ class EmailBuilder:
             self.statpath = runpath / utils.get_config(
                 config, "linkchecker", "statfile", required=True
             )
-        self.contactsstats_path = utils.get_csvdir(rundir) / utils.get_config(
+        self.contactsstats_path = runpath / utils.get_config(
             config, "contacts", "statsfile", required=True
         )
         self.default_contact = utils.Contact(
