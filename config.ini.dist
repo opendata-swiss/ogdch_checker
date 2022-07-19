@@ -36,6 +36,7 @@ shacl_file = ogdch.shacl.ttl
 # pkg_type can be either 'dcat' or 'geocat'
 # organization_slug is the organization slug on opendata.swiss
 csvfile =
+statsfile = contactstats.csv
 
 [emailbuilder]
 # default email receiver, if no dataset contact can be found
