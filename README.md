@@ -112,7 +112,7 @@ The emails for dcat datasets will be send to:
 
 ### Statistics
 
-The checker sends additional emails with some statistics about each run to the default contsct.
+The checker sends additional emails with some statistics about each run to the default contact.
 The followings statistics will be emailed:
 
 - a list of checks that have been performed together with the counts of how often the errors occured
