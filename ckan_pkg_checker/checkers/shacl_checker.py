@@ -16,13 +16,14 @@ class ShaclChecker(CheckerInterface):
     def __init__(self, rundir, config, siteurl):
         """Initialize the validation checker"""
         self.siteurl = siteurl
-        self.csvfilename = utils.get_csvdir(rundir) / utils.get_config(
+        runpath = utils.get_csvdir(rundir)
+        self.csvfilename = runpath / utils.get_config(
             config, "shaclchecker", "csvfile", required=True
         )
-        self.statfilename = utils.get_csvdir(rundir) / utils.get_config(
+        self.statfilename = runpath / utils.get_config(
             config, "shaclchecker", "statfile", required=True
         )
-        self.contactsstats_filename = utils.get_csvdir(rundir) / utils.get_config(
+        self.contactsstats_filename = runpath / utils.get_config(
             config, "contacts", "statsfile", required=True
         )
         shaclfile = utils.get_config(
