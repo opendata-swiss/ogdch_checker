@@ -36,7 +36,7 @@ class LinkChecker(CheckerInterface):
         self.statfilepath = runpath / utils.get_config(
             config, "linkchecker", "statfile", required=True
         )
-        self.contactsstats_filename = utils.get_csvdir(rundir) / utils.get_config(
+        self.contactsstats_filename = runpath / utils.get_config(
             config, "contacts", "statsfile", required=True
         )
         self._prepare_csv_file()
