@@ -55,7 +55,9 @@ EMAIL_SUBJECT_LINK = (
 )
 EMAIL_SUBJECT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Validation Results"
 EMAIL_SUBJECT_STATISTICS_LINK = "opendata.swiss : Link Checker Validation Results"
-EMAIL_SUBJECT_CONTACT_STATISTICS_SHACL = "opendata.swiss : Shacl Checker Contacts Summary"
+EMAIL_SUBJECT_CONTACT_STATISTICS_SHACL = (
+    "opendata.swiss : Shacl Checker Contacts Summary"
+)
 EMAIL_SUBJECT_CONTACT_STATISTICS_LINK = "opendata.swiss : Link Checker Contacts Summary"
 
 
