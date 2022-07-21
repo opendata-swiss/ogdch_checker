@@ -42,7 +42,6 @@
       sh:minCount 1 ;
       sh:nodeKind sh:Literal ;
       sh:severity sh:Violation ;
-      sh:message "Please add a title for your dataset."@en ;
       sh:message """Please add a title for your dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-title-dcat
 	    """@en ;
