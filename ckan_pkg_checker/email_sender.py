@@ -25,6 +25,9 @@ class EmailSender:
         self.add_as_receivers_for_geocat = [self.cc, bcc, geocat_admin]
         self.email_subject = utils.get_email_subject(mode=mode)
         self.email_subject_statistics = utils.get_email_subject_statistics(mode=mode)
+        self.email_subject_contact_statistics = (
+            utils.get_email_subject_contact_statistics(mode=mode)
+        )
         self.test = test
         if self.test:
             self.email_overwrites = utils.get_config(
@@ -42,6 +45,8 @@ class EmailSender:
                 msg = MIMEMultipart("alternative")
                 if contact_type == utils.STATISTICS:
                     msg["Subject"] = self.email_subject_statistics
+                elif contact_type == utils.CONTACTS_STATISTICS:
+                    msg["Subject"] = self.email_subject_contact_statistics
                 else:
                     msg["Subject"] = self.email_subject
 
