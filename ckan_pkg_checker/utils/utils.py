@@ -238,16 +238,30 @@ def _get_parent_organization_dict(organizatons):
 
 
 def _get_organization_list(ogdremote):
-    try:
-        organizations = ogdremote.action.organization_list(
-            all_fields=True, include_groups=True, include_dataset_count=False
-        )
-        return _get_parent_organization_dict(organizations)
-    except ckanapi.errors.NotFound:
-        log_and_echo_msg(f"No organization found for id: {id}")
-    except ckanapi.errors.CKANAPIError:
-        log_and_echo_msg(f"CKAN Api Error for Organization: {id}")
-    return []
+    """the api call to organization_list with all_fields=True
+    brings only 25 records back per call. Therefore this call
+    has to be repeated until all organizations have been retrieved"""
+    organizations = []
+    offset = 0
+    count = 1
+    limit = 25
+    while count > 0:
+        try:
+            result = ogdremote.action.organization_list(
+                all_fields=True,
+                include_groups=True,
+                include_dataset_count=False,
+                limit=limit,
+                offset=offset,
+            )
+            count = len(result)
+            offset += count
+            organizations.extend(result)
+        except ckanapi.errors.NotFound:
+            log_and_echo_msg(f"No organization found for id: {id}")
+        except ckanapi.errors.CKANAPIError:
+            log_and_echo_msg(f"CKAN Api Error for Organization: {id}")
+    return _get_parent_organization_dict(organizations)
 
 
 def _get_organization_admin_userids(ogdremote, organization_name):
