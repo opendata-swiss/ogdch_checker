@@ -229,25 +229,30 @@ def get_config(config, section, option, required=False, fallback=None):
     return value
 
 
-def _get_parent_organization_dict(organizatons):
-    parents = {
-        org.get("name"): [parent.get("name") for parent in org.get("groups")]
-        for org in organizatons
-    }
-    return parents
-
-
-def _get_organization_list(ogdremote):
+def _get_organizations_with_parents(ogdremote):
     try:
-        organizations = ogdremote.action.organization_list(
-            all_fields=True, include_groups=True, include_dataset_count=False
+        organization_tree = ogdremote.action.group_tree(
+            type="organization",
         )
-        return _get_parent_organization_dict(organizations)
+        return _get_organization_dict_with_parents(organization_tree)
     except ckanapi.errors.NotFound:
-        log_and_echo_msg(f"No organization found for id: {id}")
+        log_and_echo_msg(f"Organization tree was not found.")
     except ckanapi.errors.CKANAPIError:
-        log_and_echo_msg(f"CKAN Api Error for Organization: {id}")
-    return []
+        log_and_echo_msg(f"CKAN Api Error at retrival of organization tree")
+    return {}
+
+
+def _get_organization_dict_with_parents(organization_tree):
+    organizations_with_parents = defaultdict(list)
+    for parent in organization_tree:
+        parent_name = parent["name"]
+        parent_as_list = [parent_name]
+        suborganizations = parent.get("children")
+        if suborganizations:
+            for suborganization in suborganizations:
+                organizations_with_parents[suborganization["name"]] = parent_as_list
+        organizations_with_parents[parent_name] = []
+    return organizations_with_parents
 
 
 def _get_organization_admin_userids(ogdremote, organization_name):
@@ -278,7 +283,7 @@ def _get_organization_admin_emails(ogdremote, userids):
 
 
 def set_up_contact_mapping(config, ogdremote):
-    organization_with_parents = _get_organization_list(ogdremote)
+    organization_with_parents = _get_organizations_with_parents(ogdremote)
     contact_dict = _get_contacts_from_file(config)
     dcat_admin_email = get_config(config, "emailsender", "dcat_admin", required=True)
     for organization_name in organization_with_parents:
