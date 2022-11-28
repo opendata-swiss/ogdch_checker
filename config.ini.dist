@@ -1,69 +1,52 @@
 [site]
 # site url of the ckan installation
-# alternatives are the ckan test and abnahme instance of opendata.swiss
 siteurl = https://ckan.opendata.swiss
 
 [env]
-# Path to .env file
-envpath =
+# path to .env file
+envpath = /home/liip/ogdch_checker/.env
 
 [tmpdir]
-# put a custom path here where you want to receive your output
-tmppath =
+# path to receive your output
+tmppath = /home/liip/tmp
 
 [linkchecker]
-# chose name of the csv file to store the raw linkchecker results
+# linkchecker output files
 csvfile = linkchecker.csv
+statfile = linkstatistics.csv
 
 [shaclchecker]
-# chose name of the csv file to store the raw shaclchecker results
+# shaclchecker input and output files
 csvfile = shaclchecker.csv
+frequency_file = /home/liip/ogdch_checker/frequency-eu.ttl
 statfile = shaclstatistics.csv
-
-# provide the path of the frequency vocabulary [http://purl.org/cld/freq](http://purl.org/cld/freq)
-# it is currently provided as a file, to avoid downtimes of the vocabulary site and expected in Turtle
-# format
-frequency_file = frequency-eu.ttl
-
-# path to the shacl file that is used for the shacl validation of metadata
-# the Shacl files are expected in Turtle format
-shacl_file = ogdch.shacl.ttl
+shacl_file = /home/liip/ogdch_checker/ogdch.shacl.ttl
 
 [contacts]
-# file to redirect contact emails per organizations
-# header: pkg_type,organization_slug,contact_email
-# row: geocat,example-org,contact@example.ch
-# pkg_type can be either 'dcat' or 'geocat'
-# organization_slug is the organization slug on opendata.swiss
+# file with custom contacts and a file for contactstatistics
 csvfile =
 statsfile = contactstats.csv
 
 [emailbuilder]
-# default email receiver, if no dataset contact can be found
-default_name =
-default_email =
+# default email receiver
+# Example `default_name = someone` `defaul_email = some@mail.com`
+default_name = name_default
+default_email = email_default@mail.com
 
 [emailsender]
-# add emails for cc and bcc
-cc =
-bcc =
-
-# add geocat email as additional receiver for geocat packages
-geocat_admin =
-
-# add dcat admin email as fallback receiver for dcat packages
-dcat_admin = opendata@bfs.admin.ch
-
-# email server
+# email senders and email server
+# these are all email adresses except for the smtp_server
+cc = emailcc@mail.com
+bcc = emailbcc@mail.com
+geocat_admin = email_geocat@mail.com
+dcat_admin = email_dcat@mail.com
 smtp_server = localhost
-
-# sender
-sender = no-reply@opendata.swiss
+sender = email_sender@mail.com
 
 [test]
-# email address where the emails get send with the --test option
-# Example: emails = email1 email2
-emails =
+# email redirection for the --test option
+# Example: `emails = email1@mail.com email2@mail.com`
+emails = email_test@mail.com
 
 [logging]
 # set the logging level
