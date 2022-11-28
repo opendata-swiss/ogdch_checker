@@ -482,7 +482,7 @@ def _make_dirs(tmpdir, runname):
     except Exception as e:
         click.echo(
             f"An Error {e} occured:\n"
-            f"The specified tmp directory {rundir} does not exist.\n"
+            f"The specified tmp directory {tmpdir} does not exist.\n"
             f"Please set it up and run again."
         )
         sys.exit()
@@ -521,7 +521,15 @@ def _get_mode_from_runname(runname):
 def contacts_statistics(
     checker_result_path, checker_error_fieldname, contactsstats_filename
 ):
+    statfile = open(contactsstats_filename, "w")
+    statwriter = csv.DictWriter(
+        statfile,
+        fieldnames=["organization_name", "pkg_type", "error_count", "contact_emails"],
+    )
+    statwriter.writeheader()
     df = pd.read_csv(checker_result_path)
+    if df.empty:
+        return
     dg_contacts = (
         df.filter(["contact_email", "pkg_type", "organization_name"])
         .groupby(["organization_name", "pkg_type"])
@@ -534,12 +542,6 @@ def contacts_statistics(
         .count()
     )
     df_result = dg_errors.join(dg_contacts)
-    statfile = open(contactsstats_filename, "w")
-    statwriter = csv.DictWriter(
-        statfile,
-        fieldnames=["organization_name", "pkg_type", "error_count", "contact_emails"],
-    )
-    statwriter.writeheader()
     for index, row in df_result.iterrows():
         statwriter.writerow(
             {
