@@ -69,7 +69,7 @@ log = logging.getLogger(__name__)
     "--run",
     help="Run directory name to use for the build "
     "and send of mails. "
-    "Example --run tmpxchgfrti."
+    "Example --run 2022-11-28-2104-shacl. "
     "This assumes the checker has run before and has "
     "set up a directory with results "
     "of that run. With this option mails can be build and "
