@@ -30,6 +30,7 @@ def check_url_status(test_url, http_method="HEAD"):
             verify=False,
             timeout=30,
             headers={"User-Agent": user_agent},
+            stream=True,  # data is downloaded in smaller chunks
         )
         req.raise_for_status()
         log.info("sent response %s" % req.status_code)
