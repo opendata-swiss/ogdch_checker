@@ -1,6 +1,8 @@
-import csv
 import logging
+import csv
 from collections import namedtuple
+import requests
+import json
 
 import click
 import pandas as pd
@@ -15,11 +17,13 @@ CheckResult = namedtuple("CheckResult", ["resource_id", "item", "msg", "test_tit
 TEST_ACCESS_URL = "dcat:accessURL"
 TEST_RELATION_URL = "dct:relation"
 TEST_LANDING_PAGE_URL = "dcat:landingPage"
+TEST_PUBLISHER_URL = "dct:publisher"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
 link_checks = [
     TEST_ACCESS_URL,
     TEST_RELATION_URL,
     TEST_LANDING_PAGE_URL,
+    TEST_PUBLISHER_URL,
     TEST_DOWNLOAD_URL,
 ]
 
@@ -64,12 +68,34 @@ class LinkChecker(CheckerInterface):
         """Check one data package"""
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         check_results = []
+
+        # check landing page URL
         landing_page = pkg.get("url")
         if landing_page:
             check_result = self._check_url_status(TEST_LANDING_PAGE_URL, landing_page)
             if check_result:
                 check_results.append(check_result)
 
+        # check publisher URL - mandatory field
+        # exm.,'publisher':'{
+        # "url": "https://www.ur.ch/departemente/58", "name": "Justizdirektion Kt. Uri"
+        # }'
+        if isinstance(pkg.get('publisher'), str):
+            try:
+                # parse the string into a dictionary
+                pkg['publisher'] = json.loads(pkg['publisher'])
+            except json.JSONDecodeError:
+                log.error("Error decoding JSON for 'publisher'")
+
+        publisher_url = pkg['publisher'].get("url")
+        if publisher_url:
+            check_result = self._check_url_status(
+                TEST_PUBLISHER_URL, publisher_url
+            )
+            if check_result:
+                check_results.append(check_result)
+
+        # check relations URL
         if "relations" in pkg:
             for relation in pkg["relations"]:
                 relation_url = relation.get("url")
