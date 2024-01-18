@@ -22,6 +22,7 @@ TEST_PUBLISHER_URL = "dct:publisher"
 TEST_CONFORMS_TO_URL = "dct:conformsTo"
 TEST_DOCUMENTATION_URL = "foaf:page"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
+TEST_DOWNLOAD_URL = "dcat:downloadURL"
 link_checks = [
     TEST_ACCESS_URL,
     TEST_RELATION_URL,
@@ -193,6 +194,16 @@ class LinkChecker(CheckerInterface):
             )
             if check_result:
                 resource_results.append(check_result)
+        # Check documentation URLs for the resources
+        if "documentation" in resource:
+            for documentation_url in resource.get("documentation"):
+                if documentation_url:
+                    check_result = self._check_url_status(
+                        TEST_DOCUMENTATION_URL, documentation_url, resource["id"]
+                    )
+                    if check_result:
+                        resource_results.append(check_result)
+
         return resource_results
 
     def _check_url_status(self, test_title, test_url, resource_id=None):
