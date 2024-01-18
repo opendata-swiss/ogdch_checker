@@ -1,11 +1,11 @@
-import logging
 import csv
-from collections import namedtuple
-import requests
 import json
+import logging
+from collections import namedtuple
 
 import click
 import pandas as pd
+import requests
 
 import ckan_pkg_checker.utils.request_utils as request_utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
@@ -16,12 +16,14 @@ log = logging.getLogger(__name__)
 CheckResult = namedtuple("CheckResult", ["resource_id", "item", "msg", "test_title"])
 TEST_ACCESS_URL = "dcat:accessURL"
 TEST_RELATION_URL = "dct:relation"
+TEST_QUALIFIED_RELATION_URL = "dcat:qualifiedRelation"
 TEST_LANDING_PAGE_URL = "dcat:landingPage"
 TEST_PUBLISHER_URL = "dct:publisher"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
 link_checks = [
     TEST_ACCESS_URL,
     TEST_RELATION_URL,
+    TEST_QUALIFIED_RELATION_URL,
     TEST_LANDING_PAGE_URL,
     TEST_PUBLISHER_URL,
     TEST_DOWNLOAD_URL,
@@ -69,39 +71,48 @@ class LinkChecker(CheckerInterface):
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         check_results = []
 
-        # check landing page URL
+        # Check landing page URL
         landing_page = pkg.get("url")
         if landing_page:
             check_result = self._check_url_status(TEST_LANDING_PAGE_URL, landing_page)
             if check_result:
                 check_results.append(check_result)
 
-        # check publisher URL - mandatory field
+        # Check publisher URL - mandatory field
         # exm.,'publisher':'{
         # "url": "https://www.ur.ch/departemente/58", "name": "Justizdirektion Kt. Uri"
         # }'
-        if isinstance(pkg.get('publisher'), str):
+        if isinstance(pkg.get("publisher"), str):
             try:
                 # parse the string into a dictionary
-                pkg['publisher'] = json.loads(pkg['publisher'])
+                pkg["publisher"] = json.loads(pkg["publisher"])
             except json.JSONDecodeError:
                 log.error("Error decoding JSON for 'publisher'")
 
-        publisher_url = pkg['publisher'].get("url")
+        publisher_url = pkg["publisher"].get("url")
         if publisher_url:
-            check_result = self._check_url_status(
-                TEST_PUBLISHER_URL, publisher_url
-            )
+            check_result = self._check_url_status(TEST_PUBLISHER_URL, publisher_url)
             if check_result:
                 check_results.append(check_result)
 
-        # check relations URL
+        # Check relations URL
         if "relations" in pkg:
             for relation in pkg["relations"]:
                 relation_url = relation.get("url")
                 if relation_url:
                     check_result = self._check_url_status(
                         TEST_RELATION_URL, relation_url
+                    )
+                    if check_result:
+                        check_results.append(check_result)
+
+        # Check qualified relations URL
+        if "qualified_relations" in pkg:
+            for qualified_relation in pkg["qualified_relations"]:
+                qualified_relation_url = qualified_relation.get("relation")
+                if qualified_relation_url:
+                    check_result = self._check_url_status(
+                        TEST_QUALIFIED_RELATION_URL, qualified_relation_url
                     )
                     if check_result:
                         check_results.append(check_result)
