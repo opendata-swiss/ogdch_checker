@@ -19,6 +19,7 @@ TEST_RELATION_URL = "dct:relation"
 TEST_QUALIFIED_RELATION_URL = "dcat:qualifiedRelation"
 TEST_LANDING_PAGE_URL = "dcat:landingPage"
 TEST_PUBLISHER_URL = "dct:publisher"
+TEST_CONFORMS_TO_URL = "dct:conformsTo"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
 link_checks = [
     TEST_ACCESS_URL,
@@ -26,6 +27,7 @@ link_checks = [
     TEST_QUALIFIED_RELATION_URL,
     TEST_LANDING_PAGE_URL,
     TEST_PUBLISHER_URL,
+    TEST_CONFORMS_TO_URL,
     TEST_DOWNLOAD_URL,
 ]
 
@@ -113,6 +115,16 @@ class LinkChecker(CheckerInterface):
                 if qualified_relation_url:
                     check_result = self._check_url_status(
                         TEST_QUALIFIED_RELATION_URL, qualified_relation_url
+                    )
+                    if check_result:
+                        check_results.append(check_result)
+
+        # Check conforms to URL
+        if "conforms_to" in pkg:
+            for conforms_to_url in pkg["conforms_to"]:
+                if conforms_to_url:
+                    check_result = self._check_url_status(
+                        TEST_CONFORMS_TO_URL, conforms_to_url
                     )
                     if check_result:
                         check_results.append(check_result)
