@@ -20,6 +20,7 @@ TEST_QUALIFIED_RELATION_URL = "dcat:qualifiedRelation"
 TEST_LANDING_PAGE_URL = "dcat:landingPage"
 TEST_PUBLISHER_URL = "dct:publisher"
 TEST_CONFORMS_TO_URL = "dct:conformsTo"
+TEST_DOCUMENTATION_URL = "foaf:page"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
 link_checks = [
     TEST_ACCESS_URL,
@@ -119,12 +120,22 @@ class LinkChecker(CheckerInterface):
                     if check_result:
                         check_results.append(check_result)
 
-        # Check conforms to URL
+        # Check conforms to URLs
         if "conforms_to" in pkg:
             for conforms_to_url in pkg["conforms_to"]:
                 if conforms_to_url:
                     check_result = self._check_url_status(
                         TEST_CONFORMS_TO_URL, conforms_to_url
+                    )
+                    if check_result:
+                        check_results.append(check_result)
+
+        # Check documentation URLs
+        if "documentation" in pkg:
+            for documentation_url in pkg["documentation"]:
+                if documentation_url:
+                    check_result = self._check_url_status(
+                        TEST_CONFORMS_TO_URL, documentation_url
                     )
                     if check_result:
                         check_results.append(check_result)
