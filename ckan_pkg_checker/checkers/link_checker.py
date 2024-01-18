@@ -75,11 +75,7 @@ class LinkChecker(CheckerInterface):
         check_results = []
 
         # Check landing page URL
-        landing_page = pkg.get("url")
-        if landing_page:
-            check_result = self._check_url_status(TEST_LANDING_PAGE_URL, landing_page)
-            if check_result:
-                check_results.append(check_result)
+        self._check_url(pkg, "url", TEST_LANDING_PAGE_URL, check_results)
 
         # Check publisher URL - mandatory field
         # exm.,'publisher':'{
@@ -92,53 +88,28 @@ class LinkChecker(CheckerInterface):
             except json.JSONDecodeError:
                 log.error("Error decoding JSON for 'publisher'")
 
-        publisher_url = pkg["publisher"].get("url")
-        if publisher_url:
-            check_result = self._check_url_status(TEST_PUBLISHER_URL, publisher_url)
-            if check_result:
-                check_results.append(check_result)
+        self._check_url(pkg["publisher"], "url",
+                        TEST_PUBLISHER_URL, check_results)
 
         # Check relations URL
         if "relations" in pkg:
-            for relation in pkg["relations"]:
-                relation_url = relation.get("url")
-                if relation_url:
-                    check_result = self._check_url_status(
-                        TEST_RELATION_URL, relation_url
-                    )
-                    if check_result:
-                        check_results.append(check_result)
+            self._check_url_from_list_dict(pkg["relations"], "url",
+                                           TEST_RELATION_URL, check_results)
 
         # Check qualified relations URL
         if "qualified_relations" in pkg:
-            for qualified_relation in pkg["qualified_relations"]:
-                qualified_relation_url = qualified_relation.get("relation")
-                if qualified_relation_url:
-                    check_result = self._check_url_status(
-                        TEST_QUALIFIED_RELATION_URL, qualified_relation_url
-                    )
-                    if check_result:
-                        check_results.append(check_result)
+            self._check_url_from_list_dict(pkg["qualified_relations"], "relation",
+                                           TEST_QUALIFIED_RELATION_URL, check_results)
 
         # Check conforms to URLs
         if "conforms_to" in pkg:
-            for conforms_to_url in pkg["conforms_to"]:
-                if conforms_to_url:
-                    check_result = self._check_url_status(
-                        TEST_CONFORMS_TO_URL, conforms_to_url
-                    )
-                    if check_result:
-                        check_results.append(check_result)
+            self._check_url_from_list(pkg, "conforms_to",
+                                      TEST_CONFORMS_TO_URL, check_results)
 
         # Check documentation URLs
         if "documentation" in pkg:
-            for documentation_url in pkg["documentation"]:
-                if documentation_url:
-                    check_result = self._check_url_status(
-                        TEST_CONFORMS_TO_URL, documentation_url
-                    )
-                    if check_result:
-                        check_results.append(check_result)
+            self._check_url_from_list(pkg, "documentation",
+                                      TEST_DOCUMENTATION_URL, check_results)
 
         for resource in pkg["resources"]:
             log.info(
@@ -167,6 +138,33 @@ class LinkChecker(CheckerInterface):
             contactsstats_filename=self.contactsstats_filename,
             checker_error_fieldname="error_message",
         )
+
+    def _check_url(self, pkg, key, test_title, check_results):
+        """Verify a single URL"""
+        url = pkg.get(key)
+        if url:
+            check_result = self._check_url_status(test_title, url)
+            if check_result:
+                check_results.append(check_result)
+
+    def _check_url_from_list(self, pkg, key, test_title, check_results):
+        """Verify URLs within the list"""
+        urls = pkg.get(key)
+        if urls:
+            for url in urls:
+                if url:
+                    check_result = self._check_url_status(test_title, url)
+                    if check_result:
+                        check_results.append(check_result)
+
+    def _check_url_from_list_dict(self, list_dict, key, test_title, check_results):
+        """Verify URLs within the list of dictionaries"""
+        for dict in list_dict:
+            url = dict.get(key)
+            if url:
+                check_result = self._check_url_status(test_title, url)
+                if check_result:
+                    check_results.append(check_result)
 
     def _check_resource(self, pkg, resource):
         """Check one resource"""
