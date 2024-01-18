@@ -88,28 +88,34 @@ class LinkChecker(CheckerInterface):
             except json.JSONDecodeError:
                 log.error("Error decoding JSON for 'publisher'")
 
-        self._check_url(pkg["publisher"], "url",
-                        TEST_PUBLISHER_URL, check_results)
+        self._check_url(pkg["publisher"], "url", TEST_PUBLISHER_URL, check_results)
 
         # Check relations URL
         if "relations" in pkg:
-            self._check_url_from_list_dict(pkg["relations"], "url",
-                                           TEST_RELATION_URL, check_results)
+            self._check_url_from_list_dict(
+                pkg["relations"], "url", TEST_RELATION_URL, check_results
+            )
 
         # Check qualified relations URL
         if "qualified_relations" in pkg:
-            self._check_url_from_list_dict(pkg["qualified_relations"], "relation",
-                                           TEST_QUALIFIED_RELATION_URL, check_results)
+            self._check_url_from_list_dict(
+                pkg["qualified_relations"],
+                "relation",
+                TEST_QUALIFIED_RELATION_URL,
+                check_results,
+            )
 
         # Check conforms to URLs
         if "conforms_to" in pkg:
-            self._check_url_from_list(pkg, "conforms_to",
-                                      TEST_CONFORMS_TO_URL, check_results)
+            self._check_url_from_list(
+                pkg, "conforms_to", TEST_CONFORMS_TO_URL, check_results
+            )
 
         # Check documentation URLs
         if "documentation" in pkg:
-            self._check_url_from_list(pkg, "documentation",
-                                      TEST_DOCUMENTATION_URL, check_results)
+            self._check_url_from_list(
+                pkg, "documentation", TEST_DOCUMENTATION_URL, check_results
+            )
 
         for resource in pkg["resources"]:
             log.info(
