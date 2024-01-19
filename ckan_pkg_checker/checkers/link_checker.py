@@ -179,19 +179,17 @@ class LinkChecker(CheckerInterface):
 
     def _check_resource_url(self, url, test_title, resource_id, resource_results):
         """Verify a single resource URL"""
-        check_result = self._check_url_status(
-            test_title, url, resource_id
-        )
+        check_result = self._check_url_status(test_title, url, resource_id)
         if check_result:
             resource_results.append(check_result)
 
-    def _check_resource_url_from_list(self, urls, test_title, resource_id, resource_results):
+    def _check_resource_url_from_list(
+        self, urls, test_title, resource_id, resource_results
+    ):
         """Verify resource URLs within the list"""
         for url in urls:
             if url:
-                check_result = self._check_url_status(
-                    test_title, url, resource_id
-                )
+                check_result = self._check_url_status(test_title, url, resource_id)
                 if check_result:
                     resource_results.append(check_result)
 
@@ -206,27 +204,36 @@ class LinkChecker(CheckerInterface):
             pass
         if access_url:
             self._check_resource_url(
-                 url=access_url, test_title=TEST_ACCESS_URL, resource_id=resource["id"], resource_results=resource_results
+                url=access_url,
+                test_title=TEST_ACCESS_URL,
+                resource_id=resource["id"],
+                resource_results=resource_results,
             )
 
         if download_url and download_url != access_url:
             self._check_resource_url(
-                url=download_url, test_title=TEST_DOWNLOAD_URL, resource_id=resource["id"],
-                resource_results=resource_results
+                url=download_url,
+                test_title=TEST_DOWNLOAD_URL,
+                resource_id=resource["id"],
+                resource_results=resource_results,
             )
 
         # Check documentation URLs for the resources
         if "documentation" in resource:
             self._check_resource_url_from_list(
-                urls=resource.get("documentation"), test_title=TEST_RESOURCE_DOCUMENTATION_URL, resource_id=resource["id"],
-                resource_results=resource_results
+                urls=resource.get("documentation"),
+                test_title=TEST_RESOURCE_DOCUMENTATION_URL,
+                resource_id=resource["id"],
+                resource_results=resource_results,
             )
 
         # Check documentation URLs for the resources
         if "access_services" in resource:
             self._check_resource_url_from_list(
-                urls=resource.get("access_services"), test_title=TEST_ACCESS_SERVICES_URL, resource_id=resource["id"],
-                resource_results=resource_results
+                urls=resource.get("access_services"),
+                test_title=TEST_ACCESS_SERVICES_URL,
+                resource_id=resource["id"],
+                resource_results=resource_results,
             )
         return resource_results
 
