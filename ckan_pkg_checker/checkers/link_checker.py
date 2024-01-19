@@ -101,9 +101,7 @@ class LinkChecker(CheckerInterface):
 
         publisher_url = pkg["publisher"].get("url")
         self._check_url(
-            url=publisher_url,
-            test_title=TEST_PUBLISHER_URL,
-            results=check_results
+            url=publisher_url, test_title=TEST_PUBLISHER_URL, results=check_results
         )
 
         # Check relations URL
