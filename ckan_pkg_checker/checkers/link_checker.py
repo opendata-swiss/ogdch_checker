@@ -1,9 +1,11 @@
 import csv
+import json
 import logging
 from collections import namedtuple
 
 import click
 import pandas as pd
+import requests
 
 import ckan_pkg_checker.utils.request_utils as request_utils
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
@@ -14,13 +16,25 @@ log = logging.getLogger(__name__)
 CheckResult = namedtuple("CheckResult", ["resource_id", "item", "msg", "test_title"])
 TEST_ACCESS_URL = "dcat:accessURL"
 TEST_RELATION_URL = "dct:relation"
+TEST_QUALIFIED_RELATION_URL = "dcat:qualifiedRelation"
 TEST_LANDING_PAGE_URL = "dcat:landingPage"
+TEST_PUBLISHER_URL = "dct:publisher"
+TEST_CONFORMS_TO_URL = "dct:conformsTo"
+TEST_DOCUMENTATION_URL = "foaf:page"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
+TEST_RESOURCE_DOCUMENTATION_URL = "foaf:page"
+TEST_ACCESS_SERVICES_URL = "dcat:accessService"
 link_checks = [
     TEST_ACCESS_URL,
     TEST_RELATION_URL,
+    TEST_QUALIFIED_RELATION_URL,
     TEST_LANDING_PAGE_URL,
+    TEST_PUBLISHER_URL,
+    TEST_CONFORMS_TO_URL,
+    TEST_DOCUMENTATION_URL,
     TEST_DOWNLOAD_URL,
+    TEST_RESOURCE_DOCUMENTATION_URL,
+    TEST_ACCESS_SERVICES_URL,
 ]
 
 
@@ -62,24 +76,73 @@ class LinkChecker(CheckerInterface):
 
     def check_package(self, pkg):
         """Check one data package"""
+        # Check URLs of the package
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         check_results = []
-        landing_page = pkg.get("url")
-        if landing_page:
-            check_result = self._check_url_status(TEST_LANDING_PAGE_URL, landing_page)
-            if check_result:
-                check_results.append(check_result)
 
+        # Check landing page URL
+        landing_page_url = pkg.get("url")
+        self._check_url(
+            url=landing_page_url,
+            test_title=TEST_LANDING_PAGE_URL,
+            results=check_results,
+        )
+
+        # Check publisher URL - mandatory field
+        # exm.,'publisher':'{
+        # "url": "https://www.ur.ch/departemente/58", "name": "Justizdirektion Kt. Uri"
+        # }'
+        if isinstance(pkg.get("publisher"), str):
+            try:
+                # parse the string into a dictionary
+                pkg["publisher"] = json.loads(pkg["publisher"])
+            except json.JSONDecodeError:
+                log.error("Error decoding JSON for 'publisher'")
+
+        publisher_url = pkg["publisher"].get("url")
+        self._check_url(
+            url=publisher_url, test_title=TEST_PUBLISHER_URL, results=check_results
+        )
+
+        # Check relations URL
         if "relations" in pkg:
             for relation in pkg["relations"]:
                 relation_url = relation.get("url")
-                if relation_url:
-                    check_result = self._check_url_status(
-                        TEST_RELATION_URL, relation_url
-                    )
-                    if check_result:
-                        check_results.append(check_result)
+                self._check_url(
+                    url=relation_url,
+                    test_title=TEST_RELATION_URL,
+                    results=check_results,
+                )
 
+        # Check qualified relations URL
+        if "qualified_relations" in pkg:
+            for qualified_relation in pkg["qualified_relations"]:
+                qualified_relation_url = qualified_relation.get("relation")
+                self._check_url(
+                    url=qualified_relation_url,
+                    test_title=TEST_QUALIFIED_RELATION_URL,
+                    results=check_results,
+                )
+
+        # Check conforms to URLs
+        if "conforms_to" in pkg:
+            for conforms_to_url in pkg.get("conforms_to"):
+                self._check_url(
+                    url=conforms_to_url,
+                    test_title=TEST_CONFORMS_TO_URL,
+                    results=check_results,
+                )
+
+        # Check documentation URLs
+        if "documentation" in pkg:
+            for documentation_url in pkg.get("documentation"):
+                self._check_url(
+                    url=documentation_url,
+                    test_title=TEST_DOCUMENTATION_URL,
+                    results=check_results,
+                )
+
+        # Check URLs of the resources
         for resource in pkg["resources"]:
             log.info(
                 f"LINKCHECKER: checking RESOURCE: {utils.get_field_in_one_language(resource['display_name'], '')}"
@@ -108,6 +171,18 @@ class LinkChecker(CheckerInterface):
             checker_error_fieldname="error_message",
         )
 
+    def _check_url(self, url, test_title, results, resource_id=None):
+        """Verify a single URL"""
+        if url:
+            if not resource_id:
+                # Verify Dataset URL
+                check_result = self._check_url_status(test_title, url)
+            else:
+                # Verify Resource URL
+                check_result = self._check_url_status(test_title, url, resource_id)
+            if check_result:
+                results.append(check_result)
+
     def _check_resource(self, pkg, resource):
         """Check one resource"""
         resource_results = []
@@ -117,18 +192,45 @@ class LinkChecker(CheckerInterface):
         except KeyError:
             download_url = None
             pass
+
+        # Check access URL for the resources
         if access_url:
-            check_result = self._check_url_status(
-                TEST_ACCESS_URL, access_url, resource["id"]
+            self._check_url(
+                url=access_url,
+                test_title=TEST_ACCESS_URL,
+                resource_id=resource["id"],
+                results=resource_results,
             )
-            if check_result:
-                resource_results.append(check_result)
+
+        # Check download URL for the resources
         if download_url and download_url != access_url:
-            check_result = self._check_url_status(
-                TEST_DOWNLOAD_URL, download_url, resource["id"]
+            self._check_url(
+                url=download_url,
+                test_title=TEST_DOWNLOAD_URL,
+                resource_id=resource["id"],
+                results=resource_results,
             )
-            if check_result:
-                resource_results.append(check_result)
+
+        # Check documentation URLs for the resources
+        if "documentation" in resource:
+            for documentation_url in resource.get("documentation"):
+                self._check_url(
+                    url=documentation_url,
+                    test_title=TEST_RESOURCE_DOCUMENTATION_URL,
+                    resource_id=resource["id"],
+                    results=resource_results,
+                )
+
+        # Check documentation URLs for the resources
+        if "access_services" in resource:
+            for access_services_url in resource.get("access_services"):
+                self._check_url(
+                    url=access_services_url,
+                    test_title=TEST_ACCESS_SERVICES_URL,
+                    resource_id=resource["id"],
+                    results=resource_results,
+                )
+
         return resource_results
 
     def _check_url_status(self, test_title, test_url, resource_id=None):
