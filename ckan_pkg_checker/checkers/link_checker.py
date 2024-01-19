@@ -22,7 +22,8 @@ TEST_PUBLISHER_URL = "dct:publisher"
 TEST_CONFORMS_TO_URL = "dct:conformsTo"
 TEST_DOCUMENTATION_URL = "foaf:page"
 TEST_DOWNLOAD_URL = "dcat:downloadURL"
-TEST_DOWNLOAD_URL = "dcat:downloadURL"
+TEST_RESOURCE_DOCUMENTATION_URL = "foaf:page"
+TEST_ACCESS_SERVICES_URL = "dcat:accessService"
 link_checks = [
     TEST_ACCESS_URL,
     TEST_RELATION_URL,
@@ -30,7 +31,10 @@ link_checks = [
     TEST_LANDING_PAGE_URL,
     TEST_PUBLISHER_URL,
     TEST_CONFORMS_TO_URL,
+    TEST_DOCUMENTATION_URL,
     TEST_DOWNLOAD_URL,
+    TEST_RESOURCE_DOCUMENTATION_URL,
+    TEST_ACCESS_SERVICES_URL,
 ]
 
 
@@ -173,6 +177,24 @@ class LinkChecker(CheckerInterface):
                 if check_result:
                     check_results.append(check_result)
 
+    def _check_resource_url(self, url, test_title, resource_id, resource_results):
+        """Verify a single resource URL"""
+        check_result = self._check_url_status(
+            test_title, url, resource_id
+        )
+        if check_result:
+            resource_results.append(check_result)
+
+    def _check_resource_url_from_list(self, urls, test_title, resource_id, resource_results):
+        """Verify resource URLs within the list"""
+        for url in urls:
+            if url:
+                check_result = self._check_url_status(
+                    test_title, url, resource_id
+                )
+                if check_result:
+                    resource_results.append(check_result)
+
     def _check_resource(self, pkg, resource):
         """Check one resource"""
         resource_results = []
@@ -183,27 +205,29 @@ class LinkChecker(CheckerInterface):
             download_url = None
             pass
         if access_url:
-            check_result = self._check_url_status(
-                TEST_ACCESS_URL, access_url, resource["id"]
+            self._check_resource_url(
+                 url=access_url, test_title=TEST_ACCESS_URL, resource_id=resource["id"], resource_results=resource_results
             )
-            if check_result:
-                resource_results.append(check_result)
+
         if download_url and download_url != access_url:
-            check_result = self._check_url_status(
-                TEST_DOWNLOAD_URL, download_url, resource["id"]
+            self._check_resource_url(
+                url=download_url, test_title=TEST_DOWNLOAD_URL, resource_id=resource["id"],
+                resource_results=resource_results
             )
-            if check_result:
-                resource_results.append(check_result)
+
         # Check documentation URLs for the resources
         if "documentation" in resource:
-            for documentation_url in resource.get("documentation"):
-                if documentation_url:
-                    check_result = self._check_url_status(
-                        TEST_DOCUMENTATION_URL, documentation_url, resource["id"]
-                    )
-                    if check_result:
-                        resource_results.append(check_result)
+            self._check_resource_url_from_list(
+                urls=resource.get("documentation"), test_title=TEST_RESOURCE_DOCUMENTATION_URL, resource_id=resource["id"],
+                resource_results=resource_results
+            )
 
+        # Check documentation URLs for the resources
+        if "access_services" in resource:
+            self._check_resource_url_from_list(
+                urls=resource.get("access_services"), test_title=TEST_ACCESS_SERVICES_URL, resource_id=resource["id"],
+                resource_results=resource_results
+            )
         return resource_results
 
     def _check_url_status(self, test_title, test_url, resource_id=None):
