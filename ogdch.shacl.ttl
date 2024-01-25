@@ -76,7 +76,7 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
-   sh:property [
+  sh:property [
       sh:path dct:publisher ;
       sh:minCount 1 ;
       sh:severity sh:Violation ;
@@ -137,6 +137,27 @@
         For Details see
         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
         """@en ;
+  ] ;
+  sh:property [
+    sh:path dct:relation ;
+    sh:node [
+        sh:property [
+            sh:path rdf:about ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+        ] ;
+        sh:property [
+            sh:path rdfs:label ;
+            sh:nodeKind sh:Literal ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+        ] ;
+    ] ;
+    sh:severity sh:Warning ;
+    sh:message """This dataset does not provide a valid relation.
+        Please add a valid relation for the dataset.
+        See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-relation-dcat
+        for details."""@en ;
   ] ;
   sh:property [
       sh:path dct:accrualPeriodicity ;
