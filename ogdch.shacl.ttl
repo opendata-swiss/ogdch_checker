@@ -123,9 +123,8 @@
   sh:distribution [
       sh:path dcat:distribution ;
       sh:minCount 1 ;
-      sh:maxCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """This dataset does not have any distribution. Please add at least one distribution for the dataset.
+      sh:message """This dataset does not provide any distributions. Please add at least one distribution for the dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-dcat
 	    """@en ;
   ] ;
@@ -173,7 +172,7 @@
 
 :DistributionShape
   rdf:type sh:NodeShape ;
-  sh:targetClass dcat:Distribution;
+  sh:targetClass dcat:Distribution ;
   sh:property [
       sh:path dcat:accessURL ;
       sh:minCount 1 ;
@@ -181,12 +180,37 @@
       sh:message """Please provide an access url for the distribution. See
          https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
          """@en ;
-    ] ;
+  ] ;
   sh:property [
       sh:path dcat:accessURL ;
-      sh:nodeKind sh:IRI ;
+      sh:nodeKind sh:IRI ;  # to enforce that accessURL is an IRI
       sh:severity sh:Violation ;
       sh:message """The accessURL must be provided as IRI not as a string. For Details see
          https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
          """@en ;
-    ] .
+  ] ;
+  sh:property [
+      sh:path dct:issued ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide the date of the publication of this distribution. See
+         https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
+         """@en ;
+    ] ;
+  sh:property [
+      sh:path dct:issued ;
+      sh:datatype xsd:dateTime ;  # to enforce that issued is a dateTime
+      sh:severity sh:Violation ;
+      sh:message """The publication date must be provided as a date and time in ISO-8601 format. For Details see
+         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
+         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:license ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide a valid license for the distribution. See
+         https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
+         """@en ;
+      sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
+  ] .
