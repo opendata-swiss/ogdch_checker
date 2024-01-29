@@ -207,11 +207,47 @@
          """@en ;
   ] ;
   sh:property [
-      sh:path dct:license ;
-      sh:minCount 1 ;
+    sh:path dct:format ;
+    sh:minCount 1 ;
+    sh:or
+        ([
+            sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
+        ]
+        [
+            sh:hasValue <https://www.iana.org/assignments/media-types> ;
+        ]) ;
       sh:severity sh:Violation ;
-      sh:message """Please provide a valid license for the distribution. See
-         https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
-         """@en ;
-      sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
+        sh:message """Please use a valid distribution format.
+           See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
+           """@en ;
+      ]
+    ) ;
+  ] ;
+  sh:property [
+    sh:path dct:license ;
+    sh:minCount 1 ;
+    sh:in (
+      <https://opendata.swiss/terms-of-use#terms_open>
+      <https://opendata.swiss/terms-of-use#terms_by>
+      <https://opendata.swiss/terms-of-use#terms_ask>
+      <https://opendata.swiss/terms-of-use#terms_by_ask>
+    ) ;
+    sh:severity sh:Warning ;
+    sh:message """Please provide a valid license for the distribution.
+       See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
+       """@en ;
+    sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
+  ] ;
+  sh:property [
+    sh:path dct:rights ;
+    sh:minCount 1 ;
+    sh:severity sh:Warning ;
+    sh:message """Please use license instead of rights for the distribution.
+       See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
+       """@en ;
+    sh:condition [
+      sh:predicate sh:severity ;
+      sh:value sh:Warning ;
+      sh:sourceShape :DistributionShape ;
+    ] ;
   ] .
