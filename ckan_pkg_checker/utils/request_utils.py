@@ -24,14 +24,23 @@ def check_url_status(test_url, http_method="HEAD"):
             "Chrome/55.0.2883.75 "
             "Safari/537.36"
         )
-        req = session.request(
-            http_method,
-            test_url,
-            verify=False,
-            timeout=30,
-            headers={"User-Agent": user_agent},
-            stream=True,  # data is downloaded in smaller chunks
-        )
+        if http_method == "HEAD":
+            req = requests.head(
+                test_url,
+                verify=False,  # SSL certificate will not be verified
+                timeout=30,
+                headers={"User-Agent": user_agent},
+            )
+        elif http_method == "GET":
+            req = requests.get(
+                test_url,
+                verify=False,  # SSL certificate will not be verified
+                timeout=30,
+                headers={
+                    "Range": "bytes=0-10",  # Request the first 10 bytes
+                    "User-Agent": user_agent,
+                },
+            )
         req.raise_for_status()
         log.info("sent response %s" % req.status_code)
     except requests.exceptions.HTTPError as e:
