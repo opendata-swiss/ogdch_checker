@@ -18,18 +18,12 @@ def check_url_status(test_url, http_method="HEAD"):
     log.debug("URL %s (%s)" % (test_url, http_method))
     error_result = None
     try:
-        user_agent = (
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/55.0.2883.75 "
-            "Safari/537.36"
-        )
         if http_method == "HEAD":
             req = requests.head(
                 test_url,
                 verify=False,  # SSL certificate will not be verified
                 timeout=30,
-                headers={"User-Agent": user_agent},
+                headers={"User-Agent": "Custom"},
             )
         elif http_method == "GET":
             req = requests.get(
@@ -38,7 +32,7 @@ def check_url_status(test_url, http_method="HEAD"):
                 timeout=30,
                 headers={
                     "Range": "bytes=0-10",  # Request the first 10 bytes
-                    "User-Agent": user_agent,
+                    "User-Agent": "Custom",
                 },
             )
         req.raise_for_status()
