@@ -130,8 +130,7 @@
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """The landing page must to be provided as IRI and not as a string.
-        For Details see
-        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
         """@en ;
   ] ;
   sh:property [
@@ -139,15 +138,15 @@
       sh:datatype xsd:dateTime ;
       sh:severity sh:Warning ;
       sh:message """The modification date should be in ISO-8601 format.
-         See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
-         """@en ;
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
+        """@en ;
   ] ;
   sh:property [
       sh:path dct:issued ;   # conditional property
       sh:datatype xsd:dateTime ;
       sh:severity sh:Warning ;
       sh:message """The issued date should be in ISO-8601 format.
-         See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
+         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
   ] ;
   sh:property [
@@ -156,27 +155,27 @@
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """The theme is expected from the controlled vocabulary http://publications.europa.eu/resource/authority/data-theme.
-        See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
         """@en ;
   ] ;
-   sh:property [
+  sh:property [
       sh:path dcat:qualifiedRelation ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """The qualified relation replaces the seeAlso property.
         Please use dcat:qualifiedRelation instead rdfs:seeAlso.
-        See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
       sh:property [
       sh:path dcat:Relationship ;
       sh:nodeKind sh:BlankNode ;
       sh:property [
-        sh:path dct:relation ;
-        sh:nodeKind sh:IRI ;
+          sh:path dct:relation ;
+          sh:nodeKind sh:IRI ;
       ] ;
   ] ;
   sh:property [
-      sh:path dct:accrualPeriodicity ;
+      sh:path dct:accrualPeriodicity ;   # optional property
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
@@ -191,63 +190,48 @@
   rdf:type sh:NodeShape ;
   sh:targetClass dcat:Distribution ;
   sh:property [
-      sh:path dcat:accessURL ;
+      sh:path dcat:accessURL ;   # mandatory property
       sh:minCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """Please provide an access url for the distribution. See
-         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
-         """@en ;
+      sh:message """Please provide an access url for the distribution.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
+        """@en ;
   ] ;
   sh:property [
       sh:path dcat:accessURL ;
       sh:nodeKind sh:IRI ;  # to enforce that accessURL is an IRI
       sh:severity sh:Violation ;
-      sh:message """The accessURL must be provided as IRI not as a string. For Details see
-         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
-         """@en ;
+      sh:message """The accessURL must be provided as IRI not as a string.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
+        """@en ;
   ] ;
   sh:property [
-    sh:path dct:format ;
-    sh:minCount 1 ;
-    sh:or
-        ([
-            sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
-        ]
-        [
-            sh:hasValue <https://www.iana.org/assignments/media-types> ;
-        ]) ;
+      sh:path dct:format ;   # conditional property
+      sh:minCount 1 ;
+      sh:or
+          ([
+              sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
+          ]
+          [
+              sh:hasValue <https://www.iana.org/assignments/media-types> ;
+          ]) ;
+      sh:severity sh:Warning ;
+      sh:message """Please use a valid distribution format.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:license ;   # mandatory property
+      sh:minCount 1 ;
+      sh:in (
+          <https://opendata.swiss/terms-of-use#terms_open>
+          <https://opendata.swiss/terms-of-use#terms_by>
+          <https://opendata.swiss/terms-of-use#terms_ask>
+          <https://opendata.swiss/terms-of-use#terms_by_ask>
+      ) ;
       sh:severity sh:Violation ;
-        sh:message """Please use a valid distribution format.
-           See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
-           """@en ;
-      ]
-    ) ;
-  ] ;
-  sh:property [
-    sh:path dct:license ;
-    sh:minCount 1 ;
-    sh:in (
-      <https://opendata.swiss/terms-of-use#terms_open>
-      <https://opendata.swiss/terms-of-use#terms_by>
-      <https://opendata.swiss/terms-of-use#terms_ask>
-      <https://opendata.swiss/terms-of-use#terms_by_ask>
-    ) ;
-    sh:severity sh:Warning ;
-    sh:message """Please provide a valid license for the distribution.
-       See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
-       """@en ;
-    sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
-  ] ;
-  sh:property [
-    sh:path dct:rights ;
-    sh:minCount 1 ;
-    sh:severity sh:Warning ;
-    sh:message """Please use license instead of rights for the distribution.
-       See https://ogdch-new-handbook.clients.liip.ch/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
-       """@en ;
-    sh:condition [
-      sh:predicate sh:severity ;
-      sh:value sh:Warning ;
-      sh:sourceShape :DistributionShape ;
-    ] ;
+      sh:message """Please provide a valid license for the distribution.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
+        """@en ;
+      sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
   ] .
