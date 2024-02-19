@@ -168,11 +168,12 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
       sh:property [
-      sh:path dcat:Relationship ;
-      sh:nodeKind sh:BlankNode ;
-      sh:property [
-          sh:path dct:relation ;
-          sh:nodeKind sh:IRI ;
+          sh:path dcat:Relationship ;
+          sh:nodeKind sh:BlankNode ;
+          sh:property [
+              sh:path dct:relation ;
+              sh:nodeKind sh:IRI ;
+          ] ;
       ] ;
   ] ;
   sh:property [
