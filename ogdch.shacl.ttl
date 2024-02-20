@@ -47,6 +47,23 @@
         sh:path skos:inScheme ;
     ] .
 
+:FormatRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Format Restriction" ;
+    rdfs:label "Format Restriction" ;
+    sh:property [
+        sh:or
+          ([
+              sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
+          ]
+          [
+              sh:hasValue <https://www.iana.org/assignments/media-types> ;
+          ]) ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
 :DatasetShape
   rdf:type sh:NodeShape ;
   sh:targetClass dcat:Dataset ;
@@ -215,14 +232,8 @@
   ] ;
   sh:property [
       sh:path dct:format ;   # conditional property
-      sh:minCount 1 ;
-      sh:or
-          ([
-              sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
-          ]
-          [
-              sh:hasValue <https://www.iana.org/assignments/media-types> ;
-          ]) ;
+      sh:node :FormatRestriction ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Please use a valid distribution format.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
