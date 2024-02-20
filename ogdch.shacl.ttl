@@ -36,6 +36,17 @@
         sh:path skos:inScheme ;
     ] .
 
+:LicenseRestriction
+    a sh:NodeShape ;
+    rdfs:comment "License Restriction" ;
+    rdfs:label "License Restriction" ;
+    sh:property [
+        sh:hasValue <http://dcat-ap.ch/vocabulary/licenses> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
 :DatasetShape
   rdf:type sh:NodeShape ;
   sh:targetClass dcat:Dataset ;
@@ -219,16 +230,10 @@
   ] ;
   sh:property [
       sh:path dct:license ;   # mandatory property
-      sh:minCount 1 ;
-      sh:in (
-          <http://dcat-ap.ch/vocabulary/licenses/terms_open>
-          <http://dcat-ap.ch/vocabulary/licenses/terms_by>
-          <http://dcat-ap.ch/vocabulary/licenses/terms_ask>
-          <http://dcat-ap.ch/vocabulary/licenses/terms_by_ask>
-      ) ;
+      sh:node :LicenseRestriction ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
       sh:message """Please provide a valid license for the distribution.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
-      sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
   ] .
