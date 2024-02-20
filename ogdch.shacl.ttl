@@ -221,10 +221,10 @@
       sh:path dct:license ;   # mandatory property
       sh:minCount 1 ;
       sh:in (
-          <https://opendata.swiss/terms-of-use#terms_open>
-          <https://opendata.swiss/terms-of-use#terms_by>
-          <https://opendata.swiss/terms-of-use#terms_ask>
-          <https://opendata.swiss/terms-of-use#terms_by_ask>
+          <http://dcat-ap.ch/vocabulary/licenses/terms_open>
+          <http://dcat-ap.ch/vocabulary/licenses/terms_by>
+          <http://dcat-ap.ch/vocabulary/licenses/terms_ask>
+          <http://dcat-ap.ch/vocabulary/licenses/terms_by_ask>
       ) ;
       sh:severity sh:Violation ;
       sh:message """Please provide a valid license for the distribution.
