@@ -31,6 +31,33 @@
     rdfs:label "Theme Restriction" ;
     sh:property [
         sh:hasValue <http://publications.europa.eu/resource/authority/data-theme> ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
+:LicenseRestriction
+    a sh:NodeShape ;
+    rdfs:comment "License Restriction" ;
+    rdfs:label "License Restriction" ;
+    sh:property [
+        sh:hasValue <http://dcat-ap.ch/vocabulary/licenses> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
+:FormatRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Format Restriction" ;
+    rdfs:label "Format Restriction" ;
+    sh:property [
+        sh:or
+          ([
+              sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
+          ]
+          [
+              sh:hasValue <https://www.iana.org/assignments/media-types> ;
+          ]) ;
         sh:minCount 1 ;
         sh:nodeKind sh:IRI ;
         sh:path skos:inScheme ;
@@ -87,32 +114,27 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
-  sh:property [
+ sh:property [
       sh:path dct:publisher ;   # mandatory property
-      sh:minCount 1 ;
+      sh:class foaf:Organization ;
       sh:severity sh:Violation ;
-      sh:message """This dataset does not provide a publisher. Please add a publisher for the dataset.
+      sh:message """The publisher needs to be provided as foaf:Organization.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
 	    """@en ;
   ] ;
   sh:property [
       sh:path dct:publisher ;
-      sh:class foaf:Organization ;
-      sh:node [
-        sh:property [
-            sh:path rdf:about ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-        ] ;
-        sh:property [
-            sh:path foaf:name ;
-            sh:nodeKind sh:Literal ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-        ] ;
-      ] ;
+      sh:minCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide a publisher for the dataset.
+        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
+	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:publisher ;
+      sh:maxCount 1 ;
       sh:severity sh:Warning ;
-      sh:message """Ensure that there is only one valid publisher specified for the dataset, provided as foaf:Organization.
+      sh:message """Please provide only one publisher for the dataset.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
         for Details on this change."""@en ;
   ] ;
@@ -150,16 +172,6 @@
          """@en ;
   ] ;
   sh:property [
-      sh:path dcat:theme ;   # conditional property
-      sh:node :ThemeRestriction ;
-      sh:nodeKind sh:IRI ;
-      sh:severity sh:Warning ;
-      sh:message """The controlled vocabulary for dcat:theme has changed.
-        Please use the new one http://publications.europa.eu/resource/authority/data-theme.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
-        """@en ;
-  ] ;
-  sh:property [
       sh:path dcat:qualifiedRelation ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
@@ -168,12 +180,23 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
       sh:property [
-      sh:path dcat:Relationship ;
-      sh:nodeKind sh:BlankNode ;
-      sh:property [
-          sh:path dct:relation ;
-          sh:nodeKind sh:IRI ;
+          sh:path dcat:Relationship ;
+          sh:nodeKind sh:BlankNode ;
+          sh:property [
+              sh:path dct:relation ;
+              sh:nodeKind sh:IRI ;
+          ] ;
       ] ;
+  ] ;
+  sh:property [
+      sh:path dcat:theme ;   # conditional property
+      sh:node :ThemeRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The controlled vocabulary for dcat:theme has changed.
+        Please use the new one http://publications.europa.eu/resource/authority/data-theme.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
+        """@en ;
   ] ;
   sh:property [
       sh:path dct:accrualPeriodicity ;   # optional property
@@ -208,14 +231,8 @@
   ] ;
   sh:property [
       sh:path dct:format ;   # conditional property
-      sh:minCount 1 ;
-      sh:or
-          ([
-              sh:hasValue <http://publications.europa.eu/resource/authority/file-type> ;
-          ]
-          [
-              sh:hasValue <https://www.iana.org/assignments/media-types> ;
-          ]) ;
+      sh:node :FormatRestriction ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Please use a valid distribution format.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
@@ -223,16 +240,10 @@
   ] ;
   sh:property [
       sh:path dct:license ;   # mandatory property
-      sh:minCount 1 ;
-      sh:in (
-          <https://opendata.swiss/terms-of-use#terms_open>
-          <https://opendata.swiss/terms-of-use#terms_by>
-          <https://opendata.swiss/terms-of-use#terms_ask>
-          <https://opendata.swiss/terms-of-use#terms_by_ask>
-      ) ;
+      sh:node :LicenseRestriction ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
       sh:message """Please provide a valid license for the distribution.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
-      sh:nodeKind sh:IRI ;  # to enforce that license is an IRI
   ] .
