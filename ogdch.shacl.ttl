@@ -31,7 +31,6 @@
     rdfs:label "Theme Restriction" ;
     sh:property [
         sh:hasValue <http://publications.europa.eu/resource/authority/data-theme> ;
-        sh:minCount 1 ;
         sh:nodeKind sh:IRI ;
         sh:path skos:inScheme ;
     ] .
@@ -173,16 +172,6 @@
          """@en ;
   ] ;
   sh:property [
-      sh:path dcat:theme ;   # conditional property
-      sh:node :ThemeRestriction ;
-      sh:nodeKind sh:IRI ;
-      sh:severity sh:Warning ;
-      sh:message """The controlled vocabulary for dcat:theme has changed.
-        Please use the new one http://publications.europa.eu/resource/authority/data-theme.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
-        """@en ;
-  ] ;
-  sh:property [
       sh:path dcat:qualifiedRelation ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
@@ -198,6 +187,16 @@
               sh:nodeKind sh:IRI ;
           ] ;
       ] ;
+  ] ;
+  sh:property [
+      sh:path dcat:theme ;   # conditional property
+      sh:node :ThemeRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The controlled vocabulary for dcat:theme has changed.
+        Please use the new one http://publications.europa.eu/resource/authority/data-theme.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
+        """@en ;
   ] ;
   sh:property [
       sh:path dct:accrualPeriodicity ;   # optional property

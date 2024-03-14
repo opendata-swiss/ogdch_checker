@@ -3,6 +3,7 @@ import logging
 from collections import namedtuple
 
 import pandas as pd
+from rdflib import Graph
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import rdf_utils, utils
@@ -32,9 +33,40 @@ class ShaclChecker(CheckerInterface):
         frequency_file = utils.get_config(
             config, "shaclchecker", "frequency_file", required=True
         )
+        theme_file = utils.get_config(
+            config, "shaclchecker", "theme_file", required=True
+        )
+        licenses_file = utils.get_config(
+            config, "shaclchecker", "licenses_file", required=True
+        )
+        formats_file = utils.get_config(
+            config, "shaclchecker", "formats_file", required=True
+        )
+        mime_types_file = utils.get_config(
+            config, "shaclchecker", "mime_types_file", required=True
+        )
         self._prepare_csv_file()
         self.shacl_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclfile, bind=True)
-        self.ont_graph = rdf_utils.parse_rdf_graph_from_url(file=frequency_file)
+
+        # Load and merge ontology graphs into a single RDF graph
+        frequency_graph = rdf_utils.parse_rdf_graph_from_url(file=frequency_file)
+        theme_graph = rdf_utils.parse_rdf_graph_from_url(file=theme_file)
+        licenses_graph = rdf_utils.parse_rdf_graph_from_url(file=licenses_file)
+        formats_graph = rdf_utils.parse_rdf_graph_from_url(file=formats_file)
+        mime_types_graph = rdf_utils.parse_rdf_graph_from_url(file=mime_types_file)
+
+        self.ont_graph = Graph()
+        ont_graphs_list = [
+            frequency_graph,
+            theme_graph,
+            licenses_graph,
+            formats_graph,
+            mime_types_graph,
+        ]
+        triples_to_add = [triple for graph in ont_graphs_list for triple in graph]
+
+        for triple in triples_to_add:
+            self.ont_graph.add(triple)
 
     def _prepare_csv_file(self):
         self.csv_fieldnames = [

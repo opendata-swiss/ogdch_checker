@@ -1,0 +1,81 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ns0: <http://publications.europa.eu/ontology/euvoc#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix ns1: <http://publications.europa.eu/ontology/authority/> .
+
+<http://publications.europa.eu/resource/authority/data-theme/AGRI>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/ECON>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/EDUC>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENER>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/ENVI>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/GOVE>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/HEAL>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/INTR>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/JUST>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/OP_DATPRO>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/REGI>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/SOCI>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TECH>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme/TRAN>
+  skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/data-theme> .
+
+<http://publications.europa.eu/resource/authority/data-theme>
+  a owl:Ontology, skos:ConceptScheme ;
+  dc:created "2015-10-07"^^xsd:date ;
+  rdfs:label "Data theme"@en ;
+  owl:imports <http://publications.europa.eu/ontology/euvoc> ;
+  rdfs:comment "Data theme"^^rdfs:Literal ;
+  owl:versionInfo "20220715-0" ;
+  skos:prefLabel "Data theme"@en ;
+  dc:title "Data theme"@en ;
+  ns0:startDate "2015-10-07"^^xsd:date ;
+  dc:identifier "http://publications.europa.eu/resource/authority/data-theme" ;
+  skosxl:prefLabel <http://publications.europa.eu/resource/authority/data-theme/d4e2017> ;
+  ns1:prefLabel "Data theme"@en ;
+  ns1:table.id "data-theme" ;
+  ns1:table.version.number "20220715-0" ;
+  owl:versionIRI <http://publications.europa.eu/resource/authority/data-theme/20220715-0> .

@@ -19,6 +19,10 @@ statfile = linkstatistics.csv
 # shaclchecker input and output files
 csvfile = shaclchecker.csv
 frequency_file = /home/liip/ogdch_checker/frequency-eu.ttl
+theme_file = /home/liip/ogdch_checker/theme-eu.ttl
+licenses_file = /home/liip/ogdch_checker/licenses-dcat-ap-ch.ttl
+formats_file = /home/liip/ogdch_checker/formats-eu.ttl
+mime_types_file = /home/liip/ogdch_checker/mime-types.ttl
 statfile = shaclstatistics.csv
 shacl_file = /home/liip/ogdch_checker/ogdch.shacl.ttl
 
