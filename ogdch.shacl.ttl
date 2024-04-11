@@ -171,22 +171,13 @@
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
   ] ;
-  sh:property [
-      sh:path dcat:qualifiedRelation ;   # optional property
-      sh:nodeKind sh:IRI ;
+    sh:property [
+      sh:path rdfs:seeAlso ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """The qualified relation replaces the seeAlso property.
-        Please use dcat:qualifiedRelation instead rdfs:seeAlso.
+      sh:message """The seeAlso property is deprecated.
+        Please use dcat:qualifiedRelation instead of rdfs:seeAlso.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
-      sh:property [
-          sh:path dcat:Relationship ;
-          sh:nodeKind sh:BlankNode ;
-          sh:property [
-              sh:path dct:relation ;
-              sh:nodeKind sh:IRI ;
-          ] ;
-      ] ;
   ] ;
   sh:property [
       sh:path dcat:theme ;   # conditional property
