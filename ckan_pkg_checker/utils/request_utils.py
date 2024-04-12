@@ -44,7 +44,10 @@ def _check_with_user_agent(test_url, http_method, user_agent):
         )
         # ignore 405 Method Not Allowed errors
         if 405 != e.response.status_code:
-            return str(e)  # Return the error message
+            if 404 == e.response.status_code:
+                return "Failed to load resource: the server responded with a status of 404 (Not Found)"
+            else:
+                return str(e)  # Return the error message
     except (ValueError, requests.exceptions.RequestException) as e:
         log.debug(
             "REQUEST EXCEPTION OCCURRED for URL %s (%s): %r"
