@@ -11,7 +11,7 @@ isodate==0.6.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
-numpy==1.21.6
+numpy>=1.22.0
 owlrl==5.2.3
 pandas==1.2.3
 pyparsing==2.4.7
