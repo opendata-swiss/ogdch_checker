@@ -7,10 +7,11 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@v2
             -   name: Deploy
-                uses: garygrossgarten/github-action-ssh@v0.6.4
+                uses: garygrossgarten/github-action-ssh@0.8.0
                 with:
                     host: ${{ secrets.SSH_HOST_PRODUCTION }}
                     port: ${{ secrets.SSH_PORT_PRODUCTION }}
+                    passphrase: ${{ secrets.SSH_PASSPHRASE }}
                     username: ${{ secrets.SSH_USER }}
                     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                     command: |
