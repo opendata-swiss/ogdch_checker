@@ -145,30 +145,32 @@ class ShaclChecker(CheckerInterface):
         fetch their RDF, and merge into dataset_graph for generic property validation.
         """
         # Properties you want to handle
-        properties_to_check = [rdf_utils.DCTERMS.publisher,
-                               rdf_utils.DCAT.contactPoint]
+        properties_to_check = [rdf_utils.DCTERMS.publisher, rdf_utils.DCAT.contactPoint]
 
         # Iterate over each property and fetch external resources
         for prop in properties_to_check:
             for resource_iri in dataset_graph.objects(None, prop):
-                if isinstance(resource_iri,
-                              URIRef):  # Ensure it's an IRI, not a blank node
+                if isinstance(
+                        resource_iri, URIRef
+                ):  # Ensure it's an IRI, not a blank node
                     try:
                         utils.log_and_echo_msg(
-                            f"Fetching external RDF from {resource_iri}...")
+                            f"Fetching external RDF from {resource_iri}..."
+                        )
 
                         # Fetch the RDF content
-                        response = requests.get(resource_iri, headers={
-                            "Accept": "text/turtle"})
+                        response = requests.get(
+                            resource_iri, headers={"Accept": "text/turtle"}
+                        )
                         if response.status_code == 200:
                             external_graph = Graph()
-                            external_graph.parse(data=response.text,
-                                                 format="turtle")
+                            external_graph.parse(data=response.text, format="turtle")
 
                             # Merge the fetched RDF into dataset_graph
                             dataset_graph += external_graph
                             utils.log_and_echo_msg(
-                                f"Successfully merged RDF from {resource_iri}")
+                                f"Successfully merged RDF from {resource_iri}"
+                            )
                         else:
                             utils.log_and_echo_msg(
                                 f"Warning: Could not fetch RDF from {resource_iri} (HTTP {response.status_code})",
@@ -178,7 +180,7 @@ class ShaclChecker(CheckerInterface):
                     except Exception as e:
                         utils.log_and_echo_msg(
                             f"Error fetching RDF from {resource_iri}: {str(e)}",
-                            error=True
+                            error=True,
                         )
 
     def write_result(self, pkg, pkg_type, shacl_result, contacts):
