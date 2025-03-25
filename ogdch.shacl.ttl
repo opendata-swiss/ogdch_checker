@@ -151,7 +151,7 @@
       sh:path dcat:landingPage ;   # conditional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The landing page must to be provided as IRI and not as a string.
+      sh:message """The landing page must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
         """@en ;
   ] ;
@@ -159,7 +159,7 @@
       sh:path dct:modified ;   # conditional property
       sh:datatype xsd:dateTime ;
       sh:severity sh:Warning ;
-      sh:message """The modification date should be in ISO-8601 format.
+      sh:message """The modification date should be provided in ISO-8601 format.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
         """@en ;
   ] ;
@@ -167,25 +167,17 @@
       sh:path dct:issued ;   # conditional property
       sh:datatype xsd:dateTime ;
       sh:severity sh:Warning ;
-      sh:message """The issued date should be in ISO-8601 format.
+      sh:message """The issued date should be provided in ISO-8601 format.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
-  ] ;
-    sh:property [
-      sh:path rdfs:seeAlso ;   # deprecated property
-      sh:severity sh:Warning ;
-      sh:message """The seeAlso property is deprecated.
-        Please use dcat:qualifiedRelation instead of rdfs:seeAlso.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
-        """@en ;
   ] ;
   sh:property [
       sh:path dcat:theme ;   # conditional property
       sh:node :ThemeRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The controlled vocabulary for dcat:theme has changed.
-        Please use the new one http://publications.europa.eu/resource/authority/data-theme.
+      sh:message """The theme should be selected from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/data-theme.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
         """@en ;
   ] ;
@@ -194,10 +186,9 @@
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The frequency is expected from the controlled vocabulary
+      sh:message """The frequency should be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/frequency.
-        The vocabulary http://purl.org/cld/freq has been deprecated. Please change the value. For Details see
-        https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
+        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
         """@en ;
   ] .
 
@@ -216,7 +207,7 @@
       sh:path dcat:accessURL ;
       sh:nodeKind sh:IRI ;  # to enforce that accessURL is an IRI
       sh:severity sh:Violation ;
-      sh:message """The accessURL must be provided as IRI not as a string.
+      sh:message """The accessURL must be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
         """@en ;
   ] ;
@@ -225,7 +216,8 @@
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """Please use a valid distribution format.
+      sh:message """The distribution format should be chosen from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/file-type.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
         """@en ;
   ] ;
