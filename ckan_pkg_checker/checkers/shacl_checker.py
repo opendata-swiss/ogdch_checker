@@ -151,7 +151,7 @@ class ShaclChecker(CheckerInterface):
         for prop in properties_to_check:
             for resource_iri in dataset_graph.objects(None, prop):
                 if isinstance(
-                        resource_iri, URIRef
+                    resource_iri, URIRef
                 ):  # Ensure it's an IRI, not a blank node
                     try:
                         utils.log_and_echo_msg(
