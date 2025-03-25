@@ -1,9 +1,9 @@
 import csv
 import logging
 from collections import namedtuple
-import requests
 
 import pandas as pd
+import requests
 from rdflib import Graph, URIRef
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
