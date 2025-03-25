@@ -1,9 +1,10 @@
 import csv
 import logging
 from collections import namedtuple
+import requests
 
 import pandas as pd
-from rdflib import Graph
+from rdflib import Graph, URIRef
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import rdf_utils, utils
@@ -116,6 +117,8 @@ class ShaclChecker(CheckerInterface):
             )
             return
 
+        self._fetch_and_merge_external_rdf(dataset_graph)
+
         checker_results = rdf_utils.get_shacl_results(
             dataset_graph, self.shacl_graph, self.ont_graph
         )
@@ -135,6 +138,48 @@ class ShaclChecker(CheckerInterface):
         )
         for shacl_result in checker_results:
             self.write_result(pkg, pkg_type, shacl_result, contacts)
+
+    def _fetch_and_merge_external_rdf(self, dataset_graph):
+        """
+        Identify external IRIs (like dct:publisher, dcat:contactPoint, etc.),
+        fetch their RDF, and merge into dataset_graph for generic property validation.
+        """
+        # Properties you want to handle
+        properties_to_check = [rdf_utils.DCTERMS.publisher,
+                               rdf_utils.DCAT.contactPoint]
+
+        # Iterate over each property and fetch external resources
+        for prop in properties_to_check:
+            for resource_iri in dataset_graph.objects(None, prop):
+                if isinstance(resource_iri,
+                              URIRef):  # Ensure it's an IRI, not a blank node
+                    try:
+                        utils.log_and_echo_msg(
+                            f"Fetching external RDF from {resource_iri}...")
+
+                        # Fetch the RDF content
+                        response = requests.get(resource_iri, headers={
+                            "Accept": "text/turtle"})
+                        if response.status_code == 200:
+                            external_graph = Graph()
+                            external_graph.parse(data=response.text,
+                                                 format="turtle")
+
+                            # Merge the fetched RDF into dataset_graph
+                            dataset_graph += external_graph
+                            utils.log_and_echo_msg(
+                                f"Successfully merged RDF from {resource_iri}")
+                        else:
+                            utils.log_and_echo_msg(
+                                f"Warning: Could not fetch RDF from {resource_iri} (HTTP {response.status_code})",
+                                error=True,
+                            )
+
+                    except Exception as e:
+                        utils.log_and_echo_msg(
+                            f"Error fetching RDF from {resource_iri}: {str(e)}",
+                            error=True
+                        )
 
     def write_result(self, pkg, pkg_type, shacl_result, contacts):
         title = utils.get_field_in_one_language(pkg["title"], pkg["name"])
