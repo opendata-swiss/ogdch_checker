@@ -116,9 +116,9 @@
   ] ;
  sh:property [
       sh:path dct:publisher ;   # mandatory property
-      sh:class foaf:Organization ;
+      sh:class foaf:Agent ;
       sh:severity sh:Violation ;
-      sh:message """The publisher needs to be provided as foaf:Organization.
+      sh:message """The publisher needs to be provided as a foaf:Agent.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
 	    """@en ;
   ] ;

@@ -92,14 +92,13 @@ class ShaclChecker(CheckerInterface):
         """Check one data package"""
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         dataset_graph = None
-        # todo: Reenable checking harvest source graph once changes have been communicated to publishers
-        # if pkg.get("source_url"):
-        #     dataset_graph = rdf_utils.get_dataset_graph_from_source(
-        #         pkg["source_url"], pkg["identifier"]
-        #     )
-        #     utils.log_and_echo_msg(
-        #         f"--> rdf graph for Dataset{pkg.get('name')} taken from harvest source"
-        #     )
+        if pkg.get("source_url"):
+            dataset_graph = rdf_utils.get_dataset_graph_from_source(
+                pkg["source_url"], pkg["identifier"]
+            )
+            utils.log_and_echo_msg(
+                f"--> rdf graph for Dataset{pkg.get('name')} taken from harvest source"
+            )
         if not dataset_graph:
             pkg_dcat_serilization_url = utils.get_pkg_dcat_serialization_url(
                 self.siteurl, pkg["name"]
