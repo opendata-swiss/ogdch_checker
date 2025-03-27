@@ -166,13 +166,4 @@
       sh:message """The accessURL must be provided as IRI not as a string.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
         """@en ;
-  ] ;
-  sh:property [
-      sh:path dct:license ;   # mandatory property
-      sh:node :LicenseRestriction ;
-      sh:nodeKind sh:IRI ;
-      sh:severity sh:Violation ;
-      sh:message """Please provide a valid license for the distribution.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
-        """@en ;
   ] .
