@@ -157,17 +157,27 @@
   ] ;
   sh:property [
       sh:path dct:modified ;   # conditional property
-      sh:datatype xsd:dateTime ;
+      sh:or (
+        [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        [ sh:datatype xsd:gYear ]       # Example: "2024"
+        [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+      ) ;
       sh:severity sh:Warning ;
-      sh:message """The modification date should be provided in ISO-8601 format.
+      sh:message """The modification date should be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
         """@en ;
   ] ;
   sh:property [
       sh:path dct:issued ;   # conditional property
-      sh:datatype xsd:dateTime ;
+      sh:or (
+        [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        [ sh:datatype xsd:gYear ]       # Example: "2024"
+        [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+      ) ;
       sh:severity sh:Warning ;
-      sh:message """The issued date should be provided in ISO-8601 format.
+      sh:message """The issued date should be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
   ] ;
