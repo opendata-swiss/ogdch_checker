@@ -164,7 +164,6 @@
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """Please use a valid distribution format.
       sh:message """The distribution format should be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
