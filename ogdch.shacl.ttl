@@ -259,4 +259,12 @@
       sh:message """Please provide a valid license for the distribution.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:rights ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The rights must be provided as an IRI not as a string.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
+        """@en ;
   ] .
