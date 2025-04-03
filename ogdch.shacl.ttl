@@ -115,11 +115,11 @@
 	    """@en ;
   ] ;
  sh:property [
-      sh:path dct:publisher ;   # mandatory property
-      sh:class foaf:Agent  ;
+      sh:path foaf:page ;   # optional property
+      sh:class foaf:Document  ;
       sh:severity sh:Violation ;
-      sh:message """The publisher needs to be provided as a foaf:Agent.
-        See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
+      sh:message """This property refers to a page or document about this Dataset.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#foaf-page-dcat
 	    """@en ;
   ] ;
   sh:property [
@@ -165,14 +165,5 @@
       sh:severity sh:Violation ;
       sh:message """The accessURL must be provided as IRI not as a string.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
-        """@en ;
-  ] ;
-  sh:property [
-      sh:path dct:license ;   # mandatory property
-      sh:node :LicenseRestriction ;
-      sh:nodeKind sh:IRI ;
-      sh:severity sh:Violation ;
-      sh:message """Please provide a valid license for the distribution.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
   ] .
