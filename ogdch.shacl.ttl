@@ -228,6 +228,20 @@
 	    """@en ;
   ] ;
   sh:property [
+      sh:path dct:coverage ;   # deprecated property
+      sh:severity sh:Warning ;
+      sh:message """This property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-coverage-dcat
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path rdfs:seeAlso ;   # deprecated property
+      sh:severity sh:Warning ;
+      sh:message """The seeAlso property is deprecated. Consider using dcat:qualifiedRelation instead.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
+        """@en ;
+  ] ;
+  sh:property [
       sh:path dct:accrualPeriodicity ;   # optional property
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
