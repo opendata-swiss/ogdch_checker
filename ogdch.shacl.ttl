@@ -242,6 +242,38 @@
         """@en ;
   ] ;
   sh:property [
+      sh:path dct:temporal ;   # optional property
+      sh:class dct:PeriodOfTime  ;
+      sh:node [
+          sh:property [
+              sh:path schema:startDate ;
+              sh:or (
+        	[ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        	[ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        	[ sh:datatype xsd:gYear ]       # Example: "2024"
+        	[ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+              ) ;
+              sh:severity sh:Warning ;
+              sh:message "The startDate must be in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
+          ] ;
+          sh:property [
+              sh:path schema:endDate ;
+              sh:or (
+        	[ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        	[ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        	[ sh:datatype xsd:gYear ]       # Example: "2024"
+        	[ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+              ) ;
+              sh:severity sh:Warning ;
+              sh:message "The endDate must be in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
+          ] ;
+      ] ;
+      sh:severity sh:Warning ;
+      sh:message """The temporal needs to be provided as a dct:PeriodOfTime.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-temporal-dcat
+	    """@en ;
+  ] ;
+  sh:property [
       sh:path dct:accrualPeriodicity ;   # optional property
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
