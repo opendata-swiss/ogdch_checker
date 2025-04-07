@@ -284,6 +284,14 @@
         http://publications.europa.eu/resource/authority/frequency.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:relation ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The relation must to be provided as an IRI.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-relation-dcat
+	"""@en ;	      
   ] .
 
 :DistributionShape
