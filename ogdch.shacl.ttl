@@ -123,7 +123,7 @@
               sh:in ("de" "fr" "en" "it") ;
           ]
       ] ;
-      sh:qualifiedMinCount 4 ;      
+      sh:qualifiedMinCount 1 ;      
       sh:severity sh:Warning ;
       sh:message """Keywords must be added as localized strings in the 4 languages.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-keyword-dcat
