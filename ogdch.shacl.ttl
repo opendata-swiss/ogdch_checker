@@ -292,6 +292,14 @@
       sh:message """The relation must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-relation-dcat
 	"""@en ;	      
+  ] ;
+  sh:property [
+      sh:path foaf:page ;   # optional property
+      sh:class foaf:Document  ;
+      sh:severity sh:Warning ;
+      sh:message """The foaf:page of the dataset must be provided as a foaf:Document.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
+	"""@en ;
   ] .
 
 :DistributionShape
@@ -343,4 +351,12 @@
 	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
         """@en ;
+  ] ;
+  sh:property [
+      sh:path foaf:page ;   # optional property
+      sh:class foaf:Document  ;
+      sh:severity sh:Warning ;
+      sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-documentation
+	"""@en ;
   ] .
