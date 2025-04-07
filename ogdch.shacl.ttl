@@ -120,7 +120,7 @@
             sh:class vcard:Individual ;
         ]) ;
       sh:severity sh:Violation ;
-      sh:message """The contact point needs to be provided as vcard:Organization or vcard:Individual.
+      sh:message """The contact point must be provided as vcard:Organization or vcard:Individual.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
@@ -128,7 +128,7 @@
       sh:path dct:publisher ;   # mandatory property
       sh:class foaf:Agent ;
       sh:severity sh:Violation ;
-      sh:message """The publisher needs to be provided as a foaf:Agent.
+      sh:message """The publisher must be provided as a foaf:Agent.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
 	    """@en ;
   ] ;
@@ -162,7 +162,7 @@
       sh:path dcat:landingPage ;   # conditional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The landing page must to be provided as an IRI.
+      sh:message """The landing page must be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
         """@en ;
   ] ;
@@ -175,7 +175,7 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Warning ;
-      sh:message """The modification date should be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
         """@en ;
   ] ;
@@ -188,7 +188,7 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Warning ;
-      sh:message """The issued date should be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
   ] ;
@@ -197,7 +197,7 @@
       sh:node :LanguageRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The language should be selected from the controlled vocabulary available at:
+      sh:message """The language must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/language.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-language
         """@en ;
@@ -207,7 +207,7 @@
       sh:node :ThemeRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The theme should be selected from the controlled vocabulary available at:
+      sh:message """The theme must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/data-theme.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
         """@en ;
@@ -223,21 +223,21 @@
       ] ;
       sh:qualifiedMinCount 4 ;      
       sh:severity sh:Warning ;
-      sh:message """Keywords must be added as localized strings in the 4 languages.
+      sh:message """Keywords must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-keyword-dcat
-	    """@en ;
+	"""@en ;
   ] ;
   sh:property [
       sh:path dct:coverage ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """This property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
+      sh:message """The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-coverage-dcat
         """@en ;
   ] ;
   sh:property [
       sh:path rdfs:seeAlso ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """The seeAlso property is deprecated. Consider using dcat:qualifiedRelation instead.
+      sh:message """The rdfs:seeAlso property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dcat:qualifiedRelation instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
   ] ;
@@ -245,6 +245,12 @@
       sh:path dct:temporal ;   # optional property
       sh:class dct:PeriodOfTime  ;
       sh:node [
+	  sh:property [
+              sh:path schema:endDate ;
+              sh:minCount 1 ;
+              sh:severity sh:Warning ;
+              sh:message "Please provide a start date."@en ;
+          ] ;
           sh:property [
               sh:path schema:startDate ;
               sh:or (
@@ -255,6 +261,12 @@
               ) ;
               sh:severity sh:Warning ;
               sh:message "The startDate must be in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
+          ] ;
+	  sh:property [
+              sh:path schema:endDate ;
+              sh:minCount 1 ;
+              sh:severity sh:Warning ;
+              sh:message "Please provide an end date."@en ;
           ] ;
           sh:property [
               sh:path schema:endDate ;
@@ -269,7 +281,7 @@
           ] ;
       ] ;
       sh:severity sh:Warning ;
-      sh:message """The temporal needs to be provided as a dct:PeriodOfTime.
+      sh:message """The temporal must be provided as a dct:PeriodOfTime.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-temporal-dcat
 	    """@en ;
   ] ;
@@ -278,7 +290,7 @@
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The frequency should be selected from the controlled vocabulary available at:
+      sh:message """The frequency must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/frequency.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
         """@en ;
@@ -308,7 +320,7 @@
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The distribution format should be chosen from the controlled vocabulary available at:
+      sh:message """The distribution format must be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
         """@en ;
@@ -318,7 +330,8 @@
       sh:node :LicenseRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
-      sh:message """Please provide a valid license for the distribution.
+      sh:message """The license must be chosen from the controlled vocabulary available at:
+	http://dcat-ap.ch/vocabulary/licenses.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
   ] ;
@@ -326,7 +339,10 @@
       sh:path dct:rights ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """The rights must be provided as an IRI not as a string.
+      sh:message """​You can use a Creative Commons (CC) license to specify the rights associated with your work. 
+	Please choose one of the following three options:​
+	https://creativecommons.org/publicdomain/zero/1.0/,
+	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
         """@en ;
   ] .
