@@ -243,47 +243,37 @@
   ] ;
   sh:property [
       sh:path dct:temporal ;   # optional property
-      sh:class dct:PeriodOfTime  ;
-      sh:node [
-	  sh:property [
-              sh:path schema:endDate ;
-              sh:minCount 1 ;
-              sh:severity sh:Warning ;
-              sh:message "Please provide a start date."@en ;
-          ] ;
+      sh:class dct:PeriodOfTime ;
+      sh:nodeShape [
           sh:property [
               sh:path schema:startDate ;
+              sh:minCount 1 ;
               sh:or (
-        	[ sh:datatype xsd:date ]        # Example: "2024-12-02"
-        	[ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
-        	[ sh:datatype xsd:gYear ]       # Example: "2024"
-        	[ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+                  [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+                  [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+                  [ sh:datatype xsd:gYear ]       # Example: "2024"
+                  [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
               ) ;
               sh:severity sh:Warning ;
-              sh:message "The startDate must be in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
-          ] ;
-	  sh:property [
-              sh:path schema:endDate ;
-              sh:minCount 1 ;
-              sh:severity sh:Warning ;
-              sh:message "Please provide an end date."@en ;
+              sh:message "Please provide a start date in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
           ] ;
           sh:property [
               sh:path schema:endDate ;
+              sh:minCount 1 ;
               sh:or (
-        	[ sh:datatype xsd:date ]        # Example: "2024-12-02"
-        	[ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
-        	[ sh:datatype xsd:gYear ]       # Example: "2024"
-        	[ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+                  [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+                  [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+                  [ sh:datatype xsd:gYear ]       # Example: "2024"
+                  [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
               ) ;
               sh:severity sh:Warning ;
-              sh:message "The endDate must be in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
+              sh:message "Please provide an end date in ISO 8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth."@en ;
           ] ;
       ] ;
       sh:severity sh:Warning ;
-      sh:message """The temporal must be provided as a dct:PeriodOfTime.
+      sh:message """The temporal property must be provided as a dct:PeriodOfTime.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-temporal-dcat
-	    """@en ;
+        """@en ;
   ] ;
   sh:property [
       sh:path dct:accrualPeriodicity ;   # optional property
