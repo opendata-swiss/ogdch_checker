@@ -120,7 +120,8 @@
   ] ;
  sh:property [
       sh:path foaf:page ;   # optional property
-      sh:node :FoafDocumentShape ;
+      sh:class foaf:Document ;
+      sh:nodeKind sh:BlankNodeOrIRI ;      
       sh:severity sh:Warning ;
       sh:message """The foaf:page must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
@@ -165,7 +166,8 @@
   ] ;
   sh:property [
       sh:path foaf:page ;   # optional property
-      sh:node :FoafDocumentShape ;
+      sh:class foaf:Document ;
+      sh:nodeKind sh:BlankNodeOrIRI ;
       sh:severity sh:Warning ;
       sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
