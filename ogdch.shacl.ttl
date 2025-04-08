@@ -310,6 +310,14 @@
 	"""@en ;
   ] ;
   sh:property [
+      sh:path dct:conformsTo ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The dct:conformsTo property must to be provided as an IRI.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
+	"""@en ;	      
+  ] ;
+  sh:property [
       sh:path dcat:qualifiedRelation  ;   # optional property
       sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
       sh:node [
@@ -375,6 +383,14 @@
 	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:conformsTo ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The dct:conformsTo property must to be provided as an IRI.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
+	"""@en ;	      
   ] ;
   sh:property [
       sh:path foaf:page ;   # optional property
