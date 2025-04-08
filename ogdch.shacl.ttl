@@ -295,7 +295,15 @@
   ] ;
   sh:property [
       sh:path foaf:page ;   # optional property
-      sh:node foaf:Document  ;
+      sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+      sh:node [
+          sh:property [
+              sh:path rdf:type ;
+              sh:hasValue foaf:Document ;
+              sh:message "The node pointed to by foaf:page must be a foaf:Document."@en ;
+              sh:severity sh:Warning ;
+          ]
+      ] ;
       sh:severity sh:Warning ;
       sh:message """The foaf:page of the dataset must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
@@ -354,7 +362,15 @@
   ] ;
   sh:property [
       sh:path foaf:page ;   # optional property
-      sh:node foaf:Document  ;
+      sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+      sh:node [
+          sh:property [
+              sh:path rdf:type ;
+              sh:hasValue foaf:Document ;
+              sh:message "The node pointed to by foaf:page must be a foaf:Document."@en ;
+              sh:severity sh:Warning ;
+          ]
+      ] ;
       sh:severity sh:Warning ;
       sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-documentation
