@@ -308,6 +308,22 @@
       sh:message """The foaf:page of the dataset must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
 	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:qualifiedRelation  ;   # optional property
+      sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+      sh:node [
+          sh:property [
+              sh:path rdf:type ;
+              sh:hasValue dcat:Relationship ;
+              sh:message "dcat:qualifiedRelation must point to a node with rdf:type dcat:Relationship."@en ;
+              sh:severity sh:Warning ;
+          ]
+      ] ;
+      sh:severity sh:Warning ;
+      sh:message """The dcat:qualifiedRelation of the dataset must be provided as a dcat:Relationship.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
+	"""@en ;
   ] .
 
 :DistributionShape
