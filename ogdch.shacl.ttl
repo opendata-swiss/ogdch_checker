@@ -118,14 +118,19 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
- sh:property [
-      sh:path foaf:page ;   # optional property
-      sh:class foaf:Document ;
-      sh:nodeKind sh:BlankNodeOrIRI ;      
-      sh:severity sh:Warning ;
-      sh:message """The foaf:page must be provided as a foaf:Document.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
-	    """@en ;
+  sh:property [
+    sh:path foaf:page ;
+    sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+    sh:node [
+        sh:property [
+            sh:path rdf:type ;
+            sh:hasValue foaf:Document ;
+            sh:message "The node pointed to by foaf:page must be a foaf:Document."@en ;
+            sh:severity sh:Warning ;
+        ]
+    ] ;
+    sh:severity sh:Warning ;
+    sh:message "foaf:page must point to an inline foaf:Document with rdf:type foaf:Document."@en ;
   ] ;
   sh:property [
       sh:path dct:publisher ;
@@ -165,13 +170,18 @@
         """@en ;
   ] ;
   sh:property [
-      sh:path foaf:page ;   # optional property
-      sh:class foaf:Document ;
-      sh:nodeKind sh:BlankNodeOrIRI ;
-      sh:severity sh:Warning ;
-      sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
-	    """@en ;
+    sh:path foaf:page ;
+    sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+    sh:node [
+        sh:property [
+            sh:path rdf:type ;
+            sh:hasValue foaf:Document ;
+            sh:message "The node pointed to by foaf:page must be a foaf:Document."@en ;
+            sh:severity sh:Warning ;
+        ]
+    ] ;
+    sh:severity sh:Warning ;
+    sh:message "foaf:page must point to an inline foaf:Document with rdf:type foaf:Document."@en ;
   ] ;
   sh:property [
       sh:path dcat:accessURL ;
