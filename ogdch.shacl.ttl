@@ -182,6 +182,36 @@ sh:property [
          """@en ;
   ] ;
   sh:property [
+      sh:path dct:title ;   # conditional property
+      sh:nodeKind sh:Literal ;
+      sh:qualifiedValueShape [
+          sh:property [
+              sh:path rdf:langString ;
+              sh:in ("de" "fr" "en" "it") ;
+          ]
+      ] ;
+      sh:qualifiedMinCount 1 ;      
+      sh:severity sh:Warning ;
+      sh:message """The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
+	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dct:description ;   # conditional property
+      sh:nodeKind sh:Literal ;
+      sh:qualifiedValueShape [
+          sh:property [
+              sh:path rdf:langString ;
+              sh:in ("de" "fr" "en" "it") ;
+          ]
+      ] ;
+      sh:qualifiedMinCount 1 ;      
+      sh:severity sh:Warning ;
+      sh:message """The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
+	"""@en ;
+  ] ;
+  sh:property [
       sh:path dct:license ;   # mandatory property
       sh:node :LicenseRestriction ;
       sh:nodeKind sh:IRI ;
