@@ -212,6 +212,23 @@ sh:property [
 	"""@en ;
   ] ;
   sh:property [
+      sh:path dcat:downloadURL ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The downloadURL must be provided as an IRI.
+        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-downloadurl-dcat
+	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:byteSize ;
+      sh:datatype xsd:decimal ;
+      sh:maxCount 1 ;
+      sh:severity sh:Warning ;
+      sh:message """If downloadURL is provided, byteSize must be a decimal given.
+        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
+	"""@en ;
+  ] ;
+  sh:property [
       sh:path dct:license ;   # mandatory property
       sh:node :LicenseRestriction ;
       sh:nodeKind sh:IRI ;
