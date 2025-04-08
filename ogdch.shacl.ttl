@@ -63,6 +63,10 @@
         sh:path skos:inScheme ;
     ] .
 
+:FoafDocumentShape
+  a sh:NodeShape ;
+  sh:targetClass foaf:Document .
+
 :DatasetShape
   rdf:type sh:NodeShape ;
   sh:targetClass dcat:Dataset ;
@@ -116,13 +120,7 @@
   ] ;
  sh:property [
       sh:path foaf:page ;   # optional property
-       sh:node [
-          sh:property [
-              sh:path rdf:type ;
-              sh:hasValue foaf:Document ;
-              sh:message "foaf:page must point to a node of type foaf:Document"@en ;
-          ] ;
-      ] ;
+      sh:node :FoafDocumentShape ;
       sh:severity sh:Warning ;
       sh:message """The foaf:page must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
@@ -167,13 +165,7 @@
   ] ;
   sh:property [
       sh:path foaf:page ;   # optional property
-      sh:node [
-          sh:property [
-              sh:path rdf:type ;
-              sh:hasValue foaf:Document ;
-              sh:message "foaf:page must point to a node of type foaf:Document"@en ;
-          ] ;
-      ] ;
+      sh:node :FoafDocumentShape ;
       sh:severity sh:Warning ;
       sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
