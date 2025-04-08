@@ -354,6 +354,28 @@
         """@en ;
   ] ;
   sh:property [
+      sh:path dct:issued ;   # mandatory property
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:severity sh:Violation ;
+      sh:message """Please provide an issued date for the distribution.
+         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
+         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:issued ;   # mandatory property
+      sh:or (
+        [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        [ sh:datatype xsd:gYear ]       # Example: "2024"
+        [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+      ) ;
+      sh:severity sh:Violation ;
+      sh:message """The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
+         """@en ;
+  ] ;
+  sh:property [
       sh:path dct:format ;   # conditional property
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
