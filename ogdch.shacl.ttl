@@ -229,11 +229,57 @@ sh:property [
 	"""@en ;
   ] ;
   sh:property [
+      sh:path dct:format ;   # conditional property
+      sh:node :FormatRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The distribution format must be chosen from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/file-type.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
+        """@en ;
+  ] ;
+  sh:property [
       sh:path dct:license ;   # mandatory property
       sh:node :LicenseRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
-      sh:message """Please provide a valid license for the distribution.
+      sh:message """The license must be chosen from the controlled vocabulary available at:
+	http://dcat-ap.ch/vocabulary/licenses.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:rights ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """​You can use a Creative Commons (CC) license to specify the rights associated with your work. 
+	Please choose one of the following three options:​
+	https://creativecommons.org/publicdomain/zero/1.0/,
+	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:conformsTo ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The dct:conformsTo property must to be provided as an IRI.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
+	"""@en ;	      
+  ] ;
+  sh:property [
+      sh:path foaf:page ;   # optional property
+      sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
+      sh:node [
+          sh:property [
+              sh:path rdf:type ;
+              sh:hasValue foaf:Document ;
+              sh:message "The node pointed to by foaf:page must be a foaf:Document."@en ;
+              sh:severity sh:Warning ;
+          ]
+      ] ;
+      sh:severity sh:Warning ;
+      sh:message """The foaf:page of the distribution must be provided as a foaf:Document.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-documentation
+	"""@en ;
   ] .
