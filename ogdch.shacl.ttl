@@ -192,6 +192,19 @@ sh:property [
          """@en ;
   ] ;
   sh:property [
+      sh:path dct:modified ;   # conditional property
+      sh:or (
+        [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        [ sh:datatype xsd:gYear ]       # Example: "2024"
+        [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+      ) ;
+      sh:severity sh:Warning ;
+      sh:message """The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-modified
+        """@en ;
+  ] ;
+  sh:property [
       sh:path dct:title ;   # conditional property
       sh:nodeKind sh:Literal ;
       sh:qualifiedValueShape [
@@ -281,7 +294,7 @@ sh:property [
       sh:severity sh:Warning ;
       sh:message """The language must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/language.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-language
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-language
         """@en ;
   ] ;
   sh:property [
