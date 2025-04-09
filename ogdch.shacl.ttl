@@ -249,7 +249,7 @@ sh:property [
       sh:maxCount 1 ;
       sh:severity sh:Warning ;
       sh:message """If downloadURL is provided, byteSize must be a decimal given.
-        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
 	"""@en ;
   ] ;
   sh:property [
@@ -321,6 +321,15 @@ sh:property [
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-coverage
         """@en ;
   ] ;
+  sh:property [
+      sh:path dcat:temporalResolution ;
+      sh:datatype xsd:duration ;
+      sh:maxCount 1 ;
+      sh:severity sh:Warning ;
+      sh:message """If temporalResolution is provided, it must be an xsd:duration.
+      See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-temporal-resolution
+      """@en ;
+  ]
   sh:property [
       sh:path foaf:page ;   # optional property
       sh:nodeKind sh:BlankNode ;  # force that foaf:page must point to a blank node (embedded structure)
