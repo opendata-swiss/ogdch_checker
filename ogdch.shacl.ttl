@@ -14,6 +14,16 @@
 
 <> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
 
+:LanguageRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Language Restriction" ;
+    rdfs:label "Language Restriction" ;
+    sh:property [
+        sh:hasValue <http://publications.europa.eu/resource/authority/language> ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
 :FrequencyRestriction
     a sh:NodeShape ;
     rdfs:comment "Frequency Restriction" ;
@@ -262,6 +272,16 @@ sh:property [
 	https://creativecommons.org/publicdomain/zero/1.0/,
 	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:language ;   # conditional property
+      sh:node :LanguageRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The language must be selected from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/language.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-language
         """@en ;
   ] ;
   sh:property [
