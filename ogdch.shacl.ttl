@@ -180,6 +180,7 @@ sh:property [
   ] ;
   sh:property [
       sh:path dct:issued ;   # mandatory property
+      sh:minCount 1 ;
       sh:or (
         [ sh:datatype xsd:date ]        # Example: "2024-12-02"
         [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
@@ -296,6 +297,14 @@ sh:property [
         http://publications.europa.eu/resource/authority/language.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-language
         """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:identifier ;   # mandatory property
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message """An identifier of the distribution must be provide as a sh:Literal.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-identifier
+	    """@en ;
   ] ;
   sh:property [
       sh:path dct:conformsTo ;   # optional property
