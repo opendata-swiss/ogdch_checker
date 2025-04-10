@@ -364,6 +364,7 @@
   ] ;
   sh:property [
       sh:path dct:issued ;   # mandatory property
+      sh:minCount 1 ;
       sh:or (
         [ sh:datatype xsd:date ]        # Example: "2024-12-02"
         [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
@@ -374,6 +375,66 @@
       sh:message """The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
          """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:modified ;   # conditional property
+      sh:or (
+        [ sh:datatype xsd:date ]        # Example: "2024-12-02"
+        [ sh:datatype xsd:dateTime ]    # Example: "2024-12-02T12:00:00Z"
+        [ sh:datatype xsd:gYear ]       # Example: "2024"
+        [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
+      ) ;
+      sh:severity sh:Warning ;
+      sh:message """The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-modified
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:title ;   # conditional property
+      sh:nodeKind sh:Literal ;
+      sh:qualifiedValueShape [
+          sh:property [
+              sh:path rdf:langString ;
+              sh:in ("de" "fr" "en" "it") ;
+          ]
+      ] ;
+      sh:qualifiedMinCount 1 ;      
+      sh:severity sh:Warning ;
+      sh:message """The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
+	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dct:description ;   # conditional property
+      sh:nodeKind sh:Literal ;
+      sh:qualifiedValueShape [
+          sh:property [
+              sh:path rdf:langString ;
+              sh:in ("de" "fr" "en" "it") ;
+          ]
+      ] ;
+      sh:qualifiedMinCount 1 ;      
+      sh:severity sh:Warning ;
+      sh:message """The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
+	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:downloadURL ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The downloadURL must be provided as an IRI.
+        https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-downloadurl-dcat
+	"""@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:byteSize ;
+      sh:datatype xsd:decimal ;
+      sh:maxCount 1 ;
+      sh:severity sh:Warning ;
+      sh:message """If downloadURL is provided, byteSize must be a decimal given.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
+	"""@en ;
   ] ;
   sh:property [
       sh:path dct:format ;   # conditional property
@@ -398,6 +459,11 @@
   sh:property [
       sh:path dct:rights ;   # optional property
       sh:nodeKind sh:IRI ;
+      sh:in (
+        <https://creativecommons.org/publicdomain/zero/1.0/>
+        <https://creativecommons.org/licenses/by/4.0/>
+        <https://creativecommons.org/licenses/by-sa/4.0/>
+      ) ;
       sh:severity sh:Warning ;
       sh:message """​You can use a Creative Commons (CC) license to specify the rights associated with your work. 
 	Please choose one of the following three options:​
@@ -407,11 +473,53 @@
         """@en ;
   ] ;
   sh:property [
+      sh:path dct:language ;   # conditional property
+      sh:node :LanguageRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The language must be selected from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/language.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-language
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:identifier ;   # mandatory property
+      sh:nodeKind sh:Literal ;
+      sh:severity sh:Violation ;
+      sh:message """An identifier of the distribution must be provide as a sh:Literal.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-identifier
+	    """@en ;
+  ] ;
+  sh:property [
       sh:path dct:conformsTo ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """The dct:conformsTo property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
+	"""@en ;	      
+  ] ;
+sh:property [
+      sh:path dct:coverage ;   # deprecated property
+      sh:severity sh:Warning ;
+      sh:message """The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-coverage
+        """@en ;
+  ] ;
+  sh:property [
+      sh:path dcat:temporalResolution ;
+      sh:datatype xsd:duration ;
+      sh:maxCount 1 ;
+      sh:severity sh:Warning ;
+      sh:message """If temporalResolution is provided, it must be an xsd:duration.
+      See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-temporal-resolution
+      """@en ;
+  ] ; 
+  sh:property [
+      sh:path dcat:accessService ;   # optional property
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """The dcat:accessService property must to be provided as an IRI.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessservice-dcat
 	"""@en ;	      
   ] ;
   sh:property [
