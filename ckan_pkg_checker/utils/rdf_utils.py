@@ -99,6 +99,8 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
         )
         if property_ref:
             property = property_ref.n3(results_graph.namespace_manager)
+            shape_class = shape_class_map.get(str(property_ref), "Unknown")
+            
             node = get_object_from_graph(
                 graph=results_graph,
                 subject=validation_item,
@@ -137,6 +139,7 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
                 value=value,
                 msg=msg,
                 severity=severity,
+                shape_class=shape_class,
             )
             checker_results.append(shacl_result)
     return checker_results
@@ -165,3 +168,19 @@ def get_dataset_graph_from_source(source_url, identifier):
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
     return dataset
+
+def get_shape_class_mapping(shacl_graph):
+    """Return a mapping from property path (URI string) to shape class (e.g., Dataset or Distribution)."""
+    shape_class_map = {}
+    for shape in shacl_graph.subjects(RDF.type, SHACL.NodeShape):
+        shape_class = "Unknown"
+        for target_class in shacl_graph.objects(shape, SHACL.targetClass):
+            if str(target_class).endswith("Dataset"):
+                shape_class = "Dataset"
+            elif str(target_class).endswith("Distribution"):
+                shape_class = "Distribution"
+        for prop in shacl_graph.objects(shape, SHACL.property):
+            for path in shacl_graph.objects(prop, SHACL.path):
+                shape_class_map[str(path)] = shape_class
+    return shape_class_map
+    
