@@ -181,12 +181,13 @@ class ShaclChecker(CheckerInterface):
         dg = dg.set_index("error_msg")
         msg_dict = dg.to_dict().get("count")
         statfile = open(self.statfilename, "w")
-        statwriter = csv.DictWriter(statfile, fieldnames=["message", "count"])
+        statwriter = csv.DictWriter(statfile, fieldnames=["property", "message", "count"])
         statwriter.writeheader()
+        property = df_filtered["property"]
         if self.shacl_graph:
             for message in self.shacl_graph.objects(predicate=rdf_utils.SHACL.message):
                 msg = str(message)
-                statwriter.writerow({"message": msg, "count": msg_dict.get(msg, 0)})
+                statwriter.writerow({"property": property, "message": msg, "count": msg_dict.get(msg, 0)})
 
     def __repr__(self):
         return "Shacl Checker"
