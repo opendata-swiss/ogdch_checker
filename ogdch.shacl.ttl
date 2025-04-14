@@ -393,7 +393,13 @@
   ] ;
   sh:property [
       sh:path dcat:byteSize ;
-      sh:datatype xsd:decimal ;
+      sh:or
+          ([
+              sh:datatype xsd:decimal ;
+          ]
+          [
+              sh:datatype xsd:nonNegativeInteger ;
+          ]) ;
       sh:maxCount 1 ;
       sh:severity sh:Warning ;
       sh:message """dcat:byteSize: If downloadURL is provided, byteSize must be a decimal or a non-negative integer.
