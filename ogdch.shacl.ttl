@@ -215,12 +215,7 @@
   sh:property [
       sh:path dcat:keyword ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:qualifiedValueShape [
-          sh:property [
-              sh:path rdf:langString ;
-              sh:in ("de" "fr" "en" "it") ;
-          ]
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
       sh:message """dcat:keyword: Keywords must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-keyword-dcat
@@ -447,12 +442,7 @@
   sh:property [
     sh:path dct:title ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:qualifiedValueShape [
-          sh:property [
-              sh:path rdf:langString ;
-              sh:in ("de" "fr" "en" "it") ;
-          ]
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
       sh:message """dct:title: The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
@@ -461,12 +451,7 @@
   sh:property [
     sh:path dct:description ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:qualifiedValueShape [
-          sh:property [
-              sh:path rdf:langString ;
-              sh:in ("de" "fr" "en" "it") ;
-          ]
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
       sh:message """dct:description: The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
