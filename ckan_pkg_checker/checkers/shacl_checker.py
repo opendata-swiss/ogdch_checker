@@ -168,10 +168,10 @@ class ShaclChecker(CheckerInterface):
             contactsstats_filename=self.contactsstats_filename,
             checker_error_fieldname="error_msg",
         )
-        
+
     def _statistics(self):
         df = pd.read_csv(self.csvfilename)
-        df_filtered = df.filter(["property", "value", "error_msg"])        
+        df_filtered = df.filter(["property", "value", "error_msg"])
         # Group by both message and property name
         dg = (
             df_filtered.groupby(["error_msg", "property"])
@@ -180,14 +180,18 @@ class ShaclChecker(CheckerInterface):
         )
 
         with open(self.statfilename, "w", newline='') as statfile:
-            statwriter = csv.DictWriter(statfile, fieldnames=["property", "message", "count"])
+            statwriter = csv.DictWriter(
+                statfile, fieldnames=["property", "message", "count"]
+            )
             statwriter.writeheader()
             for _, row in dg.iterrows():
-                statwriter.writerow({
-                    "property": row["property"],
-                    "message": row["error_msg"],
-                    "count": row["count"]
-                })
+                statwriter.writerow(
+                    {
+                        "property": row["property"],
+                        "message": row["error_msg"],
+                        "count": row["count"]
+                    }
+                )
 
     def __repr__(self):
         return "Shacl Checker"
