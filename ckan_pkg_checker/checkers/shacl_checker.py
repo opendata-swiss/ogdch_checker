@@ -3,8 +3,7 @@ import logging
 from collections import namedtuple
 
 import pandas as pd
-from rdflib.namespace import RDF
-from rdflib import Graph, Namespace
+from rdflib import Graph
 
 from ckan_pkg_checker.checkers.checker_interface import CheckerInterface
 from ckan_pkg_checker.utils import rdf_utils, utils
@@ -84,6 +83,7 @@ class ShaclChecker(CheckerInterface):
             "pkg_type",
             "checker_type",
             "template",
+            "shape_class",
         ]
         self.csvfile = open(self.csvfilename, "w")
         self.csvwriter = csv.DictWriter(self.csvfile, fieldnames=self.csv_fieldnames)
@@ -157,6 +157,7 @@ class ShaclChecker(CheckerInterface):
                     "pkg_type": pkg_type,
                     "checker_type": utils.MODE_SHACL,
                     "template": "shaclchecker_error.html",
+                    "shape_class": shacl_result.shape_class,
                 }
             )
 
@@ -169,50 +170,23 @@ class ShaclChecker(CheckerInterface):
             contactsstats_filename=self.contactsstats_filename,
             checker_error_fieldname="error_msg",
         )
-
-    def get_property_shape_mapping(self):
-        # SHACL = rdf_utils.SHACL
-        SH = Namespace("http://www.w3.org/ns/shacl#")
-
-        property_to_shape = {}
-
-        for shape in self.shacl_graph.subjects(RDF.type, SH.NodeShape):
-            shape_label = "Unknown"
-            if "DatasetShape" in str(shape):
-                shape_label = "Dataset"
-            elif "DistributionShape" in str(shape):
-                shape_label = "Distribution"
-
-            for prop_bnode in self.shacl_graph.objects(shape, SH.property):
-                for path in self.shacl_graph.objects(prop_bnode, SH.path):
-                    property_to_shape[str(path)] = shape_label
-
-        return property_to_shape
         
     def _statistics(self):
         df = pd.read_csv(self.csvfilename)
-        df_filtered = df.filter(["property", "value", "error_msg"])
-
-        # Get property-to-shape mapping
-        property_shape_map = self.get_property_shape_mapping()
-
-        # Add shape info to DataFrame
-        df_filtered["shape"] = df_filtered["property"].map(
-            lambda p: property_shape_map.get(p, "Unknown"))
-        
+        df_filtered = df.filter(["property", "value", "error_msg", "shape_class"])        
         # Group by both message and property name
         dg = (
-            df_filtered.groupby(["shape", "error_msg", "property"])
+            df_filtered.groupby(["shape_class", "error_msg", "property"])
             .size()
             .reset_index(name="count")
         )
 
         with open(self.statfilename, "w", newline='') as statfile:
-            statwriter = csv.DictWriter(statfile, fieldnames=["shape", "property", "message", "count"])
+            statwriter = csv.DictWriter(statfile, fieldnames=["class", "property", "message", "count"])
             statwriter.writeheader()
             for _, row in dg.iterrows():
                 statwriter.writerow({
-                    "shape": row["shape"],
+                    "class": row["shape_class"],
                     "property": row["property"],
                     "message": row["error_msg"],
                     "count": row["count"]
