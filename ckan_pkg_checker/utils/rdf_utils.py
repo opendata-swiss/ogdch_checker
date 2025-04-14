@@ -86,10 +86,6 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
         dataset_graph, shacl_graph=shacl_graph, ont_graph=ont_graph
     )
     conforms, results_graph, results_text = validation_results
-    log.info("results_graph")
-    log.info(results_graph)
-    log.info("dataset_graph")
-    log.info(dataset_graph)
     log.info("shacl_graph")
     log.info(shacl_graph)
     if conforms:
@@ -105,7 +101,6 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
         )
         if property_ref:
             property = property_ref.n3(results_graph.namespace_manager)
-            
             node = get_object_from_graph(
                 graph=results_graph,
                 subject=validation_item,
