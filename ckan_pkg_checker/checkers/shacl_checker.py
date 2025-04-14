@@ -173,20 +173,19 @@ class ShaclChecker(CheckerInterface):
         
     def _statistics(self):
         df = pd.read_csv(self.csvfilename)
-        df_filtered = df.filter(["property", "value", "error_msg", "shape_class"])        
+        df_filtered = df.filter(["property", "value", "error_msg"])        
         # Group by both message and property name
         dg = (
-            df_filtered.groupby(["shape_class", "error_msg", "property"])
+            df_filtered.groupby(["error_msg", "property"])
             .size()
             .reset_index(name="count")
         )
 
         with open(self.statfilename, "w", newline='') as statfile:
-            statwriter = csv.DictWriter(statfile, fieldnames=["class", "property", "message", "count"])
+            statwriter = csv.DictWriter(statfile, fieldnames=["property", "message", "count"])
             statwriter.writeheader()
             for _, row in dg.iterrows():
                 statwriter.writerow({
-                    "class": row["shape_class"],
                     "property": row["property"],
                     "message": row["error_msg"],
                     "count": row["count"]
