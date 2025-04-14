@@ -471,7 +471,7 @@
       sh:message """dct:description: The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
 	"""@en ;
-  ] ;   ] ;
+  ] ; 
   sh:property [
       sh:path dct:language ;   # conditional property
       sh:node :LanguageRestriction ;
