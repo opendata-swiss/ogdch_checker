@@ -83,7 +83,6 @@ class ShaclChecker(CheckerInterface):
             "pkg_type",
             "checker_type",
             "template",
-            "shape_class",
         ]
         self.csvfile = open(self.csvfilename, "w")
         self.csvwriter = csv.DictWriter(self.csvfile, fieldnames=self.csv_fieldnames)
@@ -157,7 +156,6 @@ class ShaclChecker(CheckerInterface):
                     "pkg_type": pkg_type,
                     "checker_type": utils.MODE_SHACL,
                     "template": "shaclchecker_error.html",
-                    "shape_class": shacl_result.shape_class,
                 }
             )
 
