@@ -179,7 +179,7 @@ class ShaclChecker(CheckerInterface):
             .reset_index(name="count")
         )
 
-        with open(self.statfilename, "w", newline='') as statfile:
+        with open(self.statfilename, "w", newline="") as statfile:
             statwriter = csv.DictWriter(
                 statfile, fieldnames=["property", "message", "count"]
             )
@@ -189,7 +189,7 @@ class ShaclChecker(CheckerInterface):
                     {
                         "property": row["property"],
                         "message": row["error_msg"],
-                        "count": row["count"]
+                        "count": row["count"],
                     }
                 )
 
