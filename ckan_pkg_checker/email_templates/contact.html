@@ -34,3 +34,15 @@
     or your address is listed as a contact for validation emails.
 </small></p>
 <p>******************************************</p>
+{% for property, info in context.errors.items() %}
+<hr>
+<p>
+<strong>Property:</strong> '{{ property }}' <br>
+<strong>VIOLATION:</strong> {{ info.error_msg }} <br>
+</p>
+<p><strong>Dataset(s):</strong><br>
+{% for ds in info.datasets %}
+- <a href="{{ ds.url }}">{{ ds.title }}</a><br>
+{% endfor %}
+</p>
+{% endfor %}
