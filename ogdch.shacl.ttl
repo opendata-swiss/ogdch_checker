@@ -392,13 +392,18 @@
   sh:property [
       sh:path dct:title ;   # conditional property
       sh:nodeKind sh:Literal ;
-      sh:qualifiedValueShape [
-          sh:property [
-              sh:path rdf:langString ;
-              sh:in ("de" "fr" "en" "it") ;
-          ]
-      ] ;
-      sh:qualifiedMinCount 1 ;      
+      sh:or (
+        # Case 1: No title present (don't raise error)
+        [ sh:maxCount 0 ]
+
+        # Case 2: Title exists and is correctly tagged
+        [
+          sh:qualifiedValueShape [
+            sh:languageIn ( "de" "fr" "en" "it" )
+          ] ;
+          sh:qualifiedMinCount 1 ;
+        ]
+      )    
       sh:severity sh:Warning ;
       sh:message """dct:title: The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
@@ -407,13 +412,18 @@
   sh:property [
       sh:path dct:description ;   # conditional property
       sh:nodeKind sh:Literal ;
-      sh:qualifiedValueShape [
-          sh:property [
-              sh:path rdf:langString ;
-              sh:in ("de" "fr" "en" "it") ;
-          ]
-      ] ;
-      sh:qualifiedMinCount 1 ;      
+      sh:or (
+        # Case 1: No description present (don't raise error)
+        [ sh:maxCount 0 ]
+
+        # Case 2: Description exists and is correctly tagged
+        [
+          sh:qualifiedValueShape [
+            sh:languageIn ( "de" "fr" "en" "it" )
+          ] ;
+          sh:qualifiedMinCount 1 ;
+        ]
+      )    
       sh:severity sh:Warning ;
       sh:message """dct:description: The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
