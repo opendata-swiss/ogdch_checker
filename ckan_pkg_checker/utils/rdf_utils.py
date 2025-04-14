@@ -1,3 +1,4 @@
+import logging
 from collections import namedtuple
 from string import Template
 from urllib.error import HTTPError, URLError
@@ -8,7 +9,6 @@ from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
-import logging
 log = logging.getLogger(__name__)
 
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
