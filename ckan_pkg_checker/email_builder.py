@@ -3,6 +3,7 @@ import logging
 import os
 
 import pandas as pd
+from jinja2 import Environment, FileSystemLoader
 
 from ckan_pkg_checker.utils import utils
 
@@ -42,37 +43,60 @@ class EmailBuilder:
 
     def build(self):
         utils.log_and_echo_msg("building emails")
+
+        grouped = {}
+
         with open(self.csvpath, "r") as readfile:
             reader = csv.DictReader(readfile)
             for row in reader:
-                self._process_line(row)
+                contact_email = row["contact_email"]
+                contact_name = row["contact_name"]
+                pkg_type = row["pkg_type"]
+                property_uri = row["property"]
+                key = (contact_email, pkg_type)
+
+                grouped.setdefault(key, {
+                    "contact_name": contact_name,
+                    "pkg_type": pkg_type,
+                    "errors": {}
+                })
+
+                entry = grouped[key]
+
+                error_group = entry["errors"].setdefault(property_uri, {
+                    "severity": row["severity"],
+                    "error_msg": row["error_msg"],
+                    "datasets": []
+                })
+
+                error_group["datasets"].append({
+                    "title": row["dataset_title"],
+                    "url": row["dataset_url"]
+                })
+
+        for (email, pkg_type), data in grouped.items():
+            self._write_grouped_email(email, data)
+
         if self.statpath:
             self._build_statistics()
         if self.contactsstats_path:
             self._build_contacts_statistics()
 
-    def _process_line(self, row):
-        contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]
-        if self.default_contact.email not in [contact.email for contact in contacts]:
-            contacts.append(self.default_contact)
-        for contact in contacts:
-            pkg_type = row["pkg_type"]
-            mailfile = os.path.join(
-                self.mailpath, pkg_type + "#" + contact.email + ".html"
-            )
-            msg = ""
-            if not os.path.isfile(mailfile):
-                utils.log_and_echo_msg(
-                    f"email for {row['pkg_type']}#{row['contact_email']}"
-                )
-                msg += utils.build_msg_per_contact(
-                    receiver_name=contact.name,
-                    checker_type=row["checker_type"],
-                    pkg_type=row["pkg_type"],
-                )
-            msg += utils.build_msg_per_error(row)
-            with open(mailfile, "a") as writemail:
-                writemail.write(msg)
+    def _write_grouped_email(self, contact_email, data):
+        env = Environment(loader=FileSystemLoader("ckan_pkg_checker/email_templates"))
+        template = env.get_template("grouped_shacl_error.html")
+
+        context = {
+            "receiver_name": data["contact_name"],
+            "pkg_type": data["pkg_type"],
+            "errors": data["errors"]
+        }
+
+        output = template.render(context=context)
+
+        mailfile = os.path.join(self.mailpath, data["pkg_type"] + "#" + contact_email + ".html")
+        with open(mailfile, "w") as f:
+            f.write(output)
 
     def _build_statistics(self):
         filename = utils.STATISTICS + "#" + self.default_contact.email
