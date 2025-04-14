@@ -8,6 +8,9 @@ from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
+import logging
+log = logging.getLogger(__name__)
+
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
