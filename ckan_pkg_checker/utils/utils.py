@@ -91,6 +91,7 @@ def build_msg_per_contact(receiver_name, checker_type, pkg_type):
             "pkg_type_geocat": GEOCAT,
             "checker_type_shacl": MODE_SHACL,
             "checker_type_link": MODE_LINK,
+            "grouped_errors": grouped_html_block, 
         }
     )
     return html
