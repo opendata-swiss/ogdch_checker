@@ -82,7 +82,7 @@
       sh:nodeKind sh:Literal ;
       sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Violation ;
-      sh:message """dct:title: Please add a title for your dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:title': Please add a title for your dataset.
 	The title must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-title-dcat
 	    """@en ;
@@ -93,7 +93,7 @@
       sh:nodeKind sh:Literal ;
       sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Violation ;
-      sh:message """dct:description: Please add a description for your dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:description': Please add a description for your dataset.
 	The description must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-description-dcat
 	    """@en ;
