@@ -843,3 +843,39 @@
 <http://publications.europa.eu/resource/authority/file-type/MATHML>
   skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
   skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/PARQUET>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/ETSI_TSL>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/MARKDOWN>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/THRIFT_COMPACT>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/ARROW_STREAM>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/ARROW_FILE>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/LEGALHTML>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/THRIFT_JSON>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
+
+<http://publications.europa.eu/resource/authority/file-type/THRIFT_BINARY>
+  skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
+  skos:topConceptOf <http://publications.europa.eu/resource/authority/file-type> .
