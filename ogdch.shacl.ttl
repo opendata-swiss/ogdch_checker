@@ -110,7 +110,8 @@
       sh:path dcat:contactPoint ;   # mandatory property
       sh:minCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dcat:contactPoint: This dataset does not provide a contact point. Please add a contact point for the dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': This dataset does not provide a contact point. 
+	Please add a contact point for the dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
@@ -124,7 +125,7 @@
             sh:class vcard:Individual ;
         ]) ;
       sh:severity sh:Violation ;
-      sh:message """dcat:contactPoint: The contact point must be provided as vcard:Organization or vcard:Individual.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': The contact point must be provided as vcard:Organization or vcard:Individual.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
   ] ;
@@ -132,7 +133,7 @@
       sh:path dct:publisher ;   # mandatory property
       sh:class foaf:Agent ;
       sh:severity sh:Violation ;
-      sh:message """dct:publisher: The publisher must be provided as a foaf:Agent.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:publisher': The publisher must be provided as a foaf:Agent.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
 	    """@en ;
   ] ;
@@ -140,7 +141,7 @@
       sh:path dct:publisher ;
       sh:minCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dct:publisher: Please provide a publisher for the dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:publisher': Please provide a publisher for the dataset.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
 	    """@en ;
   ] ;
@@ -148,7 +149,7 @@
       sh:path dct:publisher ;
       sh:maxCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dct:publisher: Please provide only one publisher for the dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:publisher': Please provide only one publisher for the dataset.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-publisher
         for Details on this change."""@en ;
   ] ;
@@ -158,7 +159,8 @@
       sh:maxCount 1 ;
       sh:nodeKind sh:Literal ;
       sh:severity sh:Violation ;
-      sh:message """dct:identifier: This dataset does not provide an identifier. Please add an identifier for the dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:identifier': This dataset does not provide an identifier. 
+	Please add an identifier for the dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-identifier-dcat
 	    """@en ;
   ] ;
@@ -166,7 +168,7 @@
       sh:path dcat:landingPage ;   # conditional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dcat:landingPage: The landing page must be provided as an IRI.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:landingPage': The landing page must be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-landingpage-dcat
         """@en ;
   ] ;
@@ -179,7 +181,8 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Warning ;
-      sh:message """dct:modified: The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:modified': The modification date must be provided in ISO-8601 format 
+	as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-modified-dcat
         """@en ;
   ] ;
@@ -192,7 +195,8 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Warning ;
-      sh:message """dct:issued: The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:issued': The issued date must be provided in ISO-8601 format 
+	 as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-issued-dcat
          """@en ;
   ] ;
@@ -201,7 +205,7 @@
       sh:node :LanguageRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:language: The language must be selected from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Dataset' - Property 'dct:language': The language must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/language.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-language
         """@en ;
@@ -211,7 +215,7 @@
       sh:node :ThemeRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dcat:theme: The theme must be selected from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:theme': The theme must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/data-theme.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-theme-dcat
         """@en ;
@@ -221,21 +225,24 @@
       sh:nodeKind sh:Literal ;
       sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
-      sh:message """dcat:keyword: Keywords must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:keyword': Keywords must be provided as language-tagged strings 
+	in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-keyword-dcat
 	"""@en ;
   ] ;
   sh:property [
       sh:path dct:coverage ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """dct:coverage: The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:coverage': The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. 
+	Consider using dct:temporal or dct:spatial instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-coverage-dcat
         """@en ;
   ] ;
   sh:property [
       sh:path rdfs:seeAlso ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """rdfs:seeAlso: The rdfs:seeAlso property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dcat:qualifiedRelation instead.
+      sh:message """Class 'dcat:Dataset' - Property 'rdfs:seeAlso': The rdfs:seeAlso property is deprecated and is excluded from the DCAT-AP CH V2. 
+	Consider using dcat:qualifiedRelation instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
         """@en ;
   ] ;
@@ -269,7 +276,7 @@
           ] ;
       ] ;
       sh:severity sh:Warning ;
-      sh:message """dct:temporal: The temporal property must be provided as a dct:PeriodOfTime.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:temporal': The temporal property must be provided as a dct:PeriodOfTime.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-temporal-dcat
         """@en ;
   ] ;
@@ -278,7 +285,7 @@
       sh:node :FrequencyRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:accrualPeriodicity: The frequency must be selected from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Dataset' - Property 'dct:accrualPeriodicity': The frequency must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/frequency.
         See https://handbook.opendata.swiss/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-accrual-periodicity
         """@en ;
@@ -287,7 +294,7 @@
       sh:path dct:relation ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:relation: The relation must be provided as an IRI.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:relation': The relation must be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-relation-dcat
 	"""@en ;	      
   ] ;
@@ -303,7 +310,7 @@
           ]
       ] ;
       sh:severity sh:Warning ;
-      sh:message """foaf:page: The documentation of the dataset must be provided as a foaf:Document.
+      sh:message """Class 'dcat:Dataset' - Property 'foaf:page': The documentation of the dataset must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-documentation
 	"""@en ;
   ] ;
@@ -311,7 +318,7 @@
       sh:path dct:conformsTo ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:conformsTo: The conformsTo property must to be provided as an IRI.
+      sh:message """Class 'dcat:Dataset' - Property 'dct:conformsTo': The conformsTo property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
 	"""@en ;	      
   ] ;
@@ -327,7 +334,7 @@
           ]
       ] ;
       sh:severity sh:Warning ;
-      sh:message """dcat:qualifiedRelation: The qualifiedRelation of the dataset must be provided as a dcat:Relationship.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:qualifiedRelation': The qualifiedRelation of the dataset must be provided as a dcat:Relationship.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-qualifiedrelation-dcat
 	"""@en ;
   ] .
@@ -339,7 +346,7 @@
       sh:path dcat:accessURL ;   # mandatory property
       sh:minCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dcat:accessURL: Please provide an access url for the distribution.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:accessURL': Please provide an access url for the distribution.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
         """@en ;
   ] ;
@@ -347,7 +354,7 @@
       sh:path dcat:accessURL ;
       sh:nodeKind sh:IRI ; 
       sh:severity sh:Violation ;
-      sh:message """dcat:accessURL: The accessURL of the distribution must be provided as an IRI.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:accessURL': The accessURL of the distribution must be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
         """@en ;
   ] ;
@@ -356,7 +363,7 @@
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dct:issued: Please provide an issued date for the distribution.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:issued': Please provide an issued date for the distribution.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
          """@en ;
   ] ;
@@ -369,7 +376,7 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Violation ;
-      sh:message """dct:issued: The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:issued': The issued date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
          See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-issued
          """@en ;
   ] ;
@@ -382,7 +389,7 @@
         [ sh:datatype xsd:gYearMonth ]  # Example: "2024-12"
       ) ;
       sh:severity sh:Warning ;
-      sh:message """dct:modified: The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:modified': The modification date must be provided in ISO-8601 format as xsd:date, xsd:dateTime, xsd:gYear, or xsd:gYearMonth.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-modified
         """@en ;
   ] ;
@@ -390,7 +397,7 @@
       sh:path dcat:downloadURL ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dcat:downloadURL: The downloadURL must be provided as an IRI.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:downloadURL': The downloadURL must be provided as an IRI.
         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-downloadurl-dcat
 	"""@en ;
   ] ;
@@ -405,7 +412,7 @@
           ]) ;
       sh:maxCount 1 ;
       sh:severity sh:Warning ;
-      sh:message """dcat:byteSize: If downloadURL is provided, byteSize must be a decimal or a non-negative integer.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:byteSize': If downloadURL is provided, byteSize must be a decimal or a non-negative integer.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
 	"""@en ;
   ] ;
@@ -414,7 +421,7 @@
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:format: The distribution format must be chosen from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Distribution' - Property 'dct:format': The distribution format must be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
         """@en ;
@@ -424,7 +431,7 @@
       sh:node :LicenseRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Violation ;
-      sh:message """dct:license: The license must be chosen from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Distribution' - Property 'dct:license': The license must be chosen from the controlled vocabulary available at:
 	http://dcat-ap.ch/vocabulary/licenses.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-license-dcat
         """@en ;
@@ -438,7 +445,7 @@
         <https://creativecommons.org/licenses/by-sa/4.0/>
       ) ;
       sh:severity sh:Warning ;
-      sh:message """​dct:rights: You can use a Creative Commons (CC) license to specify the rights associated with your work. 
+      sh:message """Class 'dcat:Distribution' - Property '​dct:rights': You can use a Creative Commons (CC) license to specify the rights associated with your work. 
 	Please choose one of the following three options:​
 	https://creativecommons.org/publicdomain/zero/1.0/,
 	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
@@ -450,7 +457,7 @@
       sh:nodeKind sh:Literal ;
       sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
-      sh:message """dct:title: The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:title': The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
 	"""@en ;
   ] ;
@@ -459,7 +466,7 @@
       sh:nodeKind sh:Literal ;
       sh:languageIn ("de" "fr" "en" "it") ;
       sh:severity sh:Warning ;
-      sh:message """dct:description: The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:description': The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
 	"""@en ;
   ] ; 
@@ -468,7 +475,7 @@
       sh:node :LanguageRestriction ;
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:language: The language must be selected from the controlled vocabulary available at:
+      sh:message """Class 'dcat:Distribution' - Property 'dct:language': The language must be selected from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/language.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-language
         """@en ;
@@ -477,7 +484,7 @@
       sh:path dct:identifier ;   # optional property
       sh:nodeKind sh:Literal ;
       sh:severity sh:Violation ;
-      sh:message """dct:identifier: An identifier of the distribution must be provide as a sh:Literal.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:identifier': An identifier of the distribution must be provide as a sh:Literal.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-identifier
 	    """@en ;
   ] ;
@@ -485,14 +492,14 @@
       sh:path dct:conformsTo ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dct:conformsTo: The dct:conformsTo property must to be provided as an IRI.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:conformsTo': The dct:conformsTo property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
 	"""@en ;	      
   ] ;
 sh:property [
       sh:path dct:coverage ;   # deprecated property
       sh:severity sh:Warning ;
-      sh:message """dct:coverage: The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
+      sh:message """Class 'dcat:Distribution' - Property 'dct:coverage': The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-coverage
         """@en ;
   ] ;
@@ -501,7 +508,7 @@ sh:property [
       sh:datatype xsd:duration ;
       sh:maxCount 1 ;
       sh:severity sh:Warning ;
-      sh:message """dcat:temporalResolution: If temporalResolution is provided, it must be an xsd:duration.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:temporalResolution': If temporalResolution is provided, it must be an xsd:duration.
       See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-temporal-resolution
       """@en ;
   ] ; 
@@ -509,7 +516,7 @@ sh:property [
       sh:path dcat:accessService ;   # optional property
       sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
-      sh:message """dcat:accessService: The dcat:accessService property must to be provided as an IRI.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:accessService': The dcat:accessService property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessservice-dcat
 	"""@en ;	      
   ] ;
@@ -525,7 +532,7 @@ sh:property [
           ]
       ] ;
       sh:severity sh:Warning ;
-      sh:message """foaf:page: The documentation of the distribution must be provided as a foaf:Document.
+      sh:message """Class 'dcat:Distribution' - Property 'foaf:page': The documentation of the distribution must be provided as a foaf:Document.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-documentation
 	"""@en ;
   ] .
