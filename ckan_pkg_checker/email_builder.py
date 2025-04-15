@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+from collections import defaultdict
 
 import pandas as pd
 
@@ -41,38 +42,71 @@ class EmailBuilder:
         )
 
     def build(self):
-        utils.log_and_echo_msg("building emails")
+        utils.log_and_echo_msg("Building grouped validation emails")
+
+        grouped_messages = defaultdict(lambda: defaultdict(list))
+        
+        # Read and group by contact -> (property, error) -> [rows]
         with open(self.csvpath, "r") as readfile:
             reader = csv.DictReader(readfile)
             for row in reader:
-                self._process_line(row)
+                contact_email = row["contact_email"]
+                contact_name = row["contact_name"]
+                key = (row["property"], row["error_msg"])
+                grouped_messages[(contact_email, contact_name)][key].append(row)
+                
+        for (contact_email, contact_name), errors_dict in grouped_messages.items():
+            self._write_grouped_email(contact_email, contact_name, errors_dict)
+        
         if self.statpath:
             self._build_statistics()
         if self.contactsstats_path:
             self._build_contacts_statistics()
 
-    def _process_line(self, row):
-        contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]
-        if self.default_contact.email not in [contact.email for contact in contacts]:
-            contacts.append(self.default_contact)
-        for contact in contacts:
-            pkg_type = row["pkg_type"]
-            mailfile = os.path.join(
-                self.mailpath, pkg_type + "#" + contact.email + ".html"
-            )
-            msg = ""
-            if not os.path.isfile(mailfile):
-                utils.log_and_echo_msg(
-                    f"email for {row['pkg_type']}#{row['contact_email']}"
-                )
-                msg += utils.build_msg_per_contact(
-                    receiver_name=contact.name,
-                    checker_type=row["checker_type"],
-                    pkg_type=row["pkg_type"],
-                )
-            msg += utils.build_msg_per_error(row)
-            with open(mailfile, "a") as writemail:
-                writemail.write(msg)
+    def _write_grouped_email(self, contact_email, contact_name, grouped_errors):
+        example_row = next(iter(next(iter(grouped_errors.values()))))  # get one row for meta info
+        pkg_type = example_row["pkg_type"]
+        mailfile = os.path.join(self.mailpath, f"{pkg_type}#{contact_email}.html")
+
+        msg = utils.build_msg_per_contact(
+            receiver_name=contact_name,
+            checker_type=example_row["checker_type"],
+            pkg_type=pkg_type,
+        )
+
+        for (property, error_msg), rows in grouped_errors.items():
+            msg += f"<p><strong>Property:</strong> '{property}'</p>\n"
+            msg += f"<p><strong>VIOLATION:</strong> {error_msg}</p>\n"
+            msg += "<p><strong>Dataset(s):</strong><br>\n"
+            for row in rows:
+                msg += f"<a href='{row['dataset_url']}'>{row['dataset_title']}</a><br>\n"
+            msg += "</p><br>\n"
+
+        with open(mailfile, "w") as writemail:
+            writemail.write(msg)
+            
+    # def _process_line(self, row):
+    #     contacts = [utils.Contact(email=row["contact_email"], name=row["contact_name"])]
+    #     if self.default_contact.email not in [contact.email for contact in contacts]:
+    #         contacts.append(self.default_contact)
+    #     for contact in contacts:
+    #         pkg_type = row["pkg_type"]
+    #         mailfile = os.path.join(
+    #             self.mailpath, pkg_type + "#" + contact.email + ".html"
+    #         )
+    #         msg = ""
+    #         if not os.path.isfile(mailfile):
+    #             utils.log_and_echo_msg(
+    #                 f"email for {row['pkg_type']}#{row['contact_email']}"
+    #             )
+    #             msg += utils.build_msg_per_contact(
+    #                 receiver_name=contact.name,
+    #                 checker_type=row["checker_type"],
+    #                 pkg_type=row["pkg_type"],
+    #             )
+    #         msg += utils.build_msg_per_error(row)
+    #         with open(mailfile, "a") as writemail:
+    #             writemail.write(msg)
 
     def _build_statistics(self):
         filename = utils.STATISTICS + "#" + self.default_contact.email
