@@ -102,7 +102,7 @@
       sh:path dcat:distribution ;   # mandatory property
       sh:minCount 1 ;
       sh:severity sh:Violation ;
-      sh:message """dcat:distribution: This dataset does not have any distributions. Please add a distribution for the dataset.
+      sh:message """Class 'dcat:Dataset' - Property 'dcat:distribution': This dataset does not have any distributions. Please add a distribution for the dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-dcat
 	    """@en ;
   ] ;
