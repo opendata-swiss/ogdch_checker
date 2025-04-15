@@ -30,6 +30,8 @@
 
     {% endif %}
 </p>
+<!-- INJECTED CONTENT -->
+{{ context.grouped_errors | safe }}
 <p><small>
     You receive this
     {% if context.checker_type == context.checker_type_shacl %}
