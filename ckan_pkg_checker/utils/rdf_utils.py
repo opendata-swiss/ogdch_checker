@@ -1,4 +1,3 @@
-import logging
 from collections import namedtuple
 from string import Template
 from urllib.error import HTTPError, URLError
@@ -8,8 +7,6 @@ from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
-
-log = logging.getLogger(__name__)
 
 SHACL = Namespace("http://www.w3.org/ns/shacl#")
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -89,8 +86,6 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
         dataset_graph, shacl_graph=shacl_graph, ont_graph=ont_graph
     )
     conforms, results_graph, results_text = validation_results
-    log.info("shacl_graph")
-    log.info(shacl_graph)
     if conforms:
         return []
     checker_results = []
