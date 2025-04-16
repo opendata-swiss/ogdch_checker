@@ -408,11 +408,11 @@
               sh:datatype xsd:decimal ;
           ]
           [
-              sh:datatype xsd:nonNegativeInteger ;
+              sh:datatype xsd:integer ;
           ]) ;
       sh:maxCount 1 ;
       sh:severity sh:Warning ;
-      sh:message """Class 'dcat:Distribution' - Property 'dcat:byteSize': If downloadURL is provided, byteSize must be a decimal or a non-negative integer.
+      sh:message """Class 'dcat:Distribution' - Property 'dcat:byteSize': If downloadURL is provided, byteSize must be a decimal or an integer.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-bytesize-dcat
 	"""@en ;
   ] ;
