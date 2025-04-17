@@ -80,7 +80,22 @@
       sh:path dct:title ;   # mandatory property
       sh:minCount 1 ;
       sh:nodeKind sh:Literal ;
-      sh:languageIn ("de" "fr" "en" "it") ;
+      sh:sparql [
+        sh:message """Class 'dcat:Dataset' - Property 'dct:title': Please include the title in at least one of the following languages: de, fr, en, it."""@en ;
+        sh:select """
+          SELECT $this WHERE {
+            FILTER NOT EXISTS {
+              ?this dct:title ?title .
+              FILTER(
+                LANG(?title) = "de" ||
+                LANG(?title) = "fr" ||
+                LANG(?title) = "en" ||
+                LANG(?title) = "it"
+              )
+            }
+          }
+        """ ;
+      ] ;
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dct:title': Please add a title for your dataset.
 	The title must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.      
@@ -91,7 +106,22 @@
       sh:path dct:description ;   # mandatory property
       sh:minCount 1 ;
       sh:nodeKind sh:Literal ;
-      sh:languageIn ("de" "fr" "en" "it") ;
+      sh:sparql [
+        sh:message """Class 'dcat:Dataset' - Property 'dct:description': Please include the description in at least one of the following languages: de, fr, en, it."""@en ;
+        sh:select """
+          SELECT $this WHERE {
+            FILTER NOT EXISTS {
+              ?this dct:description ?description .
+              FILTER(
+                LANG(?description) = "de" ||
+                LANG(?description) = "fr" ||
+                LANG(?description) = "en" ||
+                LANG(?description) = "it"
+              )
+            }
+          }
+        """ ;
+      ] ;
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dct:description': Please add a description for your dataset.
 	The description must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
