@@ -253,22 +253,7 @@
   sh:property [
       sh:path dcat:keyword ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:sparql [
-        sh:message """Class 'dcat:Dataset' - Property 'dcat:keyword': Please include the keyword in at least one of the following languages: de, fr, en, it."""@en ;
-        sh:select """
-          SELECT $this WHERE {
-	    ?this dct:description ?description .
-	    FILTER NOT EXISTS {
-	      FILTER(
-	        LANG(?description) = "de" ||
-	        LANG(?description) = "fr" ||
-	        LANG(?description) = "en" ||
-	        LANG(?description) = "it"
-	      )
-	    }
-	  }
-        """ ;
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it" "rm") ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Dataset' - Property 'dcat:keyword': Keywords must be provided as language-tagged strings 
 	in at least one of the following languages: de, en, fr, it.
@@ -505,22 +490,7 @@
   sh:property [
     sh:path dct:title ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:sparql [
-        sh:message """Class 'dcat:Distribution' - Property 'dct:title': Please include the title in at least one of the following languages: de, fr, en, it."""@en ;
-        sh:select """
-          SELECT $this WHERE {
-	    ?this dct:description ?description .
-	    FILTER NOT EXISTS {
-	      FILTER(
-	        LANG(?description) = "de" ||
-	        LANG(?description) = "fr" ||
-	        LANG(?description) = "en" ||
-	        LANG(?description) = "it"
-	      )
-	    }
-	  }
-        """ ;
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it" "rm") ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dct:title': The title of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-title
@@ -529,22 +499,7 @@
   sh:property [
     sh:path dct:description ;   # optional property
       sh:nodeKind sh:Literal ;
-      sh:sparql [
-        sh:message """Class 'dcat:Distribution' - Property 'dct:description': Please include the description in at least one of the following languages: de, fr, en, it."""@en ;
-        sh:select """
-          SELECT $this WHERE {
-	    ?this dct:description ?description .
-	    FILTER NOT EXISTS {
-	      FILTER(
-	        LANG(?description) = "de" ||
-	        LANG(?description) = "fr" ||
-	        LANG(?description) = "en" ||
-	        LANG(?description) = "it"
-	      )
-	    }
-	  }
-        """ ;
-      ] ;
+      sh:languageIn ("de" "fr" "en" "it" "rm") ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dct:description': The description of the distribution must be provided as language-tagged strings in at least one of the following languages: de, en, fr, it.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-description
