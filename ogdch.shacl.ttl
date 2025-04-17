@@ -400,6 +400,7 @@
       sh:nodeKind sh:IRI ; 
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Distribution' - Property 'dcat:accessURL': The accessURL of the distribution must be provided as an IRI.
+	Using sh:datatype xsd:anyURI is deprecated; consider using rdf:resource instead.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessurl-dcat
         """@en ;
   ] ;
@@ -440,15 +441,10 @@
   ] ;
   sh:property [
       sh:path dcat:downloadURL ;
-      sh:or
-          ([
-              sh:nodeKind sh:IRI ;
-          ]
-          [
-              sh:datatype xsd:anyURI ;
-          ]) ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dcat:downloadURL': The downloadURL must be provided as an IRI.
+	Using sh:datatype xsd:anyURI is deprecated; consider using rdf:resource instead.
         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-downloadurl-dcat
 	"""@en ;
   ] ;
@@ -598,13 +594,7 @@ sh:property [
   ] ; 
   sh:property [
       sh:path dcat:accessService ;   # optional property
-      sh:or
-          ([
-              sh:nodeKind sh:IRI ;
-          ]
-          [
-              sh:datatype xsd:anyURI ;
-          ]) ;
+      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dcat:accessService': The dcat:accessService property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessservice-dcat
