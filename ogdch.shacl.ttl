@@ -257,16 +257,16 @@
         sh:message """Class 'dcat:Dataset' - Property 'dcat:keyword': Please include the keyword in at least one of the following languages: de, fr, en, it."""@en ;
         sh:select """
           SELECT $this WHERE {
-            FILTER NOT EXISTS {
-              ?this dcat:keyword ?keyword .
-              FILTER(
-                LANG(?keyword) = "de" ||
-                LANG(?keyword) = "fr" ||
-                LANG(?keyword) = "en" ||
-                LANG(?keyword) = "it"
-              )
-            }
-          }
+	    ?this dct:description ?description .
+	    FILTER NOT EXISTS {
+	      FILTER(
+	        LANG(?description) = "de" ||
+	        LANG(?description) = "fr" ||
+	        LANG(?description) = "en" ||
+	        LANG(?description) = "it"
+	      )
+	    }
+	  }
         """ ;
       ] ;
       sh:severity sh:Warning ;
@@ -509,16 +509,16 @@
         sh:message """Class 'dcat:Distribution' - Property 'dct:title': Please include the title in at least one of the following languages: de, fr, en, it."""@en ;
         sh:select """
           SELECT $this WHERE {
-            FILTER NOT EXISTS {
-              ?this dct:title ?title .
-              FILTER(
-                LANG(?title) = "de" ||
-                LANG(?title) = "fr" ||
-                LANG(?title) = "en" ||
-                LANG(?title) = "it"
-              )
-            }
-          }
+	    ?this dct:description ?description .
+	    FILTER NOT EXISTS {
+	      FILTER(
+	        LANG(?description) = "de" ||
+	        LANG(?description) = "fr" ||
+	        LANG(?description) = "en" ||
+	        LANG(?description) = "it"
+	      )
+	    }
+	  }
         """ ;
       ] ;
       sh:severity sh:Warning ;
@@ -533,16 +533,16 @@
         sh:message """Class 'dcat:Distribution' - Property 'dct:description': Please include the description in at least one of the following languages: de, fr, en, it."""@en ;
         sh:select """
           SELECT $this WHERE {
-            FILTER NOT EXISTS {
-              ?this dct:description ?description .
-              FILTER(
-                LANG(?description) = "de" ||
-                LANG(?description) = "fr" ||
-                LANG(?description) = "en" ||
-                LANG(?description) = "it"
-              )
-            }
-          }
+	    ?this dct:description ?description .
+	    FILTER NOT EXISTS {
+	      FILTER(
+	        LANG(?description) = "de" ||
+	        LANG(?description) = "fr" ||
+	        LANG(?description) = "en" ||
+	        LANG(?description) = "it"
+	      )
+	    }
+	  }
         """ ;
       ] ;
       sh:severity sh:Warning ;
