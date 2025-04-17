@@ -23,6 +23,7 @@ theme_file = /home/liip/ogdch_checker/theme-eu.ttl
 licenses_file = /home/liip/ogdch_checker/licenses-dcat-ap-ch.ttl
 formats_file = /home/liip/ogdch_checker/formats-eu.ttl
 mime_types_file = /home/liip/ogdch_checker/mime-types.ttl
+language_file = /home/liip/ogdch_checker/language-eu.ttl
 statfile = shaclstatistics.csv
 shacl_file = /home/liip/ogdch_checker/ogdch.shacl.ttl
 
