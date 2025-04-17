@@ -480,8 +480,8 @@
         <https://creativecommons.org/licenses/by-sa/4.0/>
       ) ;
       sh:severity sh:Warning ;
-      sh:message """Class 'dcat:Distribution' - Property '​dct:rights': You can use a Creative Commons (CC) license to specify the rights associated with your work. 
-	Please choose one of the following three options:​
+      sh:message """Class 'dcat:Distribution' - Property '​dct:rights': The terms of use should now be provided under dct:license.
+        The dct:rights property may only be used to specify one of the following three Creative Commons (CC) licenses:
 	https://creativecommons.org/publicdomain/zero/1.0/,
 	https://creativecommons.org/licenses/by/4.0/ or https://creativecommons.org/licenses/by-sa/4.0/.      
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-rights-dcat
