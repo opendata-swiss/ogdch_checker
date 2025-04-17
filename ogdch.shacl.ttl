@@ -14,6 +14,16 @@
 
 <> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
 
+:LanguageRestriction
+    a sh:NodeShape ;
+    rdfs:comment "Language Restriction" ;
+    rdfs:label "Language Restriction" ;
+    sh:property [
+        sh:hasValue <http://publications.europa.eu/resource/authority/language> ;
+        sh:nodeKind sh:IRI ;
+        sh:path skos:inScheme ;
+    ] .
+
 :FrequencyRestriction
     a sh:NodeShape ;
     rdfs:comment "Frequency Restriction" ;
@@ -99,6 +109,16 @@
       sh:message """This dataset does not provide a contact point. Please add a contact point for the dataset.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
 	    """@en ;
+  ] ;
+  sh:property [
+      sh:path dct:language ;   # conditional property
+      sh:node :LanguageRestriction ;
+      sh:nodeKind sh:IRI ;
+      sh:severity sh:Warning ;
+      sh:message """Class 'dcat:Dataset' - Property 'dct:language': The language must be selected from the controlled vocabulary available at:
+        http://publications.europa.eu/resource/authority/language.
+        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-dataset-language
+        """@en ;
   ] ;
   sh:property [
       sh:path dcat:contactPoint ;
