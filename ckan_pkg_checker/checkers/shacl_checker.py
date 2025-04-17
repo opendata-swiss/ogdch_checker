@@ -45,6 +45,9 @@ class ShaclChecker(CheckerInterface):
         mime_types_file = utils.get_config(
             config, "shaclchecker", "mime_types_file", required=True
         )
+        language_file = utils.get_config(
+            config, "shaclchecker", "language_file", required=True
+        )
         self._prepare_csv_file()
         self.shacl_graph = rdf_utils.parse_rdf_graph_from_url(file=shaclfile, bind=True)
 
