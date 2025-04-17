@@ -440,7 +440,13 @@
   ] ;
   sh:property [
       sh:path dcat:downloadURL ;
-      sh:nodeKind sh:IRI ;
+      sh:or
+          ([
+              sh:nodeKind sh:IRI ;
+          ]
+          [
+              sh:datatype xsd:anyURI ;
+          ]) ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dcat:downloadURL': The downloadURL must be provided as an IRI.
         https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-downloadurl-dcat
@@ -589,7 +595,13 @@ sh:property [
   ] ; 
   sh:property [
       sh:path dcat:accessService ;   # optional property
-      sh:nodeKind sh:IRI ;
+      sh:or
+          ([
+              sh:nodeKind sh:IRI ;
+          ]
+          [
+              sh:datatype xsd:anyURI ;
+          ]) ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dcat:accessService': The dcat:accessService property must to be provided as an IRI.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-accessservice-dcat
