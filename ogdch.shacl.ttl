@@ -531,13 +531,6 @@
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-conformsto-dcat
 	"""@en ;	      
   ] ;
-sh:property [
-      sh:path dct:coverage ;   # deprecated property
-      sh:severity sh:Warning ;
-      sh:message """Class 'dcat:Distribution' - Property 'dct:coverage': The dct:coverage property is deprecated and is excluded from the DCAT-AP CH V2. Consider using dct:temporal or dct:spatial instead.
-        See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-distribution-coverage
-        """@en ;
-  ] ;
   sh:property [
       sh:path dcat:temporalResolution ;
       sh:datatype xsd:duration ;
