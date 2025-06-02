@@ -58,7 +58,7 @@ class ShaclChecker(CheckerInterface):
         formats_graph = rdf_utils.parse_rdf_graph_from_url(file=formats_file)
         mime_types_graph = rdf_utils.parse_rdf_graph_from_url(file=mime_types_file)
         language_graph = rdf_utils.parse_rdf_graph_from_url(file=language_file)
-        
+
         self.ont_graph = Graph()
         ont_graphs_list = [
             frequency_graph,
