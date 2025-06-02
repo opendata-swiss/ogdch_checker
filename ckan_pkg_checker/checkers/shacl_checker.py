@@ -113,7 +113,7 @@ class ShaclChecker(CheckerInterface):
             )
             utils.log_and_echo_msg(
                 f"--> rdf graph for Dataset{pkg.get('name')} taken from platform."
-            )    
+            )
         if not dataset_graph:
             utils.log_and_echo_msg(
                 f"--> rdf graph for dataset {pkg.get('name')} could not be serialized from harvest source.",
