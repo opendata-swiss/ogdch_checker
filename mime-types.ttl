@@ -7976,3 +7976,75 @@
 <https://www.iana.org/assignments/media-types/video/vp9>
   skos:inScheme ns1:media-types ;
   skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/ace-groupcomm+cbor>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/bufr>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/cwl+yaml>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/grib>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/rpki-signed-tal>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/sslkeylogfile>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/ST2110-41>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/stratum>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/vc>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/vnd.3gpp.pinapp-info+xml>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/vnd.ga4gh.passport+jwt>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/vnd.msgpack>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/application/vp>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/haptics/ivs>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/haptics/hjif>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/haptics/hmpg>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/text/vnd.vcf>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .
+
+<https://www.iana.org/assignments/media-types/text/vnd.zoo.kcl>
+  skos:inScheme ns1:media-types ;
+  skos:topConceptOf ns1:media-types .

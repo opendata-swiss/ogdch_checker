@@ -1,134 +1,4 @@
-<p>[DE] Guten Tag {{ context.receiver_name | e }},</p>
-<p>
-    {% if context.checker_type == context.checker_type_link %}
-
-    Wir haben ein Problem festgestellt beim Versuch, auf folgende URLs zuzugreifen.
-    <br>
-    Bitte kontrollieren Sie, ob diese URLs noch zug&auml;nglich sind und korrigieren Sie sie n&ouml;tigenfalls.
-
-    {% elif context.checker_type == context.checker_type_shacl %}
-
-    Sie erhalten das automatische Validierungsmail von opendata.swiss, da nachfolgende Felder Ihrer Datens&auml;tze auf
-    opendata.swiss nicht dem Standard DCAT-AP CH entsprechen. Bitte passen Sie die entsprechenden Angaben an und
-    helfen Sie uns, die Qualit&auml;t unserer Metadaten zu verbessern.
-    <br>
-    Als Hilfestellung finden Sie bei den Fehlermeldungen einen Link zur entsprechenden Handbuchseite.
-
-    {% endif %}
-</p>
-<p>
-    {% if context.pkg_type == context.pkg_type_geocat %}
-
-    Geometadaten sind in <a href='https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/home'>geocat.ch</a> zu
-    aktualisieren.
-
-    {% else %}
-
-    Bei Fragen wenden Sie sich bitte unter <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a> an die
-    Gesch&auml;ftsstelle OGD.
-
-    {% endif %}
-</p>
-<p><small>
-    Sie erhalten diese
-    {% if context.checker_type == context.checker_type_link %}
-    Mail,
-    {% elif context.checker_type == context.checker_type_shacl %}
-    Validierungsmail,
-    {% endif %}
-    da Sie bei uns als Benutzerin oder Benutzer mit Administratorrechten auf
-    opendata.swiss registriert sind, oder Ihre Adresse bei uns als Kontakt f&uuml;r das
-    Validierungsmail hinterlegt wurde.
-</small></p>
-<p>******************************************</p>
-<p>[FR] Bonjour {{ context.receiver_name | e }},</p>
-<p>
-    {% if context.checker_type == context.checker_type_link %}
-
-    Nous avons constat&eacute; un probl&egrave;me en essayant d&#39;acc&eacute;der aux URL suivantes.
-    <br>
-    Merci de v&eacute;rifier si ces URL sont toujours disponibles et de les corriger si n&eacute;cessaire.
-
-    {% elif context.checker_type == context.checker_type_shacl %}
-
-    Vous recevez ce courriel de validation automatique d&#39;opendata.swiss, car les champs suivants de vos
-    jeux de donn&eacute;es sur opendata.swiss ne correspondent pas au standard DCAT-AP CH. Veuillez adapter les
-    champs correspondants et nous aider ainsi &agrave; am&eacute;liorer la qualit&eacute; de nos m&eacute;tadonn&eacute;es.
-    <br>
-    Vous trouverez des informations compl&eacute;mentaires dans les messages d&#39;erreur sous le lien vers
-    la page correspondante du manuel.
-
-    {% endif %}
-
-</p>
-<p>
-    {% if context.pkg_type == context.pkg_type_geocat %}
-
-    Les g&eacute;om&eacute;tadonn&eacute;es doivent &ecirc;tre mises &agrave; jour dans <a
-    href='https://www.geocat.ch/geonetwork/srv/fre/catalog.search#/home'>geocat.ch</a>.
-
-    {% else %}
-
-    Si vous avez des questions, veuillez contacter le secr&eacute;tariat OGD &agrave; l'adresse <a
-    href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
-
-    {% endif %}
-
-</p>
-<p><small>
-    Vous recevez ce courriel
-    {% if context.checker_type == context.checker_type_shacl %}
-    de validation
-    {% endif %}
-    parce que vous &ecirc;tes enregistr&eacute; chez nous en tant qu&#39;utilisateur
-    avec des droits d&#39;administrateur sur opendata.swiss ou parce que votre adresse a &eacute;t&eacute; enregistr&eacute;e
-    chez nous comme contact pour le courriel de validation.
-</small></p>
-<p>******************************************</p>
-<p>[IT] Buongiorno {{ context.receiver_name | e }},</p>
-<p>
-    {% if context.checker_type == context.checker_type_link %}
-
-    Abbiamo riscontrato un problema nel tentativo di accedere agli URL seguenti.
-    <br>
-    La preghiamo di verificare se gli URL sono ancora disponibili e, se necessario, correggerle.
-
-    {% elif context.checker_type == context.checker_type_shacl %}
-
-    la presente email &egrave; stata inviata automaticamente da opendata.swiss poich&eacute; alcuni campi dei
-    dataset che ha caricato su opendata.swiss non corrispondono allo standard DCAT-AP CH. La preghiamo
-    quindi di correggere le informazioni in questione per contribuire a migliorare
-    la qualit&agrave; dei nostri metadati.
-    <br>
-    Come aiuto, i messaggi di errore sono sempre accompagnati da un link verso
-    la pagina del manuale di utilizzo relativa al problema.
-
-    {% endif %}
-</p>
-<p>
-    {% if context.pkg_type == context.pkg_type_geocat %}
-
-    I geometadati devono essere attualizzati in <a
-    href='https://www.geocat.ch/geonetwork/srv/ita/catalog.search#/home'>geocat.ch</a>.
-
-    {% else %}
-
-    In caso di domande, contatti la Segreteria OGD scrivendo all&#39;indirizzo
-    <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
-
-    {% endif %}
-</p>
-<p><small>
-    Ha ricevuto questa email
-    {% if context.checker_type == context.checker_type_shacl %}
-    di controllo
-    {% endif %}
-    perch&eacute; &egrave; registrato/a su opendata.swiss come
-    utente con diritti di amministratore oppure perch&eacute; il Suo indirizzo email &egrave;
-    stato indicato come indirizzo di contatto per le mail di controllo.
-</small></p>
-<p>******************************************</p>
-<p>[EN] Hello {{ context.receiver_name | e }},</p>
+<p>Hello {{ context.receiver_name | e }},</p>
 <p>
     {% if context.checker_type == context.checker_type_link %}
 
@@ -139,13 +9,10 @@
     {% elif context.checker_type == context.checker_type_shacl %}
 </p>
 <p>
-    You are receiving the automatic validation
-    mail from opendata.swiss because subsequent fields of
-    your datasets on opendata.swiss do not comply with the DCAT-AP CH standard.
-    Please adjust the corresponding data and help us to improve the quality of our metadata.
+    You are receiving this automated validation email from opendata.swiss 
+    because some fields in your datasets do not comply with the DCAT-AP CH standard.
     <br>
-    Further information is available as a link next to the error messages that will lead you to
-    the respective manual page.
+    Please update the relevant data to help improve metadata quality.
 
     {% endif %}
 </p>
@@ -155,16 +22,15 @@
     Geometadata need to be updated in <a href='https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/home'>geocat.ch</a>.
 
     {% else %}
-
+    
+    For more details, follow the link next to the error messages to access the manual.
+    <br>
     If you have any questions, please contact the OGD office at <a href='mailto:opendata@bfs.admin.ch'>opendata@bfs.admin.ch</a>.
 
     {% endif %}
 </p>
 <p><small>
-    You receive this
-    {% if context.checker_type == context.checker_type_shacl %}
-    validation
-    {% endif %}
-    mail because you are registered as a user with administrator rights on
-    opendata.swiss, or because your address has been set up as a contact for the validation mail.
+    You are receiving this email because you are either a registered administrator on opendata.swiss 
+    or your address is listed as a contact for validation emails.
 </small></p>
+<p>******************************************</p>
