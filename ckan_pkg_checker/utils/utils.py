@@ -373,6 +373,7 @@ def get_pkg_dcat_serialization_url(siteurl, name):
 
 
 def get_harvest_source_url(pkg, dcat_harvesters):
+    log_and_echo_msg(f"Extras: {pkg.get('extras')}")
     harvester_source_id = [
         item["value"]
         for item in pkg.get("extras", [])
