@@ -147,21 +147,39 @@ def get_dataset_graph_from_source(source_url, identifier):
         source = Graph().parse(source_url, format="application/rdf+xml")
     except Exception as e:
         log_and_echo_msg(
-            f"Exception {e} happened for source_url {source_url} and {identifier}"
+            f"Exception {e} occurred while parsing RDF from source_url: {source_url} with identifier: {identifier}"
         )
         return None
-    for k, v in namespaces.items():
-        source.bind(k, v)
+
+    # Bind namespaces for source
+    for prefix, ns in namespaces.items():
+        source.bind(prefix, ns)
     source.namespace_manager = NamespaceManager(source)
+
+    # Search for subject(s) with matching dct:identifier (typed or untyped)
+    dataset_refs = set()
+    for subj, obj in source.subject_objects(predicate=DCT.identifier):
+        log_and_echo_msg(f"Found identifier: {obj} for subject: {subj}")
+        if str(obj) == identifier:
+            dataset_refs.add(subj)
+
+    if not dataset_refs:
+        log_and_echo_msg(
+            f"No matching dct:identifier='{identifier}' found in RDF graph from {source_url}."
+        )
+        return None
+
+    # Create new graph with matched dataset(s)
     dataset = Graph()
-    for k, v in namespaces.items():
-        dataset.bind(k, v)
+    for prefix, ns in namespaces.items():
+        dataset.bind(prefix, ns)
     dataset.namespace_manager = NamespaceManager(dataset)
-    for dataset_ref in source.subjects(
-        predicate=DCT.identifier, object=Literal(identifier)
-    ):
+
+    for dataset_ref in dataset_refs:
         for pred, obj in source.predicate_objects(subject=dataset_ref):
             dataset.add((dataset_ref, pred, obj))
+            # Add second-level triples
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
+
     return dataset
