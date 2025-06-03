@@ -101,6 +101,10 @@ class ShaclChecker(CheckerInterface):
             f"--> source_url {pkg.get('source_url')} , identifier {pkg.get('identifier')} ",
             error=True,
         )
+        if not pkg.get("source_url") and "extras" in pkg:
+            for extra in pkg["extras"]:
+                if extra.get("key") == "source_url":
+                    pkg["source_url"] = extra.get("value")
         if pkg.get("source_url"):
             dataset_graph = rdf_utils.get_dataset_graph_from_source(
                 pkg["source_url"], pkg["identifier"]
