@@ -4,7 +4,7 @@ from urllib.error import HTTPError, URLError
 
 from pyshacl import validate
 from rdflib import BNode, Graph, Literal, URIRef
-from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
+from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager, XSD
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
@@ -162,8 +162,11 @@ def get_dataset_graph_from_source(source_url, identifier):
             f"No matching dct:identifier='{identifier}' found in the RDF graph."
         )
         return None
-
-    # Proceed if identifier was found    
+    print("Looking for identifier:", Literal(identifier, datatype=XSD.string))
+    print("All identifiers in source:")
+    for s, p, o in source.triples((None, DCT.identifier, None)):
+        print(" →", repr(o))
+    # Proceed if identifier was found
     for k, v in namespaces.items():
         source.bind(k, v)
     source.namespace_manager = NamespaceManager(source)
@@ -172,7 +175,7 @@ def get_dataset_graph_from_source(source_url, identifier):
         dataset.bind(k, v)
     dataset.namespace_manager = NamespaceManager(dataset)
     for dataset_ref in source.subjects(
-        predicate=DCT.identifier, object=Literal(identifier)
+        predicate=DCT.identifier, object=Literal(identifier, datatype=XSD.string)
     ):
         for pred, obj in source.predicate_objects(subject=dataset_ref):
             dataset.add((dataset_ref, pred, obj))
