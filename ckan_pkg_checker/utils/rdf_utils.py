@@ -150,6 +150,20 @@ def get_dataset_graph_from_source(source_url, identifier):
             f"Exception {e} happened for source_url {source_url} and {identifier}"
         )
         return None
+    # Log available identifiers
+    found = False
+    for subj, obj in source.subject_objects(predicate=DCT.identifier):
+        log_and_echo_msg(f"Found identifier: {obj} for subject: {subj}")
+        if str(obj) == identifier:
+            found = True
+
+    if not found:
+        log_and_echo_msg(
+            f"No matching dct:identifier='{identifier}' found in the RDF graph."
+        )
+        return None
+
+    # Proceed if identifier was found    
     for k, v in namespaces.items():
         source.bind(k, v)
     source.namespace_manager = NamespaceManager(source)
