@@ -159,7 +159,6 @@ def get_dataset_graph_from_source(source_url, identifier):
     # Search for subject(s) with matching dct:identifier (typed or untyped)
     dataset_refs = set()
     for subj, obj in source.subject_objects(predicate=DCT.identifier):
-        log_and_echo_msg(f"Found identifier: {obj} for subject: {subj}")
         if str(obj) == identifier:
             dataset_refs.add(subj)
 
