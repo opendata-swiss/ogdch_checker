@@ -98,7 +98,7 @@ class ShaclChecker(CheckerInterface):
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         dataset_graph = None
         utils.log_and_echo_msg(
-            f"--> source_url {pkg.get('source_url')} , identifier {pkg.get('identifier')} ",
+            f"--> source_url {pkg.get('source_url')} , identifier {pkg.get('identifier')} pkg: {pkg} ",
             error=True,
         )
         if not pkg.get("source_url") and "extras" in pkg:
