@@ -5,6 +5,7 @@ from urllib.error import HTTPError, URLError
 from pyshacl import validate
 from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
+from rdflib.namespace import DCTERMS as DCT
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
@@ -147,37 +148,42 @@ def get_dataset_graph_from_source(source_url, identifier):
         source = Graph().parse(source_url, format="application/rdf+xml")
     except Exception as e:
         log_and_echo_msg(
-            f"Exception {e} occurred while parsing RDF from source_url: {source_url} with identifier: {identifier}"
+            f"Exception {e} happened for source_url {source_url} and {identifier}"
         )
         return None
 
-    # Bind namespaces for source
     for prefix, ns in namespaces.items():
         source.bind(prefix, ns)
     source.namespace_manager = NamespaceManager(source)
 
-    # Search for subject(s) with matching dct:identifier (typed or untyped)
-    dataset_refs = set()
-    for subj, obj in source.subject_objects(predicate=DCT.identifier):
-        if str(obj) == identifier:
-            dataset_refs.add(subj)
-
-    if not dataset_refs:
-        log_and_echo_msg(
-            f"No matching dct:identifier='{identifier}' found in RDF graph from {source_url}."
-        )
-        return None
-
-    # Create new graph with matched dataset(s)
     dataset = Graph()
     for prefix, ns in namespaces.items():
         dataset.bind(prefix, ns)
     dataset.namespace_manager = NamespaceManager(dataset)
 
-    for dataset_ref in dataset_refs:
-        for pred, obj in source.predicate_objects(subject=dataset_ref):
-            dataset.add((dataset_ref, pred, obj))
-            # Add second-level triples
+    # If identifier has @org, also try to match just the base hash
+    raw_id = identifier.split("@")[0] if "@" in identifier else identifier
+
+    dataset_refs = set()
+
+    for subj in source.subjects(predicate=DCT.identifier):
+        for obj in source.objects(subject=subj, predicate=DCT.identifier):
+            obj_str = str(obj)
+            if obj_str == identifier or obj_str == raw_id:
+                dataset_refs.add(subj)
+
+    if not dataset_refs:
+        log_and_echo_msg(
+            f"No RDF subjects with dct:identifier == '{identifier}' or '{raw_id}' found in {source_url}"
+        )
+        return None
+
+    for ref in dataset_refs:
+        for pred, obj in source.predicate_objects(subject=ref):
+            dataset.add((ref, pred, obj))
+            # Optionally add second-level triples
+            if isinstance(obj, (str, Literal)):
+                continue
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
 
