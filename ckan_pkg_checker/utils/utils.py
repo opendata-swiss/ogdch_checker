@@ -380,9 +380,13 @@ def get_harvest_source_url(pkg, dcat_harvesters):
         if item["key"] == "harvest_source_id"
     ]
     if not harvester_source_id:
+        log_and_echo_msg("No harvest_source_id found in package extras.")
         return None
+    log_and_echo_msg(f"Found harvest_source_id: {harvester_source_id[0]}")
     harvest_source_url = dcat_harvesters.get(harvester_source_id[0])
     if not harvest_source_url:
+        log_and_echo_msg(
+            f"harvest_source_id '{harvester_source_id[0]}' not found in dcat_harvesters.")
         return None
     return harvest_source_url
 
