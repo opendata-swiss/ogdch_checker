@@ -97,14 +97,6 @@ class ShaclChecker(CheckerInterface):
         """Check one data package"""
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         dataset_graph = None
-        utils.log_and_echo_msg(
-            f"--> source_url {pkg.get('source_url')} , identifier {pkg.get('identifier')} ",
-            error=True,
-        )
-        if not pkg.get("source_url") and "extras" in pkg:
-            for extra in pkg["extras"]:
-                if extra.get("key") == "source_url":
-                    pkg["source_url"] = extra.get("value")
         if pkg.get("source_url"):
             dataset_graph = rdf_utils.get_dataset_graph_from_source(
                 pkg["source_url"], pkg["identifier"]
