@@ -3,9 +3,9 @@ from string import Template
 from urllib.error import HTTPError, URLError
 
 from pyshacl import validate
-from rdflib import BNode, Graph, Literal, URIRef
-from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
+from rdflib import BNode, Graph, Literal
 from rdflib.namespace import DCTERMS as DCT
+from rdflib.namespace import RDF, SKOS, Namespace, NamespaceManager
 
 from ckan_pkg_checker.utils.utils import log_and_echo_msg
 
@@ -181,7 +181,7 @@ def get_dataset_graph_from_source(source_url, identifier):
     for ref in dataset_refs:
         for pred, obj in source.predicate_objects(subject=ref):
             dataset.add((ref, pred, obj))
-            # Optionally add second-level triples
+            # Add second-level triples
             if isinstance(obj, (str, Literal)):
                 continue
             for subpred, subobj in source.predicate_objects(subject=obj):

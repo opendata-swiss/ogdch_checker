@@ -10,6 +10,7 @@ from ckan_pkg_checker.utils import utils
 log = logging.getLogger(__name__)
 DCAT_HARVESTER_TYPES = {"dcat_ch_rdf", "dcat_ch_i14y_rdf"}
 
+
 class PackageCheck:
     def __init__(self, config, siteurl, apikey, rundir, mode, limit, pkg, org):
         self.siteurl = siteurl
@@ -82,20 +83,10 @@ class PackageCheck:
     def _get_dcat_harvester_dict(self):
         try:
             harvesters = self.ogdremote.action.harvest_source_list()
-            utils.log_and_echo_msg(
-                f"harvesters : {harvesters}"
-            )
-            utils.log_and_echo_msg(
-                f"Harvesters from API: {[h['id'] for h in harvesters]}"
-            )
-
             harvester_dict = {}
             for harvester in harvesters:
                 if harvester.get("type") in DCAT_HARVESTER_TYPES:
                     harvester_dict[harvester["id"]] = harvester.get("url")
-            utils.log_and_echo_msg(
-                f"dcat_harvester dict keys: {list(harvester_dict.keys())}"
-            )
             return harvester_dict
         except Exception as e:
             log.exception(f"getting harvesters failed: {e}")
