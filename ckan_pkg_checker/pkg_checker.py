@@ -8,6 +8,7 @@ from ckan_pkg_checker.checkers.shacl_checker import ShaclChecker
 from ckan_pkg_checker.utils import utils
 
 log = logging.getLogger(__name__)
+DCAT_HARVESTER_TYPES = {"dcat_ch_rdf", "dcat_ch_i14y_rdf"}
 
 
 class PackageCheck:
@@ -60,12 +61,16 @@ class PackageCheck:
             pkg["pkg_type"] = utils.DCAT
         pkg["source_url"] = utils.get_harvest_source_url(pkg, self.dcat_harvesters)
         if pkg.get("organization"):
+            org_slug = pkg["organization"].get("name")  # this is the slug in CKAN
             contact_key = utils.ContactKey(
-                organization=pkg["organization"].get("name"), pkg_type=pkg["pkg_type"]
+                organization=org_slug, pkg_type=pkg["pkg_type"]
             )
             if contact_key in self.contact_dict:
-                send_to_emails = self.contact_dict.get(contact_key)
-                pkg["send_to"] = send_to_emails
+                pkg["send_to"] = self.contact_dict.get(contact_key)
+
+            utils.log_and_echo_msg(
+                f"Using org_slug: {org_slug}, pkg_type: {pkg['pkg_type']}"
+            )
 
     def _get_packages(self, limit=None, pkg=None, org=None):
         if pkg:
@@ -80,7 +85,7 @@ class PackageCheck:
             harvesters = self.ogdremote.action.harvest_source_list()
             harvester_dict = {}
             for harvester in harvesters:
-                if harvester.get("type") == "dcat_ch_rdf":
+                if harvester.get("type") in DCAT_HARVESTER_TYPES:
                     harvester_dict[harvester["id"]] = harvester.get("url")
             return harvester_dict
         except Exception as e:
