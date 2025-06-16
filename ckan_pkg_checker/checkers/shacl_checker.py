@@ -97,7 +97,7 @@ class ShaclChecker(CheckerInterface):
         """Check one data package"""
         pkg_type = pkg.get("pkg_type", utils.DCAT)
         dataset_graph = None
-        if pkg.get("source_url"):
+        if pkg.get("source_url"):locals()
             dataset_graph = rdf_utils.get_dataset_graph_from_source(
                 pkg["source_url"], pkg["identifier"]
             )
