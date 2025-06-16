@@ -56,6 +56,9 @@ class PackageCheck:
 
     def _enrich_package(self, pkg):
         if pkg["name"] in self.geocat_pkg_ids:
+            utils.log_and_echo_msg(
+                f"Using pkg name: {pkg['name']}, geocat_pkg_ids: {self.geocat_pkg_ids}"
+            )
             pkg["pkg_type"] = utils.GEOCAT
         else:
             pkg["pkg_type"] = utils.DCAT
@@ -112,6 +115,8 @@ class PackageCheck:
         geocat_harvester_ids = self._get_pkg_ids_from_package_search(
             fq=fq_geocat_harvesters, target="id"
         )
+        utils.log_and_echo_msg(
+            f"Found geocat harvester IDs: {geocat_harvester_ids}")
         fq_geocat_pkgs = "harvest_source_id:(" + " OR ".join(geocat_harvester_ids) + ")"
         geocat_pkg_ids = self._get_pkg_ids_from_package_search(fq_geocat_pkgs)
         return geocat_pkg_ids
@@ -126,7 +131,8 @@ class PackageCheck:
                 page = page + 1
                 start = (page - 1) * rows
                 result = self.ogdremote.action.package_search(
-                    fq=fq, rows=rows, start=start
+                    fq=fq, rows=rows, start=start,
+                    **{"fl": "id name extras"} # Force extras to be returned if possible
                 )
                 if not result_count:
                     result_count = result["count"]
@@ -134,5 +140,5 @@ class PackageCheck:
             except ckanapi.errors.NotFound:
                 utils.log_and_echo_msg(f"No datasets found for search with fq: {fq}")
             except ckanapi.errors.CKANAPIError:
-                utils.log_and_echo_msg(f"CKAN Api Error for Dataset Search: {fq}")
+                utils.log_and_echo_msg(f"CKAN Api Error for Dataset Search: {fq} ({e})")
         return pkg_ids
