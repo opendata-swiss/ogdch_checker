@@ -56,9 +56,6 @@ class PackageCheck:
 
     def _enrich_package(self, pkg):
         if pkg["name"] in self.geocat_pkg_ids:
-            utils.log_and_echo_msg(
-                f"Using pkg name: {pkg['name']}, geocat_pkg_ids: {self.geocat_pkg_ids}"
-            )
             pkg["pkg_type"] = utils.GEOCAT
         else:
             pkg["pkg_type"] = utils.DCAT
