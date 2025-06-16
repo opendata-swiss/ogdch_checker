@@ -373,18 +373,26 @@ def get_pkg_dcat_serialization_url(siteurl, name):
 
 
 def get_harvest_source_url(pkg, dcat_harvesters):
-    log_and_echo_msg(f"Extras: {pkg.get('extras')}")
+    extras = pkg.get("extras") or []
+    if not isinstance(extras, list):
+        log_and_echo_msg("Invalid or missing extras.")
+        return None
+    log_and_echo_msg(f"Extras: {extras}")
     harvester_source_id = [
         item["value"]
-        for item in pkg.get("extras", [])
+        for item in extras
         if item["key"] == "harvest_source_id"
     ]
     if not harvester_source_id:
         log_and_echo_msg("No harvest_source_id found in package extras.")
         return None
+
     harvest_source_url = dcat_harvesters.get(harvester_source_id[0])
     if not harvest_source_url:
+        log_and_echo_msg(
+            f"No harvest source URL found for ID: {harvester_source_id[0]}")
         return None
+
     return harvest_source_url
 
 
