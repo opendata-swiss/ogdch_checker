@@ -18,14 +18,30 @@
     a sh:NodeShape ;
     rdfs:comment "VCardShape Restriction" ;
     rdfs:label "VCardShape Restriction" ;
-    sh:property [
-        sh:path vcard:fn ;
-    	sh:minCount 1 ;
-    ] ;
-    sh:property [
-        sh:path vcard:hasEmail ;
-    	sh:minCount 1 ;
-    ] .
+    sh:or (
+      [	    
+        sh:class vcard:Organization ;
+        sh:property [
+          sh:path vcard:fn ;
+    	  sh:minCount 1 ;
+        ] ;
+        sh:property [
+          sh:path vcard:hasEmail ;
+    	  sh:minCount 1 ;
+        ] ;
+      ]
+      [	    
+        sh:class vcard:Individual ;
+        sh:property [
+          sh:path vcard:fn ;
+    	  sh:minCount 1 ;
+        ] ;
+        sh:property [
+          sh:path vcard:hasEmail ;
+    	  sh:minCount 1 ;
+        ] ;
+      ]
+    ) .
 
 :LanguageRestriction
     a sh:NodeShape ;
