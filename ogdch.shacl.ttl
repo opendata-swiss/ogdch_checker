@@ -176,10 +176,32 @@
   ] ;
   sh:property [
       sh:path dcat:contactPoint ;
-      sh:nodeKind sh:BlankNodeOrIRI ;
+      sh:minCount 1 ;
       sh:node [
-   	  sh:property [ sh:path vcard:fn ; sh:minCount 1 ] ;
-          sh:property [ sh:path vcard:hasEmail ; sh:minCount 1 ]
+        sh:or (
+          [
+            sh:class vcard:Organization ;
+            sh:property [
+              sh:path vcard:fn ;
+              sh:minCount 1 ;
+            ] ;
+            sh:property [
+              sh:path vcard:hasEmail ;
+              sh:minCount 1 ;
+            ] ;
+          ]
+          [
+            sh:class vcard:Individual ;
+            sh:property [
+              sh:path vcard:fn ;
+              sh:minCount 1 ;
+            ] ;
+            sh:property [
+              sh:path vcard:hasEmail ;
+              sh:minCount 1 ;
+            ] ;
+          ]
+        )
       ] ;
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': The contact point must be provided as vcard:Organization or vcard:Individual (identified by having a vcard:fn and vcard:hasEmail).
