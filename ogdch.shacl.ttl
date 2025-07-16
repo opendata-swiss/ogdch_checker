@@ -14,30 +14,6 @@
 
 <> sh:entailment <http://www.w3.org/ns/entailment/RDFS> .
 
-:VCardOrganizationShape
-  a sh:NodeShape ;
-  sh:targetClass vcard:Organization ;
-  sh:property [
-    sh:path vcard:fn ;
-    sh:minCount 1 ;
-  ] ;
-  sh:property [
-    sh:path vcard:hasEmail ;
-    sh:minCount 1 ;
-  ] .
-
-:VCardIndividualShape
-  a sh:NodeShape ;
-  sh:targetClass vcard:Individual ;
-  sh:property [
-    sh:path vcard:fn ;
-    sh:minCount 1 ;
-  ] ;
-  sh:property [
-    sh:path vcard:hasEmail ;
-    sh:minCount 1 ;
-  ] .
-
 :LanguageRestriction
     a sh:NodeShape ;
     rdfs:comment "Language Restriction" ;
@@ -173,6 +149,10 @@
       sh:path dcat:contactPoint ;
       sh:nodeKind sh:BlankNodeOrIRI ;
       sh:targetClass vcard:Organization ;
+      sh:or (
+        [ sh:targetClass vcard:Organization ]
+        [ sh:targetClass vcard:Individual ]
+      ) ;	      
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': The contact point must be provided as vcard:Organization or vcard:Individual (identified by having a vcard:fn and vcard:hasEmail).
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
