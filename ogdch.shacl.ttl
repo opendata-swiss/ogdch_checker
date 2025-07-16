@@ -454,7 +454,7 @@
       sh:path dct:format ;   # conditional property
       sh:node :FormatRestriction ;
       sh:nodeKind sh:IRI ;
-      sh:severity sh:Warning ;
+      sh:severity sh:Violation ;
       sh:message """Class 'dcat:Distribution' - Property 'dct:format': The distribution format must be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dct-format-dcat
