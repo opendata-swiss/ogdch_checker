@@ -105,16 +105,6 @@ class ShaclChecker(CheckerInterface):
                 f"--> rdf graph for Dataset{pkg.get('name')} taken from harvest source."
             )
         if not dataset_graph:
-            pkg_dcat_serilization_url = utils.get_pkg_dcat_serialization_url(
-                self.siteurl, pkg["name"]
-            )
-            dataset_graph = rdf_utils.parse_rdf_graph_from_url(
-                pkg_dcat_serilization_url, bind=True
-            )
-            utils.log_and_echo_msg(
-                f"--> rdf graph for Dataset{pkg.get('name')} taken from platform."
-            )
-        if not dataset_graph:
             utils.log_and_echo_msg(
                 f"--> rdf graph for dataset {pkg.get('name')} could not be serialized from harvest source.",
                 error=True,
