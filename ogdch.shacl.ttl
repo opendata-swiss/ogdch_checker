@@ -147,13 +147,11 @@
   ] ;
   sh:property [
       sh:path dcat:contactPoint ;
-      sh:or
-        ([
-            sh:class vcard:Organization ;
-        ]
-        [
-            sh:class vcard:Individual ;
-        ]) ;
+      sh:nodeKind sh:BlankNodeOrIRI ;
+      sh:or (
+        [ sh:targetClass vcard:Organization ]
+        [ sh:targetClass vcard:Individual ]
+      ) ;	
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': The contact point must be provided as vcard:Organization or vcard:Individual.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
