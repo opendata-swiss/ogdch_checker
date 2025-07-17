@@ -154,40 +154,18 @@ def get_dataset_graph_from_source(source_url, identifier):
             f"Exception {e} happened for source_url {source_url} and {identifier}"
         )
         return None
-
-    for prefix, ns in namespaces.items():
-        source.bind(prefix, ns)
+    for k, v in namespaces.items():
+        source.bind(k, v)
     source.namespace_manager = NamespaceManager(source)
-
     dataset = Graph()
-    for prefix, ns in namespaces.items():
-        dataset.bind(prefix, ns)
+    for k, v in namespaces.items():
+        dataset.bind(k, v)
     dataset.namespace_manager = NamespaceManager(dataset)
-
-    # If identifier has @org, also try to match just the base hash
-    raw_id = identifier.split("@")[0] if "@" in identifier else identifier
-
-    dataset_refs = set()
-
-    for subj in source.subjects(predicate=DCT.identifier):
-        for obj in source.objects(subject=subj, predicate=DCT.identifier):
-            obj_str = str(obj)
-            if obj_str == identifier or obj_str == raw_id:
-                dataset_refs.add(subj)
-
-    if not dataset_refs:
-        log_and_echo_msg(
-            f"No RDF subjects with dct:identifier == '{identifier}' or '{raw_id}' found in {source_url}"
-        )
-        return None
-
-    for ref in dataset_refs:
-        for pred, obj in source.predicate_objects(subject=ref):
-            dataset.add((ref, pred, obj))
-            # Add second-level triples
-            if isinstance(obj, (str, Literal)):
-                continue
+    for dataset_ref in source.subjects(
+        predicate=DCT.identifier, object=Literal(identifier)
+    ):
+        for pred, obj in source.predicate_objects(subject=dataset_ref):
+            dataset.add((dataset_ref, pred, obj))
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
-
     return dataset
