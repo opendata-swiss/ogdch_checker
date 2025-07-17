@@ -451,8 +451,8 @@
   ] ;
   sh:property [
       sh:path dct:format ;   # conditional property
+      sh:nodeKind sh:BlankNodeOrIRI ;
       sh:node :FormatRestriction ;
-      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dct:format': The distribution format must be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
