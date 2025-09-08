@@ -39,6 +39,7 @@ RunParms = namedtuple(
         "build",
         "send",
         "test",
+        "harvestertype",
     ],
 )
 FieldNamesMsgFile = ["contact_email", "contact_name", "pkg_type", "checker_type", "msg"]
@@ -388,7 +389,7 @@ def get_harvest_source_url(pkg, dcat_harvesters):
     return harvest_source_url
 
 
-def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
+def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test, harvestertype=None):
     config = configparser.ConfigParser()
     config.read(configpath)
     if not config.sections():
@@ -446,6 +447,7 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test):
         build=build,
         send=send,
         test=test,
+        harvestertype=harvestertype,
     )
     logdir = get_logdir(rundir)
     loglevel = get_config(config, "logging", "level", fallback="INFO")
