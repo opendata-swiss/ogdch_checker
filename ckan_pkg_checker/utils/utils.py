@@ -39,7 +39,7 @@ RunParms = namedtuple(
         "build",
         "send",
         "test",
-        "harvestertype",
+        "harvester_type",
     ],
 )
 FieldNamesMsgFile = ["contact_email", "contact_name", "pkg_type", "checker_type", "msg"]
@@ -447,7 +447,7 @@ def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test, harv
         build=build,
         send=send,
         test=test,
-        harvestertype=harvestertype,
+        harvester_type=harvestertype,
     )
     logdir = get_logdir(rundir)
     loglevel = get_config(config, "logging", "level", fallback="INFO")
