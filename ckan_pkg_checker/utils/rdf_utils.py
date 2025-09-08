@@ -106,8 +106,7 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
                 predicate=SHACL.focusNode,
             )
             value = get_object_from_graph(
-                graph=results_graph, subject=validation_item,
-                predicate=SHACL.value
+                graph=results_graph, subject=validation_item, predicate=SHACL.value
             ) or get_object_from_graph(
                 graph=dataset_graph, subject=node, predicate=property_ref
             )

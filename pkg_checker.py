@@ -1,6 +1,7 @@
 """
 Script to start the Worklogdb Application
 """
+
 import logging
 
 import click
@@ -79,9 +80,9 @@ log = logging.getLogger(__name__)
     "-ht",
     "--harvestertype",
     default=None,
-    help="Specify the harvester type." 
-         "Example: --harvestertype geocat, or --harvestertype dcat."
-         "By default both harvester types will be checked.",
+    help="Specify the harvester type."
+    "Example: --harvestertype geocat, or --harvestertype dcat."
+    "By default both harvester types will be checked.",
 )
 def check_packages(
     limit=None,
@@ -108,7 +109,7 @@ def check_packages(
 
     For datasets harvested by geocat a geocat email can be
     specified in the configuration file.
-    
+
      Only when you call it with --harvestertype you can specifically run
      the checker on geocat or dcat harvester type.
 

@@ -389,7 +389,9 @@ def get_harvest_source_url(pkg, dcat_harvesters):
     return harvest_source_url
 
 
-def set_runparms(org, limit, pkg, run, configpath, build, send, mode, test, harvestertype=None):
+def set_runparms(
+    org, limit, pkg, run, configpath, build, send, mode, test, harvestertype=None
+):
     config = configparser.ConfigParser()
     config.read(configpath)
     if not config.sections():
@@ -461,7 +463,7 @@ def _log_run_parms(runparms):
     for name, value in runparms._asdict().items():
         if name == "config":
             for section in runparms.config.sections():
-                for (key, val) in runparms.config.items(section):
+                for key, val in runparms.config.items(section):
                     info += f"[{section}] {key}={val}\n"
         else:
             info += f"{name}: {value}\n"

@@ -12,7 +12,9 @@ DCAT_HARVESTER_TYPES = {"dcat_ch_rdf", "dcat_ch_i14y_rdf"}
 
 
 class PackageCheck:
-    def __init__(self, config, siteurl, apikey, rundir, mode, limit, pkg, org, harvester_type):
+    def __init__(
+        self, config, siteurl, apikey, rundir, mode, limit, pkg, org, harvester_type
+    ):
         self.siteurl = siteurl
         self.ogdremote = ckanapi.RemoteCKAN(self.siteurl, apikey=apikey)
         self.dcat_harvesters = self._get_dcat_harvester_dict()
@@ -75,21 +77,24 @@ class PackageCheck:
 
     def _get_packages(self, limit=None, pkg=None, org=None):
         """
-         Collect dataset IDs based on filters:
-            - Single pkg
-            - Organization
-            - Harvester type (geocat / dcat)
-            - Limit
+        Collect dataset IDs based on filters:
+           - Single pkg
+           - Organization
+           - Harvester type (geocat / dcat)
+           - Limit
         """
         if pkg:
             return [pkg]
 
         if org:
-                return self._get_organization_package_ids(org=org)
+            return self._get_organization_package_ids(org=org)
 
         if self.harvester_type == "geocat":
-            return self._get_geocat_package_ids()[
-                   :limit] if limit else self._get_geocat_package_ids()
+            return (
+                self._get_geocat_package_ids()[:limit]
+                if limit
+                else self._get_geocat_package_ids()
+            )
 
         if self.harvester_type == "dcat":
             return self._get_dcat_package_ids(limit=limit)
@@ -136,8 +141,14 @@ class PackageCheck:
         """
         Filter only datasets coming from DCAT harvesters.
         """
-        fq_dcat_harvesters = "dataset_type:harvest AND source_type:(" + " OR ".join(DCAT_HARVESTER_TYPES) + ")"
-        dcat_pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_dcat_harvesters, target="id")
+        fq_dcat_harvesters = (
+            "dataset_type:harvest AND source_type:("
+            + " OR ".join(DCAT_HARVESTER_TYPES)
+            + ")"
+        )
+        dcat_pkg_ids = self._get_pkg_ids_from_package_search(
+            fq=fq_dcat_harvesters, target="id"
+        )
         fq_dcat_pkgs = "harvest_source_id:(" + " OR ".join(dcat_pkg_ids) + ")"
         pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_dcat_pkgs)
         if limit:
