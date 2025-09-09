@@ -94,8 +94,12 @@ By default the scope of the check will be the whole site.
 With these parameters you can reduce on the scope of the checker:
 
 `-l, --limit <int>`Limit the number of packages to check. Example: `--limit 20`
+
 `-p, --pkg <slug>>` Check only a single package. Example: `--pkg vbz- haltestellen`
+
 `-o, --org <slug>`  Check only a single organization. Example `--org bernmobil`
+
+`-ht, --harvestertype <slug>`  Check only datasets harvested by a specific harvester type (e.g., geocat or dcat). Example `--harvestertype geocat`
 
 #### Step Options
 
