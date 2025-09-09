@@ -1,6 +1,7 @@
 """
 Script to start the Worklogdb Application
 """
+
 import logging
 
 import click
@@ -75,6 +76,14 @@ log = logging.getLogger(__name__)
     "of that run. With this option mails can be build and "
     "send out from the results of a previous checker run.",
 )
+@click.option(
+    "-ht",
+    "--harvestertype",
+    default=None,
+    help="Specify the harvester type."
+    "Example: --harvestertype geocat, or --harvestertype dcat."
+    "By default both harvester types will be checked.",
+)
 def check_packages(
     limit=None,
     pkg=None,
@@ -84,6 +93,7 @@ def check_packages(
     send=False,
     run=None,
     test=False,
+    harvestertype=None,
     mode=MODE_SHACL,
 ):
     """Checks data packages of a opendata.swiss
@@ -100,6 +110,9 @@ def check_packages(
     For datasets harvested by geocat a geocat email can be
     specified in the configuration file.
 
+     Only when you call it with --harvestertype you can specifically run
+     the checker on geocat or dcat harvester type.
+
     You can just send emails when you run the command with --run and --send.
     This assumes a previous check run has been taken place.
     """
@@ -112,6 +125,7 @@ def check_packages(
         build=build,
         send=send,
         test=test,
+        harvestertype=harvestertype,
         mode=mode,
     )
 
@@ -125,6 +139,7 @@ def check_packages(
             limit=runparms.limit,
             pkg=runparms.pkg,
             org=runparms.org,
+            harvester_type=runparms.harvester_type,
         )
         check.run()
     if runparms.build:

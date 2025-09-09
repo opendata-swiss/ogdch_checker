@@ -147,13 +147,11 @@
   ] ;
   sh:property [
       sh:path dcat:contactPoint ;
-      sh:or
-        ([
-            sh:class vcard:Organization ;
-        ]
-        [
-            sh:class vcard:Individual ;
-        ]) ;
+      sh:nodeKind sh:BlankNodeOrIRI ;
+      sh:or (
+        [ sh:targetClass vcard:Organization ]
+        [ sh:targetClass vcard:Individual ]
+      ) ;	
       sh:severity sh:Violation ;
       sh:message """Class 'dcat:Dataset' - Property 'dcat:contactPoint': The contact point must be provided as vcard:Organization or vcard:Individual.
         See https://handbook.opendata.swiss/de/content/glossar/bibliothek/dcat-ap-ch.html#dcat-contactpoint-dcat
@@ -453,8 +451,8 @@
   ] ;
   sh:property [
       sh:path dct:format ;   # conditional property
+      sh:nodeKind sh:BlankNodeOrIRI ;
       sh:node :FormatRestriction ;
-      sh:nodeKind sh:IRI ;
       sh:severity sh:Warning ;
       sh:message """Class 'dcat:Distribution' - Property 'dct:format': The distribution format must be chosen from the controlled vocabulary available at:
         http://publications.europa.eu/resource/authority/file-type.
