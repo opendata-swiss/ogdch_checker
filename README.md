@@ -93,8 +93,6 @@ Also the mode must be set: it decides which checker to run:
 By default the scope of the check will be the whole site.
 With these parameters you can reduce on the scope of the checker:
 
-`-l, --limit <int>`Limit the number of packages to check. Example: `--limit 20`
-
 `-p, --pkg <slug>>` Check only a single package. Example: `--pkg vbz- haltestellen`
 
 `-o, --org <slug>`  Check only a single organization. Example `--org bernmobil`
@@ -102,6 +100,11 @@ With these parameters you can reduce on the scope of the checker:
 `-ht, --harvestertype <slug>`  Check only datasets harvested by a specific harvester type (e.g., geocat or dcat). Example `--harvestertype geocat`
 
 ⚠️ **Note**: Only one of these filters can be used at a time. Combining them (e.g., filtering by both `--org` and `--harvestertype`) is not supported.
+
+Additionally, it is possible to limit the number of datasets for the whole catalogue or on all datasets filtered by harvester type:
+
+`-l, --limit <int>`Limit the number of packages to check. Example: `--limit 20` or `--harvestertype geocat --limit 20`
+
 
 #### Step Options
 
