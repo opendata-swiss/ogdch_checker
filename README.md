@@ -101,6 +101,8 @@ With these parameters you can reduce on the scope of the checker:
 
 `-ht, --harvestertype <slug>`  Check only datasets harvested by a specific harvester type (e.g., geocat or dcat). Example `--harvestertype geocat`
 
+⚠️ **Note**: Only one of these filters can be used at a time. Combining them (e.g., filtering by both `--org` and `--harvestertype`) is not supported.
+
 #### Step Options
 
 With these paramter you can decide about which steps should be run by the checkers:
