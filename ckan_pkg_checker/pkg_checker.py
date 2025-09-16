@@ -141,11 +141,13 @@ class PackageCheck:
         """
         Filter only datasets coming from DCAT harvesters.
         """
-        fq_dcat_harvesters = (
-            "dataset_type:harvest AND source_type:("
-            + " OR ".join(DCAT_HARVESTER_TYPES)
-            + ")"
-        )
+        # fq_dcat_harvesters = (
+        #     "dataset_type:harvest AND source_type:("
+        #     + " OR ".join(DCAT_HARVESTER_TYPES)
+        #     + ")"
+        # )
+        fq_dcat_harvesters = "dataset_type:harvest AND source_type:dcat_ch_i14y_rdf"
+
         dcat_pkg_ids = self._get_pkg_ids_from_package_search(
             fq=fq_dcat_harvesters, target="id"
         )
