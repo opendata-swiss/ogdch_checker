@@ -99,11 +99,19 @@ With these parameters you can reduce on the scope of the checker:
 
 `-ht, --harvestertype <slug>`  Check only datasets harvested by a specific harvester type (e.g., geocat or dcat). Example `--harvestertype geocat`
 
-⚠️ **Note**: Only one of these filters can be used at a time. Combining them (e.g., filtering by both `--org` and `--harvestertype`) is not supported.
+**New**: `--org` and `--harvestertype` can now be combined to narrow the scope further (e.g., only geocat datasets from bernmobil).
 
 Additionally, it is possible to limit the number of datasets for the whole catalogue or on all datasets filtered by harvester type:
 
-`-l, --limit <int>`Limit the number of packages to check. Example: `--limit 20` or `--harvestertype geocat --limit 20`
+`-l, --limit <int>`Limit the number of packages to check. 
+
+Example:
+
+--limit 20 (first 20 datasets in the catalogue)
+
+--harvestertype geocat --limit 20 (first 20 geocat datasets)
+
+--org bernmobil --harvestertype geocat --limit 10 (first 10 geocat datasets from bernmobil organisation)
 
 
 #### Step Options
