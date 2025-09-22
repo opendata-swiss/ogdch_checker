@@ -166,14 +166,44 @@ def get_dataset_graph_from_source(source_url, identifier):
     log_and_echo_msg(
         f"identifier {identifier} "
     )
+    dataset_refs = []
+    # --- First try: full identifier ---
     for dataset_ref in source.subjects(
         predicate=DCT.identifier, object=Literal(identifier)
     ):
+        dataset_refs.append(dataset_ref)
+
+        # --- Second try: shortened identifier if "@" present ---
+    if not dataset_refs and "@" in identifier:
+        short_id = identifier.split("@", 1)[0]
+        log_and_echo_msg(f"retrying with shortened identifier {short_id}")
+        for dataset_ref in source.subjects(
+                predicate=DCT.identifier, object=Literal(short_id)
+        ):
+            dataset_refs.append(dataset_ref)
+
+    if not dataset_refs:
         log_and_echo_msg(
-            f"dataset_ref {dataset_ref} "
+            f"No dataset found in RDF for identifier {identifier}", error=True
         )
+        return None
+
+        # Build dataset graph
+    for dataset_ref in dataset_refs:
+        log_and_echo_msg(f"dataset_ref {dataset_ref}")
         for pred, obj in source.predicate_objects(subject=dataset_ref):
             dataset.add((dataset_ref, pred, obj))
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
+
+    # for dataset_ref in source.subjects(
+    #     predicate=DCT.identifier, object=Literal(identifier)
+    # ):
+    #     log_and_echo_msg(
+    #         f"dataset_ref {dataset_ref} "
+    #     )
+    #     for pred, obj in source.predicate_objects(subject=dataset_ref):
+    #         dataset.add((dataset_ref, pred, obj))
+    #         for subpred, subobj in source.predicate_objects(subject=obj):
+    #             dataset.add((obj, subpred, subobj))
     return dataset
