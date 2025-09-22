@@ -101,9 +101,7 @@ class ShaclChecker(CheckerInterface):
         if pkg.get("source_url"):
             extras = {e["key"]: e["value"] for e in pkg.get("extras", [])}
             identifier = extras.get("guid") or pkg["identifier"]
-            utils.log_and_echo_msg(
-                f"--> Id from extras {extras.get('guid')} and id from pkg: {pkg['identifier']}}"
-            )
+
             dataset_graph = rdf_utils.get_dataset_graph_from_source(
                 pkg["source_url"], identifier
             )
