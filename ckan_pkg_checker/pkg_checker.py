@@ -86,6 +86,9 @@ class PackageCheck:
         if pkg:
             return [pkg]
 
+        if org and self.harvester_type:
+            return self._get_org_and_harvester_package_ids(org, self.harvester_type,
+                                                           limit)
         if org:
             return self._get_organization_package_ids(org=org)
 
@@ -123,6 +126,57 @@ class PackageCheck:
             return public_packages[:limit]
         return public_packages
 
+    def _get_org_and_harvester_package_ids(self, org, harvester_type,
+                                           limit=None):
+        """
+        Collect package IDs for a given organization and harvester type.
+        Supports:
+          - geocat
+          - dcat (all DCAT_HARVESTER_TYPES)
+        """
+        if harvester_type == "geocat":
+            # Step 1: find geocat harvester sources
+            fq_harvesters = "dataset_type:harvest AND source_type:geocat_harvester"
+            harvester_ids = self._get_pkg_ids_from_package_search(
+                fq=fq_harvesters, target="id"
+            )
+            if not harvester_ids:
+                return []
+            # Step 2: find datasets linked to those harvesters + org
+            fq_pkgs = (
+                    f"organization:{org} AND harvest_source_id:("
+                    + " OR ".join(harvester_ids)
+                    + ")"
+            )
+            pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_pkgs)
+
+        elif harvester_type == "dcat":
+            # Step 1: find all DCAT harvesters
+            fq_harvesters = (
+                    "dataset_type:harvest AND source_type:("
+                    + " OR ".join(DCAT_HARVESTER_TYPES)
+                    + ")"
+            )
+            harvester_ids = self._get_pkg_ids_from_package_search(
+                fq=fq_harvesters, target="id"
+            )
+            if not harvester_ids:
+                return []
+            # Step 2: find datasets linked to those harvesters + org
+            fq_pkgs = (
+                    f"organization:{org} AND harvest_source_id:("
+                    + " OR ".join(harvester_ids)
+                    + ")"
+            )
+            pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_pkgs)
+
+        else:
+            # fallback: just org
+            fq = f"organization:{org}"
+            pkg_ids = self._get_pkg_ids_from_package_search(fq=fq)
+
+        return pkg_ids[:limit] if limit else pkg_ids
+
     def _get_organization_package_ids(self, org):
         fq_organization = f"organization:{org}"
         organization_pkg_ids = self._get_pkg_ids_from_package_search(fq_organization)
@@ -141,13 +195,11 @@ class PackageCheck:
         """
         Filter only datasets coming from DCAT harvesters.
         """
-        # fq_dcat_harvesters = (
-        #     "dataset_type:harvest AND source_type:("
-        #     + " OR ".join(DCAT_HARVESTER_TYPES)
-        #     + ")"
-        # )
-        fq_dcat_harvesters = "dataset_type:harvest AND source_type:dcat_ch_i14y_rdf"
-
+        fq_dcat_harvesters = (
+            "dataset_type:harvest AND source_type:("
+            + " OR ".join(DCAT_HARVESTER_TYPES)
+            + ")"
+        )
         dcat_pkg_ids = self._get_pkg_ids_from_package_search(
             fq=fq_dcat_harvesters, target="id"
         )
