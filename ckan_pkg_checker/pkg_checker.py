@@ -87,8 +87,9 @@ class PackageCheck:
             return [pkg]
 
         if org and self.harvester_type:
-            return self._get_org_and_harvester_package_ids(org, self.harvester_type,
-                                                           limit)
+            return self._get_org_and_harvester_package_ids(
+                org, self.harvester_type, limit
+            )
         if org:
             return self._get_organization_package_ids(org=org)
 
@@ -126,8 +127,7 @@ class PackageCheck:
             return public_packages[:limit]
         return public_packages
 
-    def _get_org_and_harvester_package_ids(self, org, harvester_type,
-                                           limit=None):
+    def _get_org_and_harvester_package_ids(self, org, harvester_type, limit=None):
         """
         Collect package IDs for a given organization and harvester type.
         Supports:
@@ -144,18 +144,18 @@ class PackageCheck:
                 return []
             # Step 2: find datasets linked to those harvesters + org
             fq_pkgs = (
-                    f"organization:{org} AND harvest_source_id:("
-                    + " OR ".join(harvester_ids)
-                    + ")"
+                f"organization:{org} AND harvest_source_id:("
+                + " OR ".join(harvester_ids)
+                + ")"
             )
             pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_pkgs)
 
         elif harvester_type == "dcat":
             # Step 1: find all DCAT harvesters
             fq_harvesters = (
-                    "dataset_type:harvest AND source_type:("
-                    + " OR ".join(DCAT_HARVESTER_TYPES)
-                    + ")"
+                "dataset_type:harvest AND source_type:("
+                + " OR ".join(DCAT_HARVESTER_TYPES)
+                + ")"
             )
             harvester_ids = self._get_pkg_ids_from_package_search(
                 fq=fq_harvesters, target="id"
@@ -164,9 +164,9 @@ class PackageCheck:
                 return []
             # Step 2: find datasets linked to those harvesters + org
             fq_pkgs = (
-                    f"organization:{org} AND harvest_source_id:("
-                    + " OR ".join(harvester_ids)
-                    + ")"
+                f"organization:{org} AND harvest_source_id:("
+                + " OR ".join(harvester_ids)
+                + ")"
             )
             pkg_ids = self._get_pkg_ids_from_package_search(fq=fq_pkgs)
 
