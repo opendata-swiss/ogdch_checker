@@ -146,6 +146,9 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
 
 
 def get_dataset_graph_from_source(source_url, identifier):
+    log_and_echo_msg(
+        f"source_url {source_url}"
+    )
     try:
         source = Graph().parse(source_url, format="application/rdf+xml")
     except Exception as e:
