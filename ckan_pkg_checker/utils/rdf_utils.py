@@ -146,6 +146,7 @@ def get_shacl_results(dataset_graph, shacl_graph, ont_graph):
 
 
 def get_dataset_graph_from_source(source_url, identifier):
+    log_and_echo_msg(f"source_url {source_url}")
     try:
         source = Graph().parse(source_url, format="application/rdf+xml")
     except Exception as e:
@@ -160,11 +161,34 @@ def get_dataset_graph_from_source(source_url, identifier):
     for k, v in namespaces.items():
         dataset.bind(k, v)
     dataset.namespace_manager = NamespaceManager(dataset)
+    dataset_refs = []
+    # Try full identifier
     for dataset_ref in source.subjects(
         predicate=DCT.identifier, object=Literal(identifier)
     ):
+        dataset_refs.append(dataset_ref)
+
+    # Try shortened identifier if "@" present - for I14Y datasets
+    if not dataset_refs and "@" in identifier:
+        short_id = identifier.split("@", 1)[0]
+        log_and_echo_msg(f"retrying with shortened identifier {short_id}")
+        for dataset_ref in source.subjects(
+            predicate=DCT.identifier, object=Literal(short_id)
+        ):
+            dataset_refs.append(dataset_ref)
+
+    if not dataset_refs:
+        log_and_echo_msg(
+            f"No dataset found in RDF for identifier {identifier}", error=True
+        )
+        return None
+
+    # Build dataset graph
+    for dataset_ref in dataset_refs:
+        log_and_echo_msg(f"dataset_ref {dataset_ref}")
         for pred, obj in source.predicate_objects(subject=dataset_ref):
             dataset.add((dataset_ref, pred, obj))
             for subpred, subobj in source.predicate_objects(subject=obj):
                 dataset.add((obj, subpred, subobj))
+
     return dataset
