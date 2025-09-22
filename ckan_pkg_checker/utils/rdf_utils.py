@@ -163,9 +163,15 @@ def get_dataset_graph_from_source(source_url, identifier):
     for k, v in namespaces.items():
         dataset.bind(k, v)
     dataset.namespace_manager = NamespaceManager(dataset)
+    log_and_echo_msg(
+        f"identifier {identifier} "
+    )
     for dataset_ref in source.subjects(
         predicate=DCT.identifier, object=Literal(identifier)
     ):
+        log_and_echo_msg(
+            f"dataset_ref {dataset_ref} "
+        )
         for pred, obj in source.predicate_objects(subject=dataset_ref):
             dataset.add((dataset_ref, pred, obj))
             for subpred, subobj in source.predicate_objects(subject=obj):
