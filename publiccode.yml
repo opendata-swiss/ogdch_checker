@@ -1,0 +1,47 @@
+publiccodeYmlVersion: 0.5.0
+name: ogdch_checker
+url: https://github.com/opendata-swiss/ogdch_checker
+releaseDate: 2021-02-21
+logo: https://opendata.swiss/images/logo_horizontal.png
+platforms:
+  - linux
+categories:
+  - other
+organisation:
+  uri: https://opendata.swiss
+usedBy:
+  - Swiss Federal Statistical Office
+developmentStatus: stable
+softwareType: standalone/other
+description:
+  en:
+    localisedName: OGDCH Checker
+    shortDescription: OGDCH Checker provides tools to validate and check datasets and resources of a CKAN-installation.
+    longDescription: OGDCH Checker for opendata.swiss is used to regularly check the availability and validity of
+      datasets and their resources on the [CKAN](https://ckan.org/) portal. The link-checker tool will check whether
+      resource-URLs are valid and accessible via HTTP-request.
+      The SHACL-checker validates datasets against a provided SHACL-graph.
+      The checks can be scheduled via cronjobs and the results of both checkers can then be sent out automatically to
+      the configured recipients.
+  features:
+    - check availability and validity of resource-URLs
+    - validate datasets including their resources against a provided SHACL-graph
+    - send out results as email-reports
+  legal:
+    license: AGPL-3.0-or-later
+  maintenance:
+    type: contract
+    contractors:
+      - name: Liip AG
+        until: 2030-12-01
+        email: opendata@liip.ch
+        website: https://www.liip.ch/
+  localisation:
+    localisationReady: false
+    availableLanguages:
+      - en
+  intendedAudience:
+    scope:
+      - government
+      - local-authorities
+      - research
