@@ -107,11 +107,18 @@ class PackageCheck:
 
     def _get_dcat_harvester_dict(self):
         try:
-            harvesters = self.ogdremote.action.harvest_source_list()
+            search_dict = self.ogdremote.call_action(
+                "package_search",
+                {"fq": "dataset_type:harvest", "rows": 500},
+            )
+
             harvester_dict = {}
-            for harvester in harvesters:
-                if harvester.get("type") in DCAT_HARVESTER_TYPES:
-                    harvester_dict[harvester["id"]] = harvester.get("url")
+            for pkg in search_dict.get("results", []):
+                pkg_id = pkg.get("id")
+                url = (pkg.get("url") or "").strip()
+
+                if pkg_id and url:
+                    harvester_dict[pkg_id] = url
             return harvester_dict
         except Exception as e:
             log.exception(f"getting harvesters failed: {e}")
